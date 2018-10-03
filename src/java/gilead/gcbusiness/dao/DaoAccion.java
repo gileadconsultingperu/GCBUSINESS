@@ -18,4 +18,5 @@ public interface DaoAccion {
     public String accionActualizar(Object obj);
     public String accionEliminar(Integer id);
     public List<?> accionListar();
+    public String accionActivar(Integer id);
 }

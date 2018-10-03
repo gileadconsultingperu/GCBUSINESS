@@ -8,6 +8,58 @@
         <servlet-name>GCBusiness_SucursalAlmacen_Servlet</servlet-name>
         <servlet-class>gilead.gcbusiness.controller.GCBusiness_SucursalAlmacen_Servlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Logout</servlet-name>
+        <servlet-class>gilead.gcbusiness.controller.GCBusiness_Logout_Servlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Usuario</servlet-name>
+        <servlet-class>gilead.gcbusiness.controller.GCBusiness_Usuario_Servlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Sucursal</servlet-name>
+        <servlet-class>gilead.gcbusiness.controller.GCBusiness_Sucursal_Servlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Almacen</servlet-name>
+        <servlet-class>gilead.gcbusiness.controller.GCBusiness_Almacen_Servlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Vendedor</servlet-name>
+        <servlet-class>gilead.gcbusiness.controller.GCBusiness_Vendedor_Servlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>FamiliaProducto</servlet-name>
+        <servlet-class>gilead.gcbusiness.controller.GCBusiness_FamiliaProducto_Servlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ClaseProducto</servlet-name>
+        <servlet-class>gilead.gcbusiness.controller.GCBusiness_ClaseProducto_Servlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>LineaProducto</servlet-name>
+        <servlet-class>gilead.gcbusiness.controller.GCBusiness_LineaProducto_Servlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CategoriaProducto</servlet-name>
+        <servlet-class>gilead.gcbusiness.controller.GCBusiness_CategoriaProducto_Servlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Marca</servlet-name>
+        <servlet-class>gilead.gcbusiness.controller.GCBusiness_Marca_Servlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Tarifa</servlet-name>
+        <servlet-class>gilead.gcbusiness.controller.GCBusiness_Tarifa_Servlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Cliente</servlet-name>
+        <servlet-class>gilead.gcbusiness.controller.GCBusiness_Cliente_Servlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Ubigeo</servlet-name>
+        <servlet-class>gilead.gcbusiness.controller.GCBusiness_Ubigeo_Servlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>GCBusiness_Login_Servlet</servlet-name>
         <url-pattern>/Login</url-pattern>
@@ -16,6 +68,58 @@
         <servlet-name>GCBusiness_SucursalAlmacen_Servlet</servlet-name>
         <url-pattern>/SucursalAlmacen</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Logout</servlet-name>
+        <url-pattern>/Logout</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Usuario</servlet-name>
+        <url-pattern>/Usuario</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Sucursal</servlet-name>
+        <url-pattern>/Sucursal</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Almacen</servlet-name>
+        <url-pattern>/Almacen</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Vendedor</servlet-name>
+        <url-pattern>/Vendedor</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FamiliaProducto</servlet-name>
+        <url-pattern>/FamiliaProducto</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ClaseProducto</servlet-name>
+        <url-pattern>/ClaseProducto</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LineaProducto</servlet-name>
+        <url-pattern>/LineaProducto</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CategoriaProducto</servlet-name>
+        <url-pattern>/CategoriaProducto</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Marca</servlet-name>
+        <url-pattern>/Marca</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Tarifa</servlet-name>
+        <url-pattern>/Tarifa</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Cliente</servlet-name>
+        <url-pattern>/Cliente</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Ubigeo</servlet-name>
+        <url-pattern>/Ubigeo</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             120
@@ -23,6 +127,6 @@
     </session-config>
     <!-- Pagina de Inicio -->
     <welcome-file-list>
-        <welcome-file>views/seguridad/GC-Business-Login.jsp</welcome-file>
+        <welcome-file>views/GC-Business-Login.jsp</welcome-file>
     </welcome-file-list>
 </web-app>

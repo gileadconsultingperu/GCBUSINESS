@@ -266,7 +266,6 @@
                             "accion"    : "almacen"
                         }, function(response){
                             $('#almacen').html(response);
-                            //$('#frmEmpresa #provincia').val(codProv);
                         });   
                     }); 
                 }  

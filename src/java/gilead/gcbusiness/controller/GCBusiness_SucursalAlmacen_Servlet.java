@@ -77,13 +77,13 @@ public class GCBusiness_SucursalAlmacen_Servlet extends HttpServlet {
             if(idSucursal!=null && !"".equals(idSucursal.trim())){
                 List<BeanAlmacen> lstAlmacen = daoUsuarioSucursalAlmacenImpl.listarAlmacenSucursal(idSucursal);
             
-                out.println("<select id='almacenSucursal' name='almacenSucursal' >");
+                //out.println("<select id='almacenSucursal' name='almacenSucursal' >");
                 //out.println("<option value='00' selected='selected' >Seleccione</option>");
                 for(BeanAlmacen alm : lstAlmacen){
                     out.println("<option value='"+alm.getIdalmacen()+"' >"
                             +alm.getDescripcion()+"</option>");
                 }
-                out.println("</select>");
+                //out.println("</select>");
             }
         }
     }

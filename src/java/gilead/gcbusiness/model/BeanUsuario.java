@@ -1,7 +1,7 @@
 /** 
     Compañia            : Gilead Consulting S.A.C.
     Sistema             : GC-Business
-    Módulo              : Seguridad
+    Módulo              : Administracion
     Nombre              : BeanUsuario.java
     Versión             : 1.0
     Fecha Creación      : 22-08-2018
@@ -246,6 +246,5 @@ public class BeanUsuario implements Serializable{
         this.ipModificacion = ipModificacion;
     }
 
-    
     
 }

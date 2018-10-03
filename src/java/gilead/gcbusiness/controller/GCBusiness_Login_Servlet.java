@@ -51,38 +51,38 @@ public class GCBusiness_Login_Servlet extends HttpServlet {
                                 if(list.size() > 0){    
                                     HttpSession sesion = request.getSession(true);
                                     sesion.setAttribute("accesos", list);            
-                                    //sesion.setAttribute("loginUsuario", usuario.getUsuarioCuenta());
-                                    //sesion.setAttribute("idUsuario", usuario.getIdUsuario());
-                                    //sesion.setAttribute("idPersonal", usuario.getPersonal().getIdPersonal());
-                                    System.out.println("sww");
-                                    request.getRequestDispatcher("views/seguridad/GC-Business-Home.jsp").forward(request, response);
+                                    sesion.setAttribute("usuario", beanUsuario);
+                                    sesion.setAttribute("login_usuario", beanUsuario.getUsuario());
+                                    sesion.setAttribute("idSucursal", sucursal);
+                                    sesion.setAttribute("idAlmacen", almacen);
+                                    request.getRequestDispatcher("views/GC-Business-Home.jsp").forward(request, response);
                                 }else{
                                     request.setAttribute("errorSesion", "<div class='alert alert-danger'>El usuario no tiene acceso a ninguna opcion en el sistema. Consulte al Administrador.\n</div>");
-                                    request.getRequestDispatcher("views/seguridad/GC-Business-Login.jsp").forward(request, response); 
+                                    request.getRequestDispatcher("views/GC-Business-Login.jsp").forward(request, response); 
                                 }    
                             }else{
                                 request.setAttribute("errorSesion", "<div align=\"center\" class='alert alert-danger'>No tiene almacenes asignados y/o estan inhabilitados.</div>");
-                                request.getRequestDispatcher("views/seguridad/GC-Business-Login.jsp").forward(request, response);
+                                request.getRequestDispatcher("views/GC-Business-Login.jsp").forward(request, response);
                             }
                         }else{
                             request.setAttribute("errorSesion", "<div align=\"center\" class='alert alert-danger'>No tiene sucursales asignadas y/o estan inhabilitadas.</div>");
-                            request.getRequestDispatcher("views/seguridad/GC-Business-Login.jsp").forward(request, response);
+                            request.getRequestDispatcher("views/GC-Business-Login.jsp").forward(request, response);
                         }    
                     }else{    
                         request.setAttribute("errorSesion", "<div class='alert alert-danger'>El usuario no se encuentra habilitado. Consulte al Administrador.\n</div>");
-                        request.getRequestDispatcher("views/seguridad/GC-Business-Login.jsp").forward(request, response);
+                        request.getRequestDispatcher("views/GC-Business-Login.jsp").forward(request, response);
                     }
                 }else{
                     request.setAttribute("errorSesion", "<div align=\"center\" class='alert alert-danger'>El usuario y la contraseña no coinciden.\n</div>");
-                    request.getRequestDispatcher("views/seguridad/GC-Business-Login.jsp").forward(request, response); 
+                    request.getRequestDispatcher("views/GC-Business-Login.jsp").forward(request, response); 
                 }     
             }else{
                 request.setAttribute("errorSesion", "<div align=\"center\" class='alert alert-danger'>Debe escribir una contraseña válida.</div>");
-                request.getRequestDispatcher("views/seguridad/GC-Business-Login.jsp").forward(request, response);
+                request.getRequestDispatcher("views/GC-Business-Login.jsp").forward(request, response);
             }
         }else{
             request.setAttribute("errorSesion", "<div align=\"center\" class='alert alert-danger'>Debe escribir un usuario válido.</div>");
-            request.getRequestDispatcher("views/seguridad/GC-Business-Login.jsp").forward(request, response);
+            request.getRequestDispatcher("views/GC-Business-Login.jsp").forward(request, response);
         }
     }
 

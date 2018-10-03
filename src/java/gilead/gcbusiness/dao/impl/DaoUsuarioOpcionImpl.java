@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -18,30 +19,27 @@ import java.util.logging.Logger;
 
 public class DaoUsuarioOpcionImpl {
     
-    public List<BeanOpcionMenu> listarOpcionUsuario(Integer idusuario){
+    public ArrayList listarOpcionUsuario(Integer idusuario){
         ConectaDb db = new ConectaDb();
         Connection cn = db.getConnection();
         PreparedStatement st = null;
         ResultSet rs = null;
-        List<BeanOpcionMenu> opciones = null;    
+        ArrayList opciones = null;    
         if (cn != null) {
             try {
-                String qry = "SELECT t.id_opcionmenu, s.descripcion\n" +
+                String qry = "SELECT t.id_opcionmenu\n" +
                             "FROM gcbusiness.usuarioopcion t INNER JOIN gcbusiness.opcionmenu s using (id_opcionmenu)\n" +
                             "INNER JOIN gcbusiness.usuario u using (id_usuario)\n" +
-                            "WHERE t.estado = 'A' AND s.estado='A' AND u.id_usuario = ?";
+                            "WHERE t.estado = 'A' AND s.estado='A' AND u.id_usuario = ? ORDER BY t.id_opcionmenu";
 
                 st = cn.prepareStatement(qry);
                 st.setInt(1, idusuario);
 
                 rs = st.executeQuery();
                 
-                opciones = new LinkedList<BeanOpcionMenu>();
+                opciones = new ArrayList();
                 while(rs.next()){
-                    BeanOpcionMenu op = new BeanOpcionMenu();
-                    op.setIdopcionmenu(rs.getInt(1));
-                    op.setDescripcion(rs.getString(2));
-                    opciones.add(op);
+                    opciones.add(rs.getInt(1));
                 }
                 cn.close();
 
