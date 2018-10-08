@@ -177,29 +177,38 @@ public class GCBusiness_CategoriaProducto_Servlet extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        DaoCategoriaProductoImpl daoCategoria = new DaoCategoriaProductoImpl();
+                
+        Integer lineaproducto = Integer.parseInt(request.getParameter("lineaproducto"));
+        
+        if(lineaproducto>0){
+            List<BeanCategoriaProducto> listaCategoria = daoCategoria.accionListar();
+            
+            int contador=0;
+            
+            if(listaCategoria.size()>0){
+                for(BeanCategoriaProducto categoriaproducto : listaCategoria){
+                    if(categoriaproducto.getIdlineaproducto() == lineaproducto){
+                        out.println("<option value='"+categoriaproducto.getIdcategoriaproducto()+"' >"
+                                +categoriaproducto.getDescripcion()+"</option>");
+                        contador++;
+                    }
+                }
+            }else{
+                out.println("<option value='0' selected>NO HAY CATEGORÍAS</option>");
+            }
+            
+            if(contador==0)
+                out.println("<option value='0'>NO HAY CATEGORÍAS</option>");
+        }else{
+            out.println("<option value='0'>NO HAY CATEGORÍAS</option>");
+        }
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

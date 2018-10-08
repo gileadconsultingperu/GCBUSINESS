@@ -1,15 +1,34 @@
 <%-- 
     Compañia            : Gilead Consulting S.A.C.
     Sistema             : GC-Business
-    Módulo              : Productos
-    Nombre              : GC-Business-GestionLineaProducto.jsp
+    Módulo              : Administracion
+    Nombre              : GC-Business-GestionProducto.jsp
     Versión             : 1.0
     Fecha Creación      : 21-08-2018
     Autor Creación      : Pablo Jimenez Aguado
-    Uso                 : Crear, Modificar, Consultar e Inactivar una linea de producto
+    Uso                 : Crear, Modificar, Consultar e Inactivar un producto
 --%>
-<%@page import="gilead.gcbusiness.dao.impl.DaoClaseProductoImpl"%>
+<%@page import="gilead.gcbusiness.model.BeanTipoProducto"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoTipoProductoImpl"%>
+<%@page import="gilead.gcbusiness.model.BeanTipoISC"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoTipoISCImpl"%>
+<%@page import="gilead.gcbusiness.model.BeanMoneda"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoMonedaImpl"%>
 <%@page import="gilead.gcbusiness.model.BeanClaseProducto"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoClaseProductoImpl"%>
+<%@page import="gilead.gcbusiness.model.BeanFamiliaProducto"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoFamiliaProductoImpl"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="gilead.gcbusiness.model.BeanMarca"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoMarcaImpl"%>
+<%@page import="gilead.gcbusiness.model.BeanUnidadMedida"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoUnidadMedidaImpl"%>
+<%@page import="gilead.gcbusiness.model.BeanTipoPersona"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoTipoPersonaImpl"%>
+<%@page import="gilead.gcbusiness.model.BeanVendedor"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoVendedorImpl"%>
+<%@page import="gilead.gcbusiness.model.BeanUbigeo"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoUbigeoImpl"%>
 <%@page import="java.util.List"%>
 <%@page import="gilead.gcbusiness.model.BeanUsuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -22,7 +41,7 @@
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <meta charset="utf-8" />
-        <title>GC BUSINESS - Gestión de Lineas de Producto</title>
+        <title>GC BUSINESS - Gestión de Productos</title>
 
         <meta name="description" content="Dynamic tables and grids using jqGrid plugin" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
@@ -650,7 +669,7 @@
                             <li>
                                 <a href="#">Productos</a>
                             </li>
-                            <li class="active">Lineas</li>
+                            <li class="active">Gestión Productos</li>
                         </ul><!-- /.breadcrumb -->
 
                     </div>
@@ -659,10 +678,10 @@
 
                         <div class="page-header">
                             <h1>
-                                Lineas
+                                Gestión Productos
                                 <small>
                                     <i class="ace-icon fa fa-angle-double-right"></i>
-                                    Crear, modificar, eliminar lineas de productos
+                                    Crear, modificar, eliminar productos
                                 </small>
                             </h1>
                         </div><!-- /.page-header -->
@@ -674,13 +693,14 @@
                                     <div class="pull-right tableTools-container"></div>
                                 </div>
                                 <div>
-                                    <table id="tablaLineaProductos" class="table table-striped table-bordered table-hover">
+                                    <table id="tablaProductos" class="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
-                                                <th>Nro</th>
-                                                <th>Clase</th>   
-                                                <th>Descripción</th>    
-                                                <th>Abreviatura</th> 
+                                                <th>Código</th>
+                                                <th>Descripción</th>   
+                                                <th>Marca</th>
+                                                <th>Categoría</th>
+                                                <th>Unidad Medida</th>   
                                                 <th>Estado</th>
                                                 <th>Acciones</th>
                                             </tr>
@@ -697,36 +717,63 @@
             </div><!-- /.main-content -->
 
             <!-- Modales -->
-            <div class="modal" id="modalAgregarLineaProducto" tabindex="-1">
-                <div class="modal-dialog">
+            <div class="modal" id="modalAgregarProducto" tabindex="-1">
+                <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="blue bigger">Registrar Nueva Linea Producto</h4>
+                            <h4 class="blue bigger">Registrar Nuevo Producto</h4>
                         </div>
 
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-xs-12 col-sm-12">
-                                    <input type="hidden" id="idlineaproducto" value="">
+                                    <input type="hidden" id="idproducto" value="">
                                     <input type="hidden" id="opcion" value="">
+                                    <input type="hidden" id="flagPrecioVenta" value="">
                                     
                                     <div class="form-group">
-                                        <label for="claseproducto" class="col-sm-3 control-label">Clase</label>
-                                        <div class="col-sm-9">
-                                            <select id="claseproducto" name="claseproducto" class="col-xs-10 col-sm-6">
-                                                <option value="0" selected="selected">Seleccione</option>
+                                        <label for="codigo" class="col-sm-1 control-label">Código</label>
+                                        <div class="col-sm-3">
+                                            <input type="text" id="codigo" class="form-control"  style="text-transform:uppercase" tabindex="1"/>
+                                        </div>
+                                        <label for="descripcion" class="col-sm-2 control-label">Descripción</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" id="descripcion" class="form-control"  style="text-transform:uppercase" tabindex="2"/>
+                                        </div>
+                                    </div>
+                                    <!--                  
+                                    &nbsp;&nbsp;
+                                    
+                                    <div class="form-group">
+                                        <div class="col-sm-5">
+                                            <label for="codigo" class="col-sm-1 control-label">Código</label>
+                                        
+                                            <input type="text" id="codigo" class="form-control"  style="text-transform:uppercase" tabindex="1"/>
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <label for="descripcion" class="col-sm-2 control-label">Descripción</label>
+                                            <input type="text" id="descripcion" class="form-control"  style="text-transform:uppercase" tabindex="2"/>
+                                        </div>
+                                    </div>                                
+                                    -->                  
+                                    &nbsp;&nbsp;
+                                    
+                                    <div class="form-group">
+                                        <label for="familiaproducto" class="col-sm-1 control-label">Familia</label>
+                                        <div class="col-sm-3">
+                                            <select id="familiaproducto" name="familiaproducto" class="col-xs-12 col-sm-12" tabindex="3">
                                                 <%
-                                                    DaoClaseProductoImpl daoClaseProducto = new DaoClaseProductoImpl();
-                                                    List<BeanClaseProducto> claseproducto = daoClaseProducto.accionListar();
+                                                    DaoFamiliaProductoImpl daoFamiliaProducto = new DaoFamiliaProductoImpl();
+                                                    List<BeanFamiliaProducto> familiaproducto = daoFamiliaProducto.accionListar();
 
-                                                    for (int i = 0; i < claseproducto.size(); i++) {
-                                                        //if(claseproducto.get(i).getEstado().equals("I")){        @01 FAMILIAS INACTIVAS
-                                                          //  claseproductoesInactivas.add(claseproducto.get(i).getIdclaseproducto());
+                                                    for (int i = 0; i < familiaproducto.size(); i++) {
+                                                        //if(familiaproducto.get(i).getEstado().equals("I")){        @01 FAMILIAS INACTIVAS
+                                                          //  familiaproductoesInactivas.add(familiaproducto.get(i).getIdfamiliaproducto());
                                                         //}    
                                                 %>
-                                                            <option value="<%= claseproducto.get(i).getIdclaseproducto() %>">
-                                                                <%= claseproducto.get(i).getDescripcion() %> 
+                                                            <option value="<%= familiaproducto.get(i).getIdfamiliaproducto() %>">
+                                                                <%= familiaproducto.get(i).getDescripcion() %> 
                                                             </option>
                                                 <%
                                                        
@@ -734,33 +781,176 @@
                                                 %>
                                             </select>
                                         </div>
+                                        <label for="claseproducto" class="col-sm-1 control-label">Clase</label>
+                                        <div class="col-sm-3">
+                                            <select id="claseproducto" name="claseproducto" class="col-xs-12 col-sm-12" tabindex="4">                                               
+                                            </select>   
+                                        </div> 
+                                        <label for="lineaproducto" class="col-sm-1 control-label">Línea</label>
+                                        <div class="col-sm-3">
+                                            <select id="lineaproducto" name="lineaproducto" class="col-xs-12 col-sm-12" tabindex="5">                                               
+                                            </select>   
+                                        </div>                                        
                                     </div>
+                                    
+                                    &nbsp;&nbsp;                                  
+                                    
+                                    <div class="form-group">
+                                        <label for="categoriaproducto" class="col-sm-1 control-label">Categoría</label>
+                                        <div class="col-sm-3">
+                                            <select id="categoriaproducto" name="categoriaproducto" class="col-xs-12 col-sm-12" tabindex="6">                                               
+                                            </select>   
+                                        </div>
+                                        <label for="marca" class="col-sm-1 control-label">Marca</label>
+                                        <div class="col-sm-3">
+                                            <select id="marca" name="marca" class="col-xs-12 col-sm-12" tabindex="7">
+                                                <%
+                                                    DaoMarcaImpl daoMarca = new DaoMarcaImpl();
+                                                    List<BeanMarca> marca = daoMarca.accionListar();
+
+                                                    for (int i = 0; i < marca.size(); i++) {
+                                                %>
+                                                            <option value="<%= marca.get(i).getIdmarca() %>">
+                                                                <%= marca.get(i).getDescripcion() %> 
+                                                            </option>
+                                                <%
+                                                       
+                                                    }
+                                                %>
+                                            </select>   
+                                        </div>
+                                        <label for="unidadmedida" class="col-sm-1 control-label">Unidad Medida</label>
+                                        <div class="col-sm-3">
+                                            <select id="unidadmedida" name="unidadmedida" class="col-xs-12 col-sm-12" tabindex="8">
+                                                <%
+                                                    DaoUnidadMedidaImpl daoUnidadMedida = new DaoUnidadMedidaImpl();
+                                                    List<BeanUnidadMedida> unidadmedida = daoUnidadMedida.accionListar();
+
+                                                    for (int i = 0; i < unidadmedida.size(); i++) {
+                                                %>
+                                                            <option value="<%= unidadmedida.get(i).getIdunidadmedida() %>">
+                                                                <%= unidadmedida.get(i).getDescripcion() %> 
+                                                            </option>
+                                                <%
+                                                       
+                                                    }
+                                                %>
+                                            </select>   
+                                        </div>    
+                                    </div> 
                                     
                                     &nbsp;&nbsp;
                                     
                                     <div class="form-group">
-                                        <label for="descripcion" class="col-sm-3 control-label">Descripción</label>
+                                        <label for="moneda" class="col-sm-1 control-label">Moneda</label>
+                                        <div class="col-sm-3">
+                                            <select id="moneda" name="moneda" class="col-xs-12 col-sm-12" tabindex="9">
+                                                <%
+                                                    DaoMonedaImpl daoMoneda = new DaoMonedaImpl();
+                                                    List<BeanMoneda> moneda = daoMoneda.accionListar();
 
-                                        <div class="col-sm-9">
-                                            <input type="text" id="descripcion" class="form-control" style="text-transform:uppercase" tabindex="1"/>
+                                                    for (int i = 0; i < moneda.size(); i++) {
+                                                %>
+                                                            <option value="<%= moneda.get(i).getIdmoneda() %>">
+                                                                <%= moneda.get(i).getDescripcion() %> 
+                                                            </option>
+                                                <%
+                                                       
+                                                    }
+                                                %>
+                                            </select>   
                                         </div>
-                                    </div>
-
+                                        <label for="preciocompra" class="col-sm-1 control-label">Precio Compra</label>
+                                        <div class="col-sm-3">
+                                            <input type="text" id="preciocompra" class="form-control" style="text-transform:uppercase" tabindex="10"/>
+                                        </div>   
+                                        
+                                        <div class="col-sm-4">
+                                            <button class="btn btn-sm btn-primary" id="btnPrecioVenta">
+                                                <i class="ace-icon fa fa-bar-chart-o"></i>
+                                                Precio Venta
+                                            </button>
+                                        </div>         
+                                    </div>                                  
+                 
                                     &nbsp;&nbsp;
                                     
                                     <div class="form-group">
-                                        <label for="abreviatura" class="col-sm-3 control-label">Abreviatura</label>
+                                        <label for="tipoproducto" class="col-sm-1 control-label">Tipo Producto</label>
+                                        <div class="col-sm-3">
+                                            <select id="tipoproducto" name="tipoproducto" class="col-xs-12 col-sm-12" tabindex="15">
+                                                <%
+                                                    DaoTipoProductoImpl daoTipoProducto = new DaoTipoProductoImpl();
+                                                    List<BeanTipoProducto> tipoproducto = daoTipoProducto.accionListar();
 
-                                        <div class="col-sm-9">
-                                            <input type="text" id="abreviatura" class="form-control" style="text-transform:uppercase" tabindex="1"/>
+                                                    for (int i = 0; i < tipoproducto.size(); i++) {
+                                                %>
+                                                            <option value="<%= tipoproducto.get(i).getIdtipoproducto() %>">
+                                                                <%= tipoproducto.get(i).getAbreviatura() %> 
+                                                            </option>
+                                                <%
+                                                       
+                                                    }
+                                                %>
+                                            </select>   
                                         </div>
-                                    </div>
+                                        <div class="col-sm-4">
+                                            <span class="profile-picture" style="display: none" tabindex="16">
+                                                <img class="editable img-responsive" alt="Imagen Producto" id="avatar2" src="assets/images/avatars/profile-pic.jpg" />
+                                            </span>
+                                        </div>                                         
+                                        <div class="col-sm-4">
+                                            <button class="btn btn-sm btn-primary" id="btnAdicionales" tabindex="17">
+                                                <i class="ace-icon fa fa-bookmark"></i>
+                                                Adicionales
+                                            </button>
+                                        </div> 
+                                    </div>  
+                                    
+                                    &nbsp;&nbsp;
+                                    
+                                    <div class="form-group">
+                                        <label class="col-sm-2 middle">          
+                                            <input class="ace" type="checkbox" id="igv" tabindex="18"/>
+                                            <span class="lbl">  IGV?</span>                                          
+                                        </label>     
+                                        <label class="col-sm-2 middle">          
+                                            <input class="ace" type="checkbox" id="isc" tabindex="19"/>
+                                            <span class="lbl">  ISC?</span>                                          
+                                        </label>  
+                                        <label for="tipoisc" class="col-sm-1 control-label">Tipo ISC</label>
+                                        <div class="col-sm-3">
+                                            <select id="tipoisc" name="tipoisc" class="col-xs-12 col-sm-12" tabindex="20">
+                                                <%
+                                                    DaoTipoISCImpl daoTipoISC = new DaoTipoISCImpl();
+                                                    List<BeanTipoISC> tipoisc = daoTipoISC.accionListar();
 
+                                                    for (int i = 0; i < tipoisc.size(); i++) {
+                                                %>
+                                                        <option value="<%= tipoisc.get(i).getIdtipoisc() %>">
+                                                            <%= tipoisc.get(i).getAbreviatura() %> 
+                                                        </option>
+                                                <%
+
+                                                    }
+                                                %>
+                                            </select>   
+                                        </div>
+                                        <label for="baseisc" class="col-sm-1 control-label">Base ISC</label>
+                                        <div class="col-sm-1">
+                                            <input type="text" id="baseisc" class="form-control" style="text-transform:uppercase" tabindex="21"/>
+                                        </div> 
+                                        <label for="factorisc" class="col-sm-1 control-label">Factor ISC</label>
+                                        <div class="col-sm-1">
+                                            <input type="text" id="factorisc" class="form-control" style="text-transform:uppercase" tabindex="22"/>
+                                        </div> 
+                                    </div>
+                                            
                                     &nbsp;&nbsp;
                                     
                                     <div class="form-group" id="divestado">
-                                        <label for="estado" class="col-sm-2 control-label">Estado</label>
-                                        <div class="col-sm-3">  
+                                        <label for="estado" class="col-sm-4 control-label">Estado</label>
+                                        <div class="col-sm-8">  
                                             <select id="estado" name="estado" class="form-control" tabindex="5">
                                                <option value="A">ACTIVO</option>
                                                <option value="I">INACTIVO</option>
@@ -787,6 +977,89 @@
                 </div>
             </div>
             
+            <div class="modal" id="modalPrecioVenta" tabindex="-1">
+                <div class="modal-dialog">                                            
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="blue bigger">Precio de Venta por Tarifa</h4>
+                        </div>
+                        <div class="modal-body">                                  
+                            <div class="row">                
+                                <div id="divPrecioVenta" class="col-md-8">        			
+                                    <div class="table-responsive">
+                                        <table id="tablaPrecioVenta" class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Tarifa</th>
+                                                    <th>Precio</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="precioventa_data">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>        		
+                            </div>
+                        </div>
+                        <div class="modal-footer">               
+                            <button class="btn btn-sm" data-dismiss="modal">
+                                <i class="ace-icon fa fa-times"></i>
+                                Cancelar
+                            </button>
+
+                            <button class="btn btn-sm btn-primary" id="btnGuardarPrecioVenta">
+                                <i class="ace-icon fa fa-check"></i>
+                                Grabar
+                            </button>
+                        </div>
+                    </div>                 
+                </div>
+            </div>
+                                            
+            <div class="modal" id="modalAdicionales" tabindex="-1">
+                <div class="modal-dialog">                                            
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="blue bigger">Datos Adicionales</h4>
+                        </div>
+                        <div class="modal-body">                                  
+                            <div class="row">                
+                                <div class="col-xs-12 col-sm-12">      			
+                                    <div class="form-group">
+                                        <label for="codigoproveedor" class="col-sm-4 control-label">Código Proveedor</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" id="codigoproveedor" class="form-control"  style="text-transform:uppercase" tabindex="1"/>
+                                        </div>
+                                    </div> 
+                                    
+                                    &nbsp;&nbsp;
+                                    
+                                    <div class="form-group">    
+                                        <label for="pesoproveedor" class="col-sm-4 control-label">Peso Proveedor</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" id="pesoproveedor" class="form-control"  style="text-transform:uppercase" tabindex="2"/>
+                                        </div>
+                                    </div>
+                                </div>        		
+                            </div>
+                        </div>
+                        <div class="modal-footer">               
+                            <button class="btn btn-sm" data-dismiss="modal">
+                                <i class="ace-icon fa fa-times"></i>
+                                Cancelar
+                            </button>
+
+                            <button class="btn btn-sm btn-primary" id="btnGuardarPrecioVenta">
+                                <i class="ace-icon fa fa-check"></i>
+                                Grabar
+                            </button>
+                        </div>
+                    </div>                 
+                </div>
+            </div>                                
+                                            
             <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
                 <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
             </a>
@@ -848,11 +1121,15 @@
 
             $(document).ready(function () {
                 
-                $('body').on('shown.bs.modal', '#modalAgregarLineaProducto', function () {
+                $('body').on('shown.bs.modal', '#modalAgregarProducto', function () {
                     $('input:visible:enabled:first', this).focus();
-                });            
-            
-                var tablaLineaProductos = $('#tablaLineaProductos').DataTable({
+                });   
+                
+                $('body').on('shown.bs.modal', '#modalAdicionales', function () {
+                    $('input:visible:enabled:first', this).focus();
+                }); 
+        
+                var tablaProductos = $('#tablaProductos').DataTable({
                     bAutoWidth: false,
                     "processing": true,
                     "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
@@ -860,18 +1137,19 @@
                     destroy: true,
                     responsive: true,
                     "searching": true,
-                    "order": [[0, 'asc']],
+                    "order": [[1, 'asc']],
                     ajax: {
                         method: "POST",
-                        url: "../LineaProducto",
+                        url: "../Producto",
                         data: {"opcion": "listar"},
                         dataSrc: "data"
                     },
                     columns: [
-                        {"data": "nro"},
-                        {"data": "claseproducto"},
+                        {"data": "codigo"},
                         {"data": "descripcion"},
-                        {"data": "abreviatura"},
+                        {"data": "marca"},
+                        {"data": "categoriaproducto"},
+                        {"data": "unidadmedida"},
                         {"data": "estado"},
                         {"data": "acciones"}
                     ],
@@ -893,7 +1171,7 @@
                 });
 
                 $.fn.dataTable.Buttons.defaults.dom.container.className = 'dt-buttons btn-overlap btn-group btn-overlap';
-                new $.fn.dataTable.Buttons(tablaLineaProductos, {
+                new $.fn.dataTable.Buttons(tablaProductos, {
                     buttons: [
                         {
                             "text": "<i class='fa fa-plus bigger-110 blue'></i>",
@@ -901,14 +1179,47 @@
                             "className": "btn btn-white btn-primary btn-bold",
                             "action": function () {
                                 $('#opcion').val('insertar');
-                                $('#claseproducto').val('0');
+                                $('#codigo').val('');
                                 $('#descripcion').val('');
-                                $('#abreviatura').val('');
+                                $('#marca').val('1');
+                                $('#unidadmedida').val('1');
+                                $('#moneda').val('1');
+                                $('#preciocompra').val('0');
+                                $('#tipoproducto').val('1');
+                                //$('#tipoisc').val('1');
+                                $('#baseisc').val('0');
+                                $('#factorisc').val('0');
+                                $('#codigoproveedor').val('');
+                                $('#pesoproveedor').val('0');
                                 $('#estado').val('A');
                                 $('#divestado').hide();
-                                $('#descripcion').prop('disabled', false);
-                                $('#modalAgregarLineaProducto .blue').text('Registrar Nueva Linea Producto');
-                                $('#modalAgregarLineaProducto').modal('show');
+                                                                
+                                var familia = $("#familiaproducto").val();
+                                
+                                $.get('../ClaseProducto', {
+                                    "familiaproducto": familia
+                                }, function(response){
+                                    $('#claseproducto').html(response);
+                                    
+                                    var clase = $("#claseproducto").val();
+                        
+                                    $.get('../LineaProducto', {
+                                        "claseproducto": clase
+                                    }, function(response){
+                                        $('#lineaproducto').html(response);
+                                        
+                                        var linea = $("#lineaproducto").val();
+                        
+                                        $.get('../CategoriaProducto', {
+                                            "lineaproducto": linea
+                                        }, function(response){
+                                            $('#categoriaproducto').html(response);
+                                        });
+                                    });
+                                });
+
+                                $('#modalAgregarProducto .blue').text('Registrar Nuevo Producto');
+                                $('#modalAgregarProducto').modal('show');
                                 $('.divError').empty();
                             }
                         },
@@ -941,19 +1252,42 @@
                     ]
                 });
 
-                tablaLineaProductos.buttons().container().appendTo($('.tableTools-container'));
+                tablaProductos.buttons().container().appendTo($('.tableTools-container'));
 
                 $('#btnGuardar').click(function (event) {
-                    var idlineaproducto = $('#idlineaproducto').val();
-                    var idclaseproducto = $('#claseproducto').val();
-                    var descripcion = $('#descripcion').val();
-                    var abreviatura = $('#abreviatura').val();
+                    var idproducto = $('#idproducto').val();
+                    var codigo = $('#codigo').val();
+                    var descripcion = $('#descripcion').val();             
+                    //var idfamiliaproducto = $('#familiaproducto').val();
+                    //var idclaseproducto = $('#claseproducto').val();
+                    //var idlineaproducto= $('#lineaproducto').val();
+                    var afectoigv = "N";
+                    if($('#igv').is(':checked')){
+                        afectoigv = "S";
+                    }
+                    var afectoisc = "N";
+                    if($('#isc').is(':checked')){
+                        afectoisc = "S";
+                    }
+                    var idcategoriaproducto = $('#categoriaproducto').val();
+                    var idmarca = $('#marca').val();
+                    var idunidadmedida = $('#unidadmedida').val();
+                    var idmoneda= $('#moneda').val();
+                    var idtipoproducto = $('#tipoproducto').val();
+                    var preciocompra = $('#preciocompra').val();
+                    var idtipoisc = $('#tipoisc').val();
+                    var baseisc = $('#baseisc').val();
+                    var factorisc = $('#factorisc').val();
+                    var codigoproveedor = $('#codigoproveedor').val();
+                    var pesoproveedor = $('#pesoproveedor').val();
                     var estado = $('#estado').val();
-                    var opcion = $('#opcion').val();
+                    var opcion = $('#opcion').val();                    
                     $.ajax({
                         method: "POST",
-                        url: "../LineaProducto",
-                        data: {"opcion": opcion, "idclaseproducto": idclaseproducto, "idlineaproducto": idlineaproducto, "descripcion": descripcion, "abreviatura": abreviatura, "estado": estado}
+                        url: "../Producto",
+                        data: {"opcion": opcion, "idmarca": idmarca, "idproducto": idproducto,  "descripcion": descripcion, "codigo": codigo, "afectoigv": afectoigv, "afectoisc": afectoisc,
+                            "idcategoriaproducto": idcategoriaproducto, "idunidadmedida": idunidadmedida, "idmoneda": idmoneda, "idtipoproducto": idtipoproducto, "preciocompra": preciocompra,
+                            "idtipoisc": idtipoisc, "baseisc": baseisc, "factorisc": factorisc, "codigoproveedor": codigoproveedor, "pesoproveedor": pesoproveedor, "estado": estado}
                     }).done(function (data) {
                         var obj = jQuery.parseJSON(data);
                         if (obj.mensaje.indexOf('ERROR') !== -1) {
@@ -962,32 +1296,81 @@
                                 $('.divError').removeClass('tada animated');
                             });
                         } else {
-                            tablaLineaProductos.ajax.reload();
+                            tablaProductos.ajax.reload();
                             alertify.success(obj.mensaje);
                         }
-                        $('#modalAgregarLineaProducto').modal('hide');
+                        $('#modalAgregarProducto').modal('hide');
                     });
                 });                         
 
                 //Actualizar registro
                 $(document).on('click', '.actualizar', function () {
-                    var idlineaproducto = $(this).attr('id');
+                    var idproducto = $(this).attr('id');
                     var row = $(this).parent().parent();
                     $.ajax({
-                        url: "../LineaProducto",
+                        url: "../Producto",
                         method: "POST",
-                        data: {"opcion": "buscar", "idlineaproducto": idlineaproducto},
-                        success: function (data) {
+                        data: {"opcion": "buscar", "idproducto": idproducto},
+                        success: function (data) {                         
                             var obj = jQuery.parseJSON(data);
                             $('#opcion').val('actualizar');
-                            $('#idlineaproducto').val(obj.idlineaproducto);
-                            $('#claseproducto').val(obj.idclaseproducto);
+                            $('#idproducto').val(obj.idproducto);
+                            
+                            $('#codigo').val(obj.codigo);
                             $('#descripcion').val(obj.descripcion);
-                            $('#abreviatura').val(obj.abreviatura);
+                            
+                            if(obj.afectoigv==='S'){
+                                $('#igv').prop('checked', true);
+                            }
+                            if(obj.afectoisc==='S'){
+                                $('#isc').prop('checked', true);
+                                $('label[for="tipoisc"]').show(); 
+                                $('#tipoisc').show();
+                                $('label[for="baseisc"]').show(); 
+                                $('#baseisc').show();
+                                $('label[for="factorisc"]').show(); 
+                                $('#factorisc').show();
+                            }
+                            $('#marca').val(obj.marca);
+                            $('#unidadmedida').val(obj.unidadmedida);
+                            $('#moneda').val(obj.moneda);
+                            $('#tipoproducto').val(obj.tipoproducto);
+                            $('#preciocompra').val(obj.preciocompra);
+                            $('#tipoisc').val(obj.tipoisc);
+                            $('#baseisc').val(obj.baseisc);
+                            $('#factorisc').val(obj.factorisc);
+                            $('#codigoproveedor').val(obj.codigoproveedor);
+                            $('#pesoproveedor').val(obj.pesoproveedor);
+
+                            $('#familiaproducto').val(obj.familiaproducto);    
+     
+                            $.get('../ClaseProducto', {
+                                "familiaproducto": obj.familiaproducto
+                            }, function(response){
+                                $('#claseproducto').html(response);
+
+                                $('#claseproducto').val(obj.claseproducto);
+
+                                $.get('../LineaProducto', {
+                                    "claseproducto": obj.claseproducto
+                                }, function(response){
+                                    $('#lineaproducto').html(response);
+
+                                    $('#lineaproducto').val(obj.lineaproducto);
+
+                                    $.get('../CategoriaProducto', {
+                                        "lineaproducto": obj.lineaproducto
+                                    }, function(response){
+                                        $('#categoriaproducto').html(response);
+                                        $('#categoriaproducto').val(obj.categoriaproducto);
+                                    });
+                                });
+                            });
+                            
                             $('#estado').val(obj.estado);
                             $('#divestado').hide();
-                            $('#modalAgregarLineaProducto .blue').text('Modificar Linea Producto');
-                            $('#modalAgregarLineaProducto').modal('show');
+                            $('#modalAgregarProducto .blue').text('Modificar Producto');
+                            $('#modalAgregarProducto').modal('show');
                         },
                         error: function (error) {
                             alertify.error("ERROR AL EJECUTAR AJAX DE OBTENER DATOS USUARIO");
@@ -998,12 +1381,12 @@
 
                 //Eliminar registro
                 $(document).on('click', '.eliminar', function () {
-                    var idlineaproducto = $(this).attr('id');
+                    var idproducto = $(this).attr('id');
                     var row = $(this).parent().parent();
                     $.ajax({
-                        url: "../LineaProducto",
+                        url: "../Producto",
                         method: "POST",
-                        data: {"opcion": "eliminar", "idlineaproducto": idlineaproducto},
+                        data: {"opcion": "eliminar", "idproducto": idproducto},
                         success: function (data) {
                             var obj = jQuery.parseJSON(data);
                             if (obj.mensaje.indexOf('ERROR') !== -1) {
@@ -1012,7 +1395,7 @@
                                     $('.divError').removeClass('tada animated');
                                 });
                             } else {
-                                tablaLineaProductos.ajax.reload();
+                                tablaProductos.ajax.reload();
                                 alertify.success(obj.mensaje);
                             }
                         },
@@ -1022,14 +1405,14 @@
                     }).done();
                 });
 
-                //Activar lineaproducto
+                //Activar producto
                 $(document).on('click', '.activar', function () {
-                    var idlineaproducto = $(this).attr('id');
+                    var idproducto = $(this).attr('id');
                     var row = $(this).parent().parent();
                     $.ajax({
-                        url: "../LineaProducto",
+                        url: "../Producto",
                         method: "POST",
-                        data: {"opcion": "activar", "idlineaproducto": idlineaproducto},
+                        data: {"opcion": "activar", "idproducto": idproducto},
                         success: function (data) {
                             var obj = jQuery.parseJSON(data);
                             if (obj.mensaje.indexOf('ERROR') !== -1) {
@@ -1038,7 +1421,7 @@
                                     $('.divError').removeClass('tada animated');
                                 });
                             } else {
-                                tablaLineaProductos.ajax.reload();
+                                tablaProductos.ajax.reload();
                                 alertify.success(obj.mensaje);
                             }
                         },
@@ -1047,7 +1430,220 @@
                         }
                     }).done();
                 });
+                           
+                $('#familiaproducto').change(function(){
+                    var familia = $("#familiaproducto").val();
+                                
+                    $.get('../ClaseProducto', {
+                        "familiaproducto": familia
+                    }, function(response){
+                        $('#claseproducto').html(response);
 
+                        var clase = $("#claseproducto").val();
+
+                        $.get('../LineaProducto', {
+                            "claseproducto": clase
+                        }, function(response){
+                            $('#lineaproducto').html(response);
+
+                            var linea = $("#lineaproducto").val();
+
+                            $.get('../CategoriaProducto', {
+                                "lineaproducto": linea
+                            }, function(response){
+                                $('#categoriaproducto').html(response);
+                            });
+                        });
+                    });
+                });  
+                
+                $('#claseproducto').change(function(){
+                    var clase = $("#claseproducto").val();
+
+                    $.get('../LineaProducto', {
+                        "claseproducto": clase
+                    }, function(response){
+                        $('#lineaproducto').html(response);
+
+                        var linea = $("#lineaproducto").val();
+
+                        $.get('../CategoriaProducto', {
+                            "lineaproducto": linea
+                        }, function(response){
+                            $('#categoriaproducto').html(response);
+                        });
+                    });
+                });
+                
+                $('#lineaproducto').change(function(){
+                    var linea = $("#lineaproducto").val();
+
+                    $.get('../CategoriaProducto', {
+                        "lineaproducto": linea
+                    }, function(response){
+                        $('#categoriaproducto').html(response);
+                    });
+                });
+                
+                $('label[for="tipoisc"]').hide(); 
+                $('#tipoisc').hide();
+                $('label[for="baseisc"]').hide(); 
+                $('#baseisc').hide();
+                $('label[for="factorisc"]').hide(); 
+                $('#factorisc').hide();
+                
+                $('#isc').on('click', function() {
+                    if ( $(this).is(':checked') ) {
+                        $('label[for="tipoisc"]').show(); 
+                        $('#tipoisc').show();
+                        $('label[for="baseisc"]').show(); 
+                        $('#baseisc').show();
+                        $('label[for="factorisc"]').show(); 
+                        $('#factorisc').show();
+                    } 
+                    else {
+                        $('label[for="tipoisc"]').hide(); 
+                        $('#tipoisc').hide();
+                        $('label[for="baseisc"]').hide(); 
+                        $('#baseisc').hide();
+                        $('label[for="factorisc"]').hide(); 
+                        $('#factorisc').hide();
+                    }
+                });                
+                
+                var preciosVenta = [];
+                
+                $("#btnPrecioVenta").click(function (){
+                    $('#flagPrecioVenta').val('S');
+                    $('#modalPrecioVenta').modal({backdrop: 'static', keyboard: false});
+                    if(preciosVenta.length>0){
+                        $('.tarifa').remove();
+                        var nuevaFila="";
+                        $.each(preciosVenta, function (indice, id) {
+                            nuevaFila+="<tr class=\"tarifa\">"; 
+                            nuevaFila+="<td>"+preciosVenta[indice].descripcion+"</td>";
+                            nuevaFila+="<td><input class=\"valor\" type=\"text\" name=\"valorTarifa\" id="+preciosVenta[indice].idtarifa+" value="+preciosVenta[indice].valor+" size=\"6\"></td>";  
+                            nuevaFila+="</tr>";
+                        });
+                        $("#tablaPrecioVenta").append(nuevaFila);
+                    }else{
+                        $.getJSON("../Tarifa", {idproducto: 0}, function (data, textStatus, jqXHR) {
+                            $('.tarifa').remove();
+                            var nuevaFila="";                    
+                            $.each(data, function (index, item) {//recorremos la lista
+                                 nuevaFila+="<tr class=\"tarifa\">"; 
+                                 nuevaFila+="<td class=\"descriTarifa\">"+item.descripcion+"</td>";
+                                 nuevaFila+="<td><input class=\"valor\" type=\"text\" name=\"valorTarifa\" id="+item.idtarifa+" value="+item.valor+" size=\"6\"></td>";  
+                                 nuevaFila+="</tr>";
+                            });             
+                            $("#tablaPrecioVenta").append(nuevaFila);
+                        });
+                    }
+                    
+                    //$('#modalAgregarProducto').one('hidden.bs.modal', function() { $('#modalPrecioVenta').modal('show'); }).modal('hide');             
+                });
+                
+                $("#btnGuardarPrecioVenta").click(function (){               
+                    $('#flagPrecioVenta').val('N');
+                    var valortarifa ="";
+                    var idtarifa;
+                    var descritarifa = "";
+                    preciosVenta = [];
+                    $('.valor').each(function(index){
+                        descritarifa = $(this).parent().parent().find('td:eq(0)').text();//find('tr').find('td:eq(2)').val();
+                        idtarifa = $(this).attr('id');
+                        valortarifa = $(this).val();
+                        if(valortarifa===""){
+                            valortarifa=0;
+                        }
+                        preciosVenta.push({id:idtarifa, descripcion:descritarifa, valor:valortarifa});
+                    });                   
+                    //$('#modalPrecioVenta').one('hidden.bs.modal', function() { $('#modalAgregarProducto').modal('show'); }).modal('hide');
+                });
+                
+                $("#btnAdicionales").click(function (){
+                    $('#modalAdicionales').modal({backdrop: 'static', keyboard: false});
+                });
+                
+                //another option is using modals
+                $('#avatar2').on('click', function(){
+                    var modal = 
+                    '<div class="modal fade">\
+                      <div class="modal-dialog">\
+                       <div class="modal-content">\
+                            <div class="modal-header">\
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>\
+                                    <h4 class="blue">Change Avatar</h4>\
+                            </div>\
+                            \
+                            <form class="no-margin">\
+                             <div class="modal-body">\
+                                    <div class="space-4"></div>\
+                                    <div style="width:75%;margin-left:12%;"><input type="file" name="file-input" /></div>\
+                             </div>\
+                            \
+                             <div class="modal-footer center">\
+                                    <button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> Submit</button>\
+                                    <button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> Cancel</button>\
+                             </div>\
+                            </form>\
+                      </div>\
+                     </div>\
+                    </div>';
+
+                    var modal = $(modal);
+                    modal.modal("show").on("hidden", function(){
+                        modal.remove();
+                    });
+
+                    var working = false;
+
+                    var form = modal.find('form:eq(0)');
+                    var file = form.find('input[type=file]').eq(0);
+                    file.ace_file_input({
+                        style:'well',
+                        btn_choose:'Click to choose new avatar',
+                        btn_change:null,
+                        no_icon:'ace-icon fa fa-picture-o',
+                        thumbnail:'small',
+                        before_remove: function() {
+                                //don't remove/reset files while being uploaded
+                                return !working;
+                        },
+                        allowExt: ['jpg', 'jpeg', 'png', 'gif'],
+                        allowMime: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
+                    });
+
+                    form.on('submit', function(){
+                        if(!file.data('ace_input_files')) return false;
+
+                        file.ace_file_input('disable');
+                        form.find('button').attr('disabled', 'disabled');
+                        form.find('.modal-body').append("<div class='center'><i class='ace-icon fa fa-spinner fa-spin bigger-150 orange'></i></div>");
+
+                        var deferred = new $.Deferred;
+                        working = true;
+                        deferred.done(function() {
+                            form.find('button').removeAttr('disabled');
+                            form.find('input[type=file]').ace_file_input('enable');
+                            form.find('.modal-body > :last-child').remove();
+
+                            modal.modal("hide");
+
+                            var thumb = file.next().find('img').data('thumb');
+                            if(thumb) $('#avatar2').get(0).src = thumb;
+
+                            working = false;
+                        });
+
+                        setTimeout(function(){
+                            deferred.resolve();
+                        } , parseInt(Math.random() * 800 + 800));
+
+                        return false;
+                    });
+                });
+                
             });
         </script>
     </body>

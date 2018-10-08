@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 public class GCBusiness_Ubigeo_Servlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("edded");
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         DaoUbigeoImpl daoUbigeo = new DaoUbigeoImpl();
@@ -22,32 +21,26 @@ public class GCBusiness_Ubigeo_Servlet extends HttpServlet {
         String codigo_ubiprovincia = request.getParameter("codigo_ubiprovincia")!=null?(String) request.getParameter("codigo_ubiprovincia"):"";
         
         System.out.println("codigo_ubiprovincia: "+codigo_ubiprovincia + "  codigo_ubidepartamento"+codigo_ubidepartamento);
-        /*
+        
         if(!codigo_ubidepartamento.equals("") && codigo_ubiprovincia.equals("")){
             System.out.println("codigo_ubidepartamento "+codigo_ubidepartamento);
             List<BeanUbigeo> listaProvincia = daoUbigeo.accionListarProvincias(codigo_ubidepartamento);
-            
-            //out.println("<select id='ubigeoProvincia' name='ubigeoProvincia' >");
-            //out.println("<option value='00' selected='selected' >Seleccione</option>");
+
             for(BeanUbigeo ubigeo : listaProvincia){
                 out.println("<option value='"+ubigeo.getCodigo_ubiprovincia()+"' >"
                         +ubigeo.getDescripcionUbigeo()+"</option>");
             }
-            //out.println("</select>");
         }
         if(codigo_ubidepartamento.equals("") && !codigo_ubiprovincia.equals("")){
             System.out.println("codigo_ubiprovincia "+codigo_ubiprovincia);
             List<BeanUbigeo> listaDistrito = daoUbigeo.accionListarDistritos(codigo_ubiprovincia);
-            
-            //out.println("<select id='ubigeoDistrito' name='ubigeoDistrito' >");
-            //out.println("<option value='00' selected='selected' >Seleccione</option>");
+
             for(BeanUbigeo ubigeo : listaDistrito){
                 out.println("<option value='"+ubigeo.getCodigo_ubidistrito()+"' >"
                         +ubigeo.getDescripcionUbigeo()+"</option>");
             }
-            //out.println("</select>");
         }
-        */
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -186,29 +186,38 @@ public class GCBusiness_ClaseProducto_Servlet extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        DaoClaseProductoImpl daoClase = new DaoClaseProductoImpl();
+        
+        Integer familiaproducto = Integer.parseInt(request.getParameter("familiaproducto"));
+
+        if(familiaproducto>0){
+            List<BeanClaseProducto> listaClase = daoClase.accionListar();
+            
+            int contador=0;
+            
+            if(listaClase.size()>0){
+                for(BeanClaseProducto claseproducto : listaClase){
+                    if(claseproducto.getIdfamiliaproducto()==familiaproducto){
+                        out.println("<option value='"+claseproducto.getIdclaseproducto()+"' >"
+                                +claseproducto.getDescripcion()+"</option>");
+                        contador++;
+                    }
+                }
+            }else{
+                out.println("<option value='0'>NO HAY CLASES</option>");
+            }
+            
+            if(contador==0)
+                out.println("<option value='0'>NO HAY CLASES</option>");
+        }else{
+            out.println("<option value='0'>NO HAY CLASES</option>");
+        }
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

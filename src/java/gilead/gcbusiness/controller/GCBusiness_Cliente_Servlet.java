@@ -5,7 +5,6 @@ import gilead.gcbusiness.dao.impl.DaoTipoDocumentoImpl;
 import gilead.gcbusiness.dao.impl.DaoTipoPersonaImpl;
 import gilead.gcbusiness.dao.impl.DaoVendedorImpl;
 import gilead.gcbusiness.model.BeanCliente;
-import gilead.gcbusiness.model.BeanSucursal;
 import gilead.gcbusiness.model.BeanTipoDocumento;
 import gilead.gcbusiness.model.BeanTipoPersona;
 import gilead.gcbusiness.model.BeanVendedor;
@@ -66,10 +65,10 @@ public class GCBusiness_Cliente_Servlet extends HttpServlet {
                     obj.put("nombre", listClientes.get(i).getNombre());
                     obj.put("tipodocumento", tipodocumento.getAbreviatura());
                     obj.put("numerodocumento", listClientes.get(i).getNumerodocumento());
-                    obj.put("direccion", listClientes.get(i).getNumerodocumento());
-                    obj.put("telefono", listClientes.get(i).getNumerodocumento());
-                    obj.put("correo", listClientes.get(i).getNumerodocumento());
-                    obj.put("tipopersona", listClientes.get(i).getNumerodocumento());
+                    obj.put("direccion", listClientes.get(i).getDireccion());
+                    obj.put("telefono", listClientes.get(i).getTelefono());
+                    obj.put("correo", listClientes.get(i).getCorreo());
+                    obj.put("tipopersona", tipopersona.getDescripcion());
                     obj.put("vendedor", vendedor.getDescripcion());
                     obj.put("estado", "A".equals(listClientes.get(i).getEstado())?"ACTIVO":"INACTIVO");
                     obj.put("acciones", acciones);
@@ -81,11 +80,11 @@ public class GCBusiness_Cliente_Servlet extends HttpServlet {
         }else if (opcion.equals("insertar")) {  
             System.out.println("INSERTAR CLIENTE");
             try (PrintWriter out = response.getWriter()) {
-                Integer idtipodocumento = Integer.parseInt(request.getParameter("tipodocumento"));
+                Integer idtipodocumento = Integer.parseInt(request.getParameter("idtipodocumento"));
                 String numerodocumento = request.getParameter("numerodocumento");
                 String nombre = request.getParameter("nombre");
-                Integer idtipopersona = Integer.parseInt(request.getParameter("tipopersona"));
-                Integer idvendedor = Integer.parseInt(request.getParameter("vendedor"));
+                Integer idtipopersona = Integer.parseInt(request.getParameter("idtipopersona"));
+                Integer idvendedor = Integer.parseInt(request.getParameter("idvendedor"));
                 String direccion = request.getParameter("direccion");
                 String telefono = request.getParameter("telefono");
                 String correo = request.getParameter("correo");
@@ -113,11 +112,11 @@ public class GCBusiness_Cliente_Servlet extends HttpServlet {
         }else if (opcion.equals("actualizar")) {
             try (PrintWriter out = response.getWriter()) {
                 Integer idcliente = Integer.parseInt(request.getParameter("idcliente"));
-                Integer idtipodocumento = Integer.parseInt(request.getParameter("tipodocumento"));
+                Integer idtipodocumento = Integer.parseInt(request.getParameter("idtipodocumento"));
                 String numerodocumento = request.getParameter("numerodocumento");
                 String nombre = request.getParameter("nombre");
-                Integer idtipopersona = Integer.parseInt(request.getParameter("tipopersona"));
-                Integer idvendedor = Integer.parseInt(request.getParameter("vendedor"));
+                Integer idtipopersona = Integer.parseInt(request.getParameter("idtipopersona"));
+                Integer idvendedor = Integer.parseInt(request.getParameter("idvendedor"));
                 String direccion = request.getParameter("direccion");
                 String telefono = request.getParameter("telefono");
                 String correo = request.getParameter("correo");

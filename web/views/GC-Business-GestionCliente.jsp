@@ -25,7 +25,7 @@
     List opciones = (List)session.getAttribute("accesos");
     BeanUsuario usuario = (BeanUsuario) session.getAttribute("usuario");
 %>
-<html lang="en">
+<html>
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <meta charset="utf-8" />
@@ -427,6 +427,18 @@
                         
                         <ul class="submenu">
                             <%
+                                if(opciones.contains(10)){
+                            %>
+                            <li class="">
+                                <a href="GC-Business-GestionProducto.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Gestión Productos
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
                                 if(opciones.contains(2)){
                             %>
                             <li class="">
@@ -680,6 +692,7 @@
                                                 <th>Teléfono</th>   
                                                 <th>Correo</th>
                                                 <th>Tipo Persona</th>  
+                                                <th>Vendedor</th>  
                                                 <th>Estado</th>
                                                 <th>Acciones</th>
                                             </tr>
@@ -722,7 +735,7 @@
                                     <div class="form-group">
                                         <label for="tipodocumento" class="col-sm-4 control-label">Tipo Documento</label>
                                         <div class="col-sm-8">
-                                            <select id="tipodocumento" name="tipodocumento" class="col-xs-10 col-sm-6">
+                                            <select id="tipodocumento" name="tipodocumento" class="col-xs-10 col-sm-6" tabindex="2">
                                                 <%
                                                     DaoTipoDocumentoImpl daoTipoDocumento = new DaoTipoDocumentoImpl();
                                                     List<BeanTipoDocumento> tipodocumento = daoTipoDocumento.accionListar();
@@ -746,7 +759,7 @@
                                         <label for="numerodocumento" class="col-sm-4 control-label">Número Documento</label>
 
                                         <div class="col-sm-8">
-                                            <input type="text" id="numerodocumento" class="form-control" style="text-transform:uppercase" tabindex="2"/>
+                                            <input type="text" id="numerodocumento" class="form-control" style="text-transform:uppercase" tabindex="3"/>
                                         </div>
                                     </div>
                                     
@@ -756,7 +769,7 @@
                                         <label for="direccion" class="col-sm-4 control-label">Dirección</label>
 
                                         <div class="col-sm-8">
-                                            <input type="text" id="direccion" class="form-control" style="text-transform:uppercase" tabindex="2"/>
+                                            <input type="text" id="direccion" class="form-control" style="text-transform:uppercase" tabindex="4"/>
                                         </div>
                                     </div>
 
@@ -766,7 +779,7 @@
                                         <label for="telefono" class="col-sm-4 control-label">Teléfono</label>
 
                                         <div class="col-sm-8">
-                                            <input type="text" id="telefono" class="form-control" style="text-transform:uppercase" tabindex="3"/>
+                                            <input type="text" id="telefono" class="form-control" style="text-transform:uppercase" tabindex="5"/>
                                         </div>
                                     </div>
                                     
@@ -776,7 +789,7 @@
                                         <label for="correo" class="col-sm-4 control-label">Correo</label>
 
                                         <div class="col-sm-8">
-                                            <input type="text" id="correo" class="form-control" style="text-transform:uppercase" tabindex="3"/>
+                                            <input type="text" id="correo" class="form-control" style="text-transform:uppercase" tabindex="6"/>
                                         </div>
                                     </div>
                                     
@@ -785,7 +798,7 @@
                                     <div class="form-group">
                                         <label for="tipopersona" class="col-sm-4 control-label">Tipo Persona</label>
                                         <div class="col-sm-8">
-                                            <select id="tipopersona" name="tipopersona" class="col-xs-10 col-sm-6">
+                                            <select id="tipopersona" name="tipopersona" class="col-xs-10 col-sm-6" tabindex="7">
                                                 <%
                                                     DaoTipoPersonaImpl daoTipoPersona = new DaoTipoPersonaImpl();
                                                     List<BeanTipoPersona> tipopersona = daoTipoPersona.accionListar();
@@ -808,8 +821,7 @@
                                     <div class="form-group">
                                         <label for="vendedor" class="col-sm-4 control-label">Vendedor</label>
                                         <div class="col-sm-8">
-                                            <select id="vendedor" name="vendedor" class="col-xs-10 col-sm-6">
-                                                <option value="0" selected="selected">Seleccione</option>
+                                            <select id="vendedor" name="vendedor" class="col-xs-10 col-sm-6" tabindex="8">
                                                 <%
                                                     DaoVendedorImpl daoVendedor = new DaoVendedorImpl();
                                                     List<BeanVendedor> vendedor = daoVendedor.accionListar();
@@ -832,7 +844,7 @@
                                     <div class="form-group">
                                         <label for="departamento" class="col-sm-4 control-label">Departamento</label>
                                         <div class="col-sm-8">
-                                            <select id="departamento" name="departamento" class="col-xs-10 col-sm-6">
+                                            <select id="departamento" name="departamento" class="col-xs-10 col-sm-6" tabindex="9">
                                                 <%
                                                     DaoUbigeoImpl daoUbigeo = new DaoUbigeoImpl();
                                                     List<BeanUbigeo> departamento = daoUbigeo.accionListarDepartamentos();
@@ -855,7 +867,7 @@
                                     <div class="form-group">
                                         <label for="provincia" class="col-sm-4 control-label">Provincia</label>
                                         <div class="col-sm-8">
-                                            <select id="provincia" name="provincia" class="col-xs-10 col-sm-6">                                               
+                                            <select id="provincia" name="provincia" class="col-xs-10 col-sm-6" tabindex="10">                                               
                                             </select>   
                                         </div>
                                     </div>         
@@ -865,7 +877,7 @@
                                     <div class="form-group">
                                         <label for="distrito" class="col-sm-4 control-label">Distrito</label>
                                         <div class="col-sm-8">
-                                            <select id="distrito" name="distrito" class="col-xs-10 col-sm-6">                                               
+                                            <select id="distrito" name="distrito" class="col-xs-10 col-sm-6" tabindex="11">                                               
                                             </select>   
                                         </div>
                                     </div>         
@@ -875,7 +887,7 @@
                                     <div class="form-group" id="divestado">
                                         <label for="estado" class="col-sm-4 control-label">Estado</label>
                                         <div class="col-sm-8">  
-                                            <select id="estado" name="estado" class="form-control" tabindex="5">
+                                            <select id="estado" name="estado" class="form-control" tabindex="12">
                                                <option value="A">ACTIVO</option>
                                                <option value="I">INACTIVO</option>
                                             </select> 
@@ -892,7 +904,7 @@
                             </button>
 
                             <button class="btn btn-sm btn-primary" id="btnGuardar">
-                                <i class="ace-icon fa fa-check"></i>
+                                <i class="ace-icon fa fa-"></i>
                                 Grabar
                             </button>
                         </div>
@@ -929,9 +941,6 @@
         <script src="../assets/js/grid.locale-en.js"></script>-->
 
         <!-- page specific plugin scripts -->
-        <script src="../assets/js/jquery-ui.custom.min.js"></script>
-        <script src="../assets/js/jquery.ui.touch-punch.min.js"></script>
-        <script src="../assets/js/chosen.jquery.min.js"></script>
         <script src="../assets/js/jquery.dataTables.min.js"></script>
         <script src="../assets/js/jquery.dataTables.bootstrap.min.js"></script>
         <script src="../assets/js/dataTables.buttons.min.js"></script>
@@ -1001,7 +1010,7 @@
                             'tr<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>> ',
                     'columnDefs': [
                         {
-                            'targets': [0, 1, 2, 3, 4, 5, 6, 7, 8],
+                            'targets': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
                             'createdCell': function (td, cellData, rowData, row, col) {
                                 $(td).attr('contenteditable', 'false');
                             }
@@ -1030,14 +1039,27 @@
                                 $('#telefono').val('');
                                 $('#correo').val('');
                                 $('#tipopersona').val('1');
-                                $('#vendedor').val('0');
+                                $('#vendedor').val('1');
                                 $('#estado').val('A');
                                 $('#divestado').hide();
                                 $('#tipodocumento').prop('disabled', false); 
-                                alertify.error("ANTES");
+                                //$("#departamento").val('01');
+                                var departamentoActual = $("#departamento").val();
                                 
-                                controlLogin();
-                                alertify.error("DESPUES");
+                                $.get('../Ubigeo', {
+                                    "codigo_ubidepartamento": departamentoActual
+                                }, function(response){
+                                    $('#provincia').html(response);
+                                    
+                                    var provinciaActual = $("#provincia").val();
+                        
+                                    $.get('../Ubigeo', {
+                                        "codigo_ubiprovincia": provinciaActual
+                                    }, function(response){
+                                        $('#distrito').html(response);
+                                    });
+                                });
+
                                 $('#modalAgregarCliente .blue').text('Registrar Nuevo Cliente');
                                 $('#modalAgregarCliente').modal('show');
                                 $('.divError').empty();
@@ -1073,30 +1095,26 @@
                 });
 
                 tablaClientes.buttons().container().appendTo($('.tableTools-container'));
-                
-                function controlLogin(){
-                    var departamentoActual = $("#departamento").val();
 
-                    $.get('Ubigeo', {
-                        "codigo_ubidepartamento": departamentoActual,
-                        "accion"    : "departamento"
-                    }, function(response){
-                        $('#provincia').html(response);
-                    });   
-                                        
-                };
-                
                 $('#btnGuardar').click(function (event) {
                     var idtipodocumento = $('#tipodocumento').val();
+                    var numerodocumento = $('#numerodocumento').val();
+                    var nombre = $('#nombre').val();
+                    var idtipopersona = $('#tipopersona').val();
                     var idcliente = $('#idcliente').val();
-                    var descripcion = $('#descripcion').val();
+                    var direccion = $('#direccion').val();
+                    var telefono = $('#telefono').val();
+                    var correo = $('#correo').val();
+                    var idvendedor = $('#vendedor').val();
+                    var codigoubidistrito = $('#distrito').val();
                     var estado = $('#estado').val();
-                    var opcion = $('#opcion').val();
+                    var opcion = $('#opcion').val();                    
                     $.ajax({
                         method: "POST",
                         url: "../Cliente",
-                        data: {"opcion": opcion, "idtipodocumento": idtipodocumento, "idcliente": idcliente,  "descripcion": descripcion,
-                            "estado": estado}
+                        data: {"opcion": opcion, "idtipodocumento": idtipodocumento, "idcliente": idcliente,  "nombre": nombre, "numerodocumento": numerodocumento,
+                            "idtipopersona": idtipopersona, "direccion": direccion, "telefono": telefono, "correo": correo, "idvendedor": idvendedor, "estado": estado,
+                            "codigoubidistrito": codigoubidistrito}
                     }).done(function (data) {
                         var obj = jQuery.parseJSON(data);
                         if (obj.mensaje.indexOf('ERROR') !== -1) {
@@ -1120,12 +1138,39 @@
                         url: "../Cliente",
                         method: "POST",
                         data: {"opcion": "buscar", "idcliente": idcliente},
-                        success: function (data) {
+                        success: function (data) {                         
                             var obj = jQuery.parseJSON(data);
                             $('#opcion').val('actualizar');
                             $('#idcliente').val(obj.idcliente);
-                            $('#tipodocumento').val(obj.idtipodocumento);
-                            $('#descripcion').val(obj.descripcion);
+                            $('#tipodocumento').val(obj.tipodocumento);
+                            $('#numerodocumento').val(obj.numerodocumento);
+                            $('#tipopersona').val(obj.tipopersona);
+                            $('#vendedor').val(obj.vendedor);
+                            $('#nombre').val(obj.nombre);
+                            $('#direccion').val(obj.direccion);
+                            $('#telefono').val(obj.telefono);
+                            $('#correo').val(obj.correo);
+                            var codigoubidistrito = obj.codigoubidistrito+"";
+                            //alertify.error("codigoubidistrito: "+codigoubidistrito.substr(0,2));
+                            var ubidepartamento = codigoubidistrito.substr(0,2);
+                            $('#departamento').val(ubidepartamento);
+                            $.get('../Ubigeo', {
+                                "codigo_ubidepartamento": ubidepartamento
+                            }, function(response){
+                                $('#provincia').html(response);
+
+                                var ubiprovincia = codigoubidistrito.substr(0,4);
+                                
+                                $('#provincia').val(ubiprovincia);
+                                
+                                $.get('../Ubigeo', {
+                                    "codigo_ubiprovincia": ubiprovincia
+                                }, function(response){
+                                    $('#distrito').html(response);
+                                    $('#distrito').val(codigoubidistrito);
+                                });
+                            });
+                            //$('#distrito').val(obj.codigoubidistrito);
                             $('#estado').val(obj.estado);
                             $('#divestado').hide();
                             $('#modalAgregarCliente .blue').text('Modificar Cliente');
@@ -1192,14 +1237,14 @@
                            
                 $('#departamento').change(function(){
                     var codigoDpto = $('#departamento').val();
-                    $.get('Ubigeo', {
+                    $.get('../Ubigeo', {
                         "codigo_ubidepartamento": codigoDpto
                     }, function(response){
                         $('#provincia').html(response);
                         
                         var provinciaActual = $("#provincia").val();
                         
-                        $.get('Ubigeo', {
+                        $.get('../Ubigeo', {
                             "codigo_ubiprovincia": provinciaActual
                         }, function(response){
                             $('#distrito').html(response);
@@ -1208,10 +1253,8 @@
                 });  
                 
                 $('#provincia').change(function(){
-                    var codigoDpto = $('#departamento').val();
                     var codigoProv = $('#provincia').val();
-                    $.get('Ubigeo', {
-                        "codigo_ubidepartamento": codigoDpto,
+                    $.get('../Ubigeo', {    
                         "codigo_ubiprovincia": codigoProv
                     }, function(response){
                         $('#distrito').html(response);

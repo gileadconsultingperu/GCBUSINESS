@@ -1,7 +1,7 @@
 package gilead.gcbusiness.dao.impl;
 
 import gilead.gcbusiness.dao.DaoAccion;
-import gilead.gcbusiness.model.BeanTipoDocumento;
+import gilead.gcbusiness.model.BeanMoneda;
 import gilead.gcbusiness.sql.ConectaDb;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +11,7 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DaoTipoDocumentoImpl implements DaoAccion{
+public class DaoMonedaImpl implements DaoAccion{
     
     @Override
     public String accionCrear(Object obj) {
@@ -21,13 +21,13 @@ public class DaoTipoDocumentoImpl implements DaoAccion{
         Connection cn = db.getConnection();
         Statement st = null;
 
-        BeanTipoDocumento tipodocumento = (BeanTipoDocumento) obj;
+        BeanMoneda moneda = (BeanMoneda) obj;
 
         if (cn != null) {
             try {
-                String qry = "INSERT INTO gcbusiness.tipodocumento (codigo_sunat,descripcion,abreviatura,estado,fecha_insercion,usuario_insercion,terminal_insercion,ip_insercion) "
-                        + "VALUES ('" + tipodocumento.getCodigoSunat().toUpperCase() + "','" + tipodocumento.getDescripcion().toUpperCase() + "','"  + tipodocumento.getAbreviatura().toUpperCase() + "','" + tipodocumento.getEstado().toUpperCase() + "','"+tipodocumento.getFechaInsercion()
-                        + "', '" + tipodocumento.getUsuarioInsercion()+"', '"+tipodocumento.getTerminalInsercion()+"', '"+tipodocumento.getIpInsercion()+"')";
+                String qry = "INSERT INTO gcbusiness.moneda (codigo_sunat,descripcion,simbolo,estado,fecha_insercion,usuario_insercion,terminal_insercion,ip_insercion) "
+                        + "VALUES ('" + moneda.getCodigoSunat().toUpperCase() + moneda.getDescripcion().toUpperCase() + "','" + "','" + moneda.getSimbolo().toUpperCase() + "','" + moneda.getEstado().toUpperCase() + "','"+moneda.getFechaInsercion()
+                        + "', '" + moneda.getUsuarioInsercion()+"', '"+moneda.getTerminalInsercion()+"', '"+moneda.getIpInsercion()+"')";
                 
                 st = cn.createStatement();
 
@@ -56,8 +56,8 @@ public class DaoTipoDocumentoImpl implements DaoAccion{
     }
 
     @Override
-    public BeanTipoDocumento accionObtener(Integer id) {
-        BeanTipoDocumento tipodocumento = null;
+    public BeanMoneda accionObtener(Integer id) {
+        BeanMoneda moneda = null;
 
         ConectaDb db = new ConectaDb();
         Connection cn = db.getConnection();
@@ -67,8 +67,8 @@ public class DaoTipoDocumentoImpl implements DaoAccion{
         if (cn != null) {
             try {
                 String qry = "SELECT *\n"
-                        + "	FROM gcbusiness.tipodocumento\n"
-                        + "    WHERE id_tipodocumento = ?";
+                        + "	FROM gcbusiness.moneda\n"
+                        + "    WHERE id_moneda = ?";
 
                 st = cn.prepareStatement(qry);
                 st.setInt(1, id);
@@ -76,31 +76,31 @@ public class DaoTipoDocumentoImpl implements DaoAccion{
                 rs = st.executeQuery();
 
                 while (rs.next()) {
-                    tipodocumento = new BeanTipoDocumento();
-                    tipodocumento.setIdtipodocumento(rs.getInt(1));
-                    tipodocumento.setCodigoSunat(rs.getString(2));
-                    tipodocumento.setDescripcion(rs.getString(3));
-                    tipodocumento.setAbreviatura(rs.getString(4));  
-                    tipodocumento.setEstado(rs.getString(5));     
-                    tipodocumento.setFechaInsercion(rs.getTimestamp(6));
-                    tipodocumento.setUsuarioInsercion(rs.getString(7));
-                    tipodocumento.setTerminalInsercion(rs.getString(8));
-                    tipodocumento.setIpInsercion(rs.getString(9));
-                    tipodocumento.setFechaModificacion(rs.getTimestamp(10));
-                    tipodocumento.setUsuarioModificacion(rs.getString(11));
-                    tipodocumento.setTerminalModificacion(rs.getString(12));
-                    tipodocumento.setIpModificacion(rs.getString(13));
+                    moneda = new BeanMoneda();
+                    moneda.setIdmoneda(rs.getInt(1));
+                    moneda.setCodigoSunat(rs.getString(2));
+                    moneda.setDescripcion(rs.getString(3));
+                    moneda.setSimbolo(rs.getString(4));  
+                    moneda.setEstado(rs.getString(5));     
+                    moneda.setFechaInsercion(rs.getTimestamp(6));
+                    moneda.setUsuarioInsercion(rs.getString(7));
+                    moneda.setTerminalInsercion(rs.getString(8));
+                    moneda.setIpInsercion(rs.getString(9));
+                    moneda.setFechaModificacion(rs.getTimestamp(10));
+                    moneda.setUsuarioModificacion(rs.getString(11));
+                    moneda.setTerminalModificacion(rs.getString(12));
+                    moneda.setIpModificacion(rs.getString(13));
                 }
 
                 cn.close();
 
             } catch (SQLException e1) {
                 System.out.println(e1.getMessage());
-                tipodocumento = null;
+                moneda = null;
             }
         }
 
-        return tipodocumento;
+        return moneda;
     }
 
     @Override
@@ -111,19 +111,19 @@ public class DaoTipoDocumentoImpl implements DaoAccion{
         Connection cn = db.getConnection();
         Statement st = null;
 
-        BeanTipoDocumento tipodocumento = (BeanTipoDocumento) obj;
+        BeanMoneda moneda = (BeanMoneda) obj;
 
         if (cn != null) {
             try {
-                String qry = "UPDATE gcbusiness.tipodocumento SET descripcion = '" + tipodocumento.getDescripcion().toUpperCase()
-                        + "', codigo_sunat = '" + tipodocumento.getCodigoSunat().toUpperCase()
-                        + "', abreviatura = '" + tipodocumento.getAbreviatura().toUpperCase()
-                        + "', estado = '" + tipodocumento.getEstado().toUpperCase()
-                        + "', fecha_modificacion = '" + tipodocumento.getFechaModificacion()
-                        + "', usuario_modificacion = '" + tipodocumento.getUsuarioModificacion()
-                        + "', terminal_modificacion = '" + tipodocumento.getTerminalModificacion()
-                        + "', ip_modificacion = '" + tipodocumento.getIpModificacion() + "' "
-                        + "WHERE id_tipodocumento = " + tipodocumento.getIdtipodocumento();
+                String qry = "UPDATE gcbusiness.moneda SET descripcion = '" + moneda.getDescripcion().toUpperCase()
+                        + "', codigo_sunat = '" + moneda.getCodigoSunat().toUpperCase()
+                        + "', simbolo = '" + moneda.getSimbolo().toUpperCase()
+                        + "', estado = '" + moneda.getEstado().toUpperCase()
+                        + "', fecha_modificacion = '" + moneda.getFechaModificacion()
+                        + "', usuario_modificacion = '" + moneda.getUsuarioModificacion()
+                        + "', terminal_modificacion = '" + moneda.getTerminalModificacion()
+                        + "', ip_modificacion = '" + moneda.getIpModificacion() + "' "
+                        + "WHERE id_moneda = " + moneda.getIdmoneda();
 
                 st = cn.createStatement();
 
@@ -161,7 +161,7 @@ public class DaoTipoDocumentoImpl implements DaoAccion{
 
         if (cn != null) {
             try {
-                String qry = "UPDATE gcbusiness.tipodocumento SET estado = 'I' WHERE id_tipodocumento = " + id;
+                String qry = "UPDATE gcbusiness.moneda SET estado = 'I' WHERE id_moneda = " + id;
 
                 st = cn.createStatement();
 
@@ -190,55 +190,55 @@ public class DaoTipoDocumentoImpl implements DaoAccion{
     }
 
     @Override
-    public List<BeanTipoDocumento> accionListar() {
-        BeanTipoDocumento tipodocumento = null;
+    public List<BeanMoneda> accionListar() {
+        BeanMoneda moneda = null;
 
         ConectaDb db = new ConectaDb();
         Connection cn = db.getConnection();
         PreparedStatement st = null;
         ResultSet rs = null;
 
-        List<BeanTipoDocumento> listTipoDocumento = null;
+        List<BeanMoneda> listMoneda = null;
 
         if (cn != null) {
             try {
                 String qry = "SELECT *\n"
-                        + "	FROM gcbusiness.tipodocumento ORDER BY id_tipodocumento";
+                        + "	FROM gcbusiness.moneda ORDER BY id_moneda";
 
                 st = cn.prepareStatement(qry);
 
                 rs = st.executeQuery();
 
-                listTipoDocumento = new LinkedList<BeanTipoDocumento>();
+                listMoneda = new LinkedList<BeanMoneda>();
 
                 while (rs.next()) {
-                    tipodocumento = new BeanTipoDocumento();
-                    tipodocumento.setIdtipodocumento(rs.getInt(1));
-                    tipodocumento.setCodigoSunat(rs.getString(2));
-                    tipodocumento.setDescripcion(rs.getString(3));
-                    tipodocumento.setAbreviatura(rs.getString(4));  
-                    tipodocumento.setEstado(rs.getString(5));     
-                    tipodocumento.setFechaInsercion(rs.getTimestamp(6));
-                    tipodocumento.setUsuarioInsercion(rs.getString(7));
-                    tipodocumento.setTerminalInsercion(rs.getString(8));
-                    tipodocumento.setIpInsercion(rs.getString(9));
-                    tipodocumento.setFechaModificacion(rs.getTimestamp(10));
-                    tipodocumento.setUsuarioModificacion(rs.getString(11));
-                    tipodocumento.setTerminalModificacion(rs.getString(12));
-                    tipodocumento.setIpModificacion(rs.getString(13));
+                    moneda = new BeanMoneda();
+                    moneda.setIdmoneda(rs.getInt(1));
+                    moneda.setCodigoSunat(rs.getString(2));
+                    moneda.setDescripcion(rs.getString(3));
+                    moneda.setSimbolo(rs.getString(4));  
+                    moneda.setEstado(rs.getString(5));     
+                    moneda.setFechaInsercion(rs.getTimestamp(6));
+                    moneda.setUsuarioInsercion(rs.getString(7));
+                    moneda.setTerminalInsercion(rs.getString(8));
+                    moneda.setIpInsercion(rs.getString(9));
+                    moneda.setFechaModificacion(rs.getTimestamp(10));
+                    moneda.setUsuarioModificacion(rs.getString(11));
+                    moneda.setTerminalModificacion(rs.getString(12));
+                    moneda.setIpModificacion(rs.getString(13));
 
-                    listTipoDocumento.add(tipodocumento);
+                    listMoneda.add(moneda);
                 }
 
                 cn.close();
 
             } catch (SQLException e1) {
                 System.out.println(e1.getMessage());
-                tipodocumento = null;
+                moneda = null;
             }
         }
 
-        return listTipoDocumento;
+        return listMoneda;
     }
 
     @Override
@@ -251,7 +251,7 @@ public class DaoTipoDocumentoImpl implements DaoAccion{
 
         if (cn != null) {
             try {
-                String qry = "UPDATE gcbusiness.tipodocumento SET estado = 'A' WHERE id_tipodocumento = " + id;
+                String qry = "UPDATE gcbusiness.moneda SET estado = 'A' WHERE id_moneda = " + id;
 
                 st = cn.createStatement();
 

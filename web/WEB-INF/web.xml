@@ -60,6 +60,10 @@
         <servlet-name>Ubigeo</servlet-name>
         <servlet-class>gilead.gcbusiness.controller.GCBusiness_Ubigeo_Servlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Producto</servlet-name>
+        <servlet-class>gilead.gcbusiness.controller.GCBusiness_Producto_Servlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>GCBusiness_Login_Servlet</servlet-name>
         <url-pattern>/Login</url-pattern>
@@ -119,6 +123,10 @@
     <servlet-mapping>
         <servlet-name>Ubigeo</servlet-name>
         <url-pattern>/Ubigeo</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Producto</servlet-name>
+        <url-pattern>/Producto</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

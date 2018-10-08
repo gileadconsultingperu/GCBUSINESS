@@ -224,7 +224,7 @@
         <script src="assets/js/ace.min.js"></script>
         
         <script type="text/javascript">
-                if('ontouchstart' in document.documentElement) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+            if('ontouchstart' in document.documentElement) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
         </script>
 
         <!-- inline scripts related to this page -->

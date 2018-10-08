@@ -411,6 +411,18 @@
                         
                         <ul class="submenu">
                             <%
+                                if(opciones.contains(10)){
+                            %>
+                            <li class="">
+                                <a href="views/GC-Business-GestionProducto.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Gestión Productos
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
                                 if(opciones.contains(2)){
                             %>
                             <li class="">

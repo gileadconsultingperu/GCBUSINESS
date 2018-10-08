@@ -1,15 +1,22 @@
 package gilead.gcbusiness.controller;
 
 import gilead.gcbusiness.dao.impl.DaoTarifaImpl;
+import gilead.gcbusiness.dao.impl.DaoTarifaProductoImpl;
 import gilead.gcbusiness.model.BeanTarifa;
+import gilead.gcbusiness.model.BeanTarifaProducto;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.MediaType;
 
 public class GCBusiness_Tarifa_Servlet extends HttpServlet {
 
@@ -161,29 +168,36 @@ public class GCBusiness_Tarifa_Servlet extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        DaoTarifaProductoImpl daoTarifaProducto = new DaoTarifaProductoImpl();
+                
+        Integer idproducto = Integer.parseInt(request.getParameter("idproducto"));
+        
+        JsonArrayBuilder array = Json.createArrayBuilder();//creamos el arreglo json
+        System.out.println("idproducto: "+idproducto);
+        //obtenemos la lista de Tarifas del producto
+        List<BeanTarifaProducto> lstTarifas = daoTarifaProducto.listarTarifaProducto(idproducto);
+        //debemos preparar la lista a devolver. 
+
+        //recorremos la lista
+        for (BeanTarifaProducto tarifa : lstTarifas) {
+            //creamos un objeto json con los campos que necesitamos
+            JsonObject item = Json.createObjectBuilder()
+                    .add("idtarifa", tarifa.getIdtarifa())
+                    .add("idproducto", tarifa.getIdproducto())
+                    .add("valor", tarifa.getValor())
+                    .add("estado", tarifa.getEstado())
+                    .add("descripcion", tarifa.getDescripciontarifa()).build();
+            array.add(item); //.. y lo agregamos al arreglo json
+        }
+        
+        response.setContentType(MediaType.APPLICATION_JSON); //ahora preparamos la salida json al cliente...
+        try (JsonWriter jsonWriter = Json.createWriter(response.getOutputStream())) { //.. para imprimir... 
+            jsonWriter.writeArray(array.build());
+        }
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

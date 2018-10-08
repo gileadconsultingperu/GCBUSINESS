@@ -418,10 +418,22 @@
                         
                         <ul class="submenu">
                             <%
+                                if(opciones.contains(10)){
+                            %>
+                            <li class="">
+                                <a href="GC-Business-GestionProducto.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Gestión Productos
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
                                 if(opciones.contains(2)){
                             %>
                             <li class="">
-                                <a href="GC-Business-GestionFamilia.jsp">
+                                <a href="GC-Business-GestionFamiliaProducto.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Familias
                                 </a>
