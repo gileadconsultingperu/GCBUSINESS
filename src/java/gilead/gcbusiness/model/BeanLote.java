@@ -1,15 +1,16 @@
 package gilead.gcbusiness.model;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Timestamp;
 
-public class BeanAlmacenProducto implements Serializable{
+public class BeanLote implements Serializable{
     
-    private Integer idalmacen;
+    private Integer idlote;
     private Integer idproducto;
-    private Double stockactual;
-    private Double stockminimo;
-    private String descripciontarifa;
+    private String numerolote;
+    private Date fechavencimiento; 
+    private String estado;
     private Timestamp fechaInsercion; 
     private String usuarioInsercion; 
     private String terminalInsercion;
@@ -19,15 +20,15 @@ public class BeanAlmacenProducto implements Serializable{
     private String terminalModificacion;
     private String ipModificacion;
 
-    public BeanAlmacenProducto() {
+    public BeanLote() {
     }
 
-    public BeanAlmacenProducto(Integer idalmacen, Integer idproducto, Double stockactual, Double stockminimo, String descripciontarifa, Timestamp fechaInsercion, String usuarioInsercion, String terminalInsercion, String ipInsercion, Timestamp fechaModificacion, String usuarioModificacion, String terminalModificacion, String ipModificacion) {
-        this.idalmacen = idalmacen;
+    public BeanLote(Integer idlote, Integer idproducto, String numerolote, Date fechavencimiento, String estado, Timestamp fechaInsercion, String usuarioInsercion, String terminalInsercion, String ipInsercion, Timestamp fechaModificacion, String usuarioModificacion, String terminalModificacion, String ipModificacion) {
+        this.idlote = idlote;
         this.idproducto = idproducto;
-        this.stockactual = stockactual;
-        this.stockminimo = stockminimo;
-        this.descripciontarifa = descripciontarifa;
+        this.numerolote = numerolote;
+        this.fechavencimiento = fechavencimiento;
+        this.estado = estado;
         this.fechaInsercion = fechaInsercion;
         this.usuarioInsercion = usuarioInsercion;
         this.terminalInsercion = terminalInsercion;
@@ -39,17 +40,17 @@ public class BeanAlmacenProducto implements Serializable{
     }
 
     /**
-     * @return the idalmacen
+     * @return the idlote
      */
-    public Integer getIdalmacen() {
-        return idalmacen;
+    public Integer getIdlote() {
+        return idlote;
     }
 
     /**
-     * @param idalmacen the idalmacen to set
+     * @param idlote the idlote to set
      */
-    public void setIdalmacen(Integer idalmacen) {
-        this.idalmacen = idalmacen;
+    public void setIdlote(Integer idlote) {
+        this.idlote = idlote;
     }
 
     /**
@@ -67,45 +68,45 @@ public class BeanAlmacenProducto implements Serializable{
     }
 
     /**
-     * @return the stockactual
+     * @return the numerolote
      */
-    public Double getStockactual() {
-        return stockactual;
+    public String getNumerolote() {
+        return numerolote;
     }
 
     /**
-     * @param stockactual the stockactual to set
+     * @param numerolote the numerolote to set
      */
-    public void setStockactual(Double stockactual) {
-        this.stockactual = stockactual;
+    public void setNumerolote(String numerolote) {
+        this.numerolote = numerolote;
     }
 
     /**
-     * @return the stockminimo
+     * @return the fechavencimiento
      */
-    public Double getStockminimo() {
-        return stockminimo;
+    public Date getFechavencimiento() {
+        return fechavencimiento;
     }
 
     /**
-     * @param stockminimo the stockminimo to set
+     * @param fechavencimiento the fechavencimiento to set
      */
-    public void setStockminimo(Double stockminimo) {
-        this.stockminimo = stockminimo;
+    public void setFechavencimiento(Date fechavencimiento) {
+        this.fechavencimiento = fechavencimiento;
     }
 
     /**
-     * @return the descripciontarifa
+     * @return the estado
      */
-    public String getDescripciontarifa() {
-        return descripciontarifa;
+    public String getEstado() {
+        return estado;
     }
 
     /**
-     * @param descripciontarifa the descripciontarifa to set
+     * @param estado the estado to set
      */
-    public void setDescripciontarifa(String descripciontarifa) {
-        this.descripciontarifa = descripciontarifa;
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
     /**
@@ -219,6 +220,6 @@ public class BeanAlmacenProducto implements Serializable{
     public void setIpModificacion(String ipModificacion) {
         this.ipModificacion = ipModificacion;
     }
-    
+
     
 }

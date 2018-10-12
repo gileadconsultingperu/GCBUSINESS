@@ -173,7 +173,7 @@
                                 if(opciones.contains(12)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-RegistrarVenta.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Registrar Venta
                                 </a>
@@ -185,7 +185,7 @@
                                 if(opciones.contains(13)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-GestionNota.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Notas
                                 </a>
@@ -197,7 +197,7 @@
                                 if(opciones.contains(14)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-GestionCotizacion.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Cotización
                                 </a>
@@ -209,7 +209,7 @@
                                 if(opciones.contains(15)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-GestionOrdenVenta.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Orden de Venta
                                 </a>
@@ -264,7 +264,7 @@
                                 if(opciones.contains(34)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-GestionCuentaCobrar.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Cuentas por Cobrar
                                 </a>
@@ -295,7 +295,7 @@
                                 if(opciones.contains(22)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-RegistrarCompra.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Registrar Compra
                                 </a>
@@ -307,7 +307,7 @@
                                 if(opciones.contains(23)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-GestionOrdenCompra.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Orden de Compra
                                 </a>
@@ -350,7 +350,7 @@
                                 if(opciones.contains(43)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-GestionCuentaPagar.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Cuentas por Pagar
                                 </a>
@@ -381,7 +381,7 @@
                                 if(opciones.contains(52)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-GestionIngresoSalida.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Ingresos y Salidas
                                 </a>
@@ -393,7 +393,7 @@
                                 if(opciones.contains(53)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-TrasladoAlmacen.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Traslado entre Almacenes
                                 </a>

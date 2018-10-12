@@ -5,6 +5,7 @@ import gilead.gcbusiness.sql.ConectaDb;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,6 +13,46 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DaoTarifaProductoImpl {
+    
+    public String accionCrear(Object obj) {
+        String msg = null;
+
+        ConectaDb db = new ConectaDb();
+        Connection cn = db.getConnection();
+        Statement st = null;
+
+        BeanTarifaProducto tarifaproducto = (BeanTarifaProducto) obj;
+
+        if (cn != null) {
+            try {
+                String qry = "INSERT INTO gcbusiness.tarifaproducto (id_tarifa, id_producto, valor, estado, fecha_insercion,usuario_insercion,terminal_insercion,ip_insercion) "
+                        + "VALUES (" + tarifaproducto.getIdtarifa()+ "," + tarifaproducto.getIdproducto()+ ","  + tarifaproducto.getValor()+ ",'" + tarifaproducto.getEstado().toUpperCase() + "','"+tarifaproducto.getFechaInsercion()
+                        + "', '" + tarifaproducto.getUsuarioInsercion()+"', '"+tarifaproducto.getTerminalInsercion()+"', '"+tarifaproducto.getIpInsercion()+"')";
+                
+                st = cn.createStatement();
+
+                int n = st.executeUpdate(qry);
+                
+                if (n <= 0) {
+                    msg = "0 filas afectadas";
+                }
+
+                cn.close();
+
+            } catch (SQLException e1) {
+                System.out.println(e1.getMessage());
+                msg = e1.getMessage();
+            } finally {
+                try {
+                    cn.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                    msg = e2.getMessage();
+                }
+            }
+        }
+        return msg;
+    }
     
     public List<BeanTarifaProducto> listarTarifaProducto(Integer idproducto){
         ConectaDb db = new ConectaDb();

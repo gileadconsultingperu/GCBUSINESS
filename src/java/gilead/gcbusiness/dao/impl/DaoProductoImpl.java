@@ -11,6 +11,7 @@
 package gilead.gcbusiness.dao.impl;
 
 import gilead.gcbusiness.dao.DaoAccion;
+import gilead.gcbusiness.dto.DTOProducto;
 import gilead.gcbusiness.model.BeanProducto;
 import gilead.gcbusiness.sql.ConectaDb;
 import java.sql.Connection;
@@ -37,7 +38,7 @@ public class DaoProductoImpl implements DaoAccion{
             try {
                 String qry = "INSERT INTO gcbusiness.producto (id_marca,id_categoriaproducto,id_moneda,id_tipoproducto,id_unidadmedida,codigo_interno,descripcion,afecto_igv,afecto_isc,id_tipoisc,base_isc,factor_isc,valor_venta,precio_venta,valor_compra,precio_compra,codigo_proveedor,peso_proveedor,estado,fecha_insercion,usuario_insercion,terminal_insercion,ip_insercion) "
                         + "VALUES (" + producto.getIdmarca() + "," + producto.getIdcategoriaproducto() + "," + producto.getIdmoneda()+ "," + producto.getIdtipoproducto() + "," + producto.getIdunidadmedida() + ",'" + producto.getCodigo().toUpperCase() + "','" + producto.getDescripcion().toUpperCase() + "','" + producto.getAfectoIGV() + "','" + producto.getAfectoISC() 
-                        + "'," + producto.getIdtipoISC() + "," + producto.getBaseISC() + "," + producto.getFactorISC() + "," + producto.getValorventa() + "," + producto.getPrecioventa() + "," + producto.getValorcompra() + "," + producto.getPreciocompra() + ",'" + producto.getCodigoproveedor() + "'," + producto.getPesoproveedor() + ",'" + producto.getEstado().toUpperCase() + "','" +producto.getFechaInsercion()
+                        + "'," + producto.getIdtipoISC() + "," + producto.getBaseISC() + "," + producto.getFactorISC() + "," + producto.getValorcompra() + "," + producto.getPreciocompra() + ",'" + producto.getFlaglote() + "','" + producto.getCodigoproveedor() + "'," + producto.getPesoproveedor() + ",'" + producto.getEstado().toUpperCase() + "','" +producto.getFechaInsercion()
                         + "', '" + producto.getUsuarioInsercion()+"', '"+producto.getTerminalInsercion()+"', '"+producto.getIpInsercion()+"')";
                 System.out.println("qry: "+qry);
                 st = cn.createStatement();
@@ -67,8 +68,8 @@ public class DaoProductoImpl implements DaoAccion{
     }
 
     @Override
-    public BeanProducto accionObtener(Integer id) {
-        BeanProducto producto = null;
+    public DTOProducto accionObtener(Integer id) {
+        DTOProducto producto = null;
 
         ConectaDb db = new ConectaDb();
         Connection cn = db.getConnection();
@@ -77,9 +78,17 @@ public class DaoProductoImpl implements DaoAccion{
 
         if (cn != null) {
             try {
-                String qry = "SELECT *\n"
-                        + "	FROM gcbusiness.producto\n"
-                        + "    WHERE id_producto = ?";
+                String qry = "SELECT p.id_producto, p.id_marca, m.descripcion as marca, p.id_categoriaproducto, c.descripcion as categoria, p.id_unidadmedida, "
+                        + "u.descripcion as medida, p.id_moneda, o.descripcion as moneda, o.simbolo, p.id_tipoproducto, t.descripcion as tipoproducto, f.id_familiaproducto, "
+                        + "f.descripcion as familia, l.id_lineaproducto, l.descripcion as linea, n.id_claseproducto, n.descripcion as clase, p.codigo_interno, "
+                        + "p.codigo_ean, p.codigo_sunat, p.descripcion, p.afecto_igv, p.afecto_isc, p.id_tipoisc, p.base_isc, p.factor_isc, p.valor_compra, "
+                        + "p.precio_compra, p.flag_lote, p.imagen, p.codigo_proveedor, p.peso_proveedor, p.estado FROM gcbusiness.producto p, gcbusiness.marca m, "
+                        + "gcbusiness.moneda o, gcbusiness.unidadmedida u, "
+                        + "gcbusiness.categoriaproducto c, gcbusiness.lineaproducto l, gcbusiness.claseproducto n, gcbusiness.familiaproducto f, gcbusiness.tipoproducto t\n"
+                        + "WHERE p.id_marca = m.id_marca AND p.id_categoriaproducto = c.id_categoriaproducto AND p.id_unidadmedida = u.id_unidadmedida "
+                        + "AND o.id_moneda = p.id_moneda AND p.id_tipoproducto = t.id_tipoproducto AND c.id_lineaproducto = l.id_lineaproducto "
+                        + "AND n.id_claseproducto = l.id_claseproducto AND n.id_familiaproducto = f.id_familiaproducto AND P.id_producto = ?;";
+ 
 
                 st = cn.prepareStatement(qry);
                 st.setInt(1, id);
@@ -87,37 +96,41 @@ public class DaoProductoImpl implements DaoAccion{
                 rs = st.executeQuery();
 
                 while (rs.next()) {
-                    producto = new BeanProducto();
-                    producto.setIdproducto(rs.getInt(1));
-                    producto.setIdmarca(rs.getInt(2));
-                    producto.setIdcategoriaproducto(rs.getInt(3));
-                    producto.setIdmoneda(rs.getInt(4));
-                    producto.setIdtipoproducto(rs.getInt(5));
-                    producto.setIdunidadmedida(rs.getInt(6));
-                    producto.setCodigo(rs.getString(7));  
-                    producto.setCodigoEAN(rs.getString(8));  
-                    producto.setDescripcion(rs.getString(9)); 
-                    producto.setAfectoIGV(rs.getString(10));  
-                    producto.setAfectoISC(rs.getString(11));
-                    producto.setIdtipoISC(rs.getInt(12));
-                    producto.setBaseISC(rs.getDouble(13));
-                    producto.setFactorISC(rs.getDouble(14));
-                    producto.setValorventa(rs.getDouble(15));
-                    producto.setPrecioventa(rs.getDouble(16));
-                    producto.setValorcompra(rs.getDouble(17));
-                    producto.setPreciocompra(rs.getDouble(18));
-                    producto.setImagen(rs.getBytes(19));
-                    producto.setCodigoproveedor(rs.getString(20));
-                    producto.setPesoproveedor(rs.getDouble(21));
-                    producto.setEstado(rs.getString(22));          
-                    producto.setFechaInsercion(rs.getTimestamp(23));
-                    producto.setUsuarioInsercion(rs.getString(24));
-                    producto.setTerminalInsercion(rs.getString(25));
-                    producto.setIpInsercion(rs.getString(26));
-                    producto.setFechaModificacion(rs.getTimestamp(27));
-                    producto.setUsuarioModificacion(rs.getString(28));
-                    producto.setTerminalModificacion(rs.getString(29));
-                    producto.setIpModificacion(rs.getString(30));
+                    producto = new DTOProducto();
+                    producto.setIdproducto(rs.getInt("id_producto"));
+                    producto.setIdmarca(rs.getInt("id_marca"));
+                    producto.setDescripcionmarca(rs.getString("marca"));
+                    producto.setIdcategoriaproducto(rs.getInt("id_categoriaproducto"));
+                    producto.setDescripcioncategoria(rs.getString("categoria"));
+                    producto.setIdmoneda(rs.getInt("id_moneda"));
+                    producto.setDescripcionmoneda(rs.getString("moneda"));
+                    producto.setSimbolomoneda(rs.getString("simbolo"));
+                    producto.setIdtipoproducto(rs.getInt("id_tipoproducto"));
+                    producto.setDescripciontipoproducto(rs.getString("tipoproducto"));
+                    producto.setIdfamiliaproducto(rs.getInt("id_familiaproducto"));
+                    producto.setDescripcionfamilia(rs.getString("familia"));
+                    producto.setIdlineaproducto(rs.getInt("id_lineaproducto"));
+                    producto.setDescripcionlinea(rs.getString("linea"));
+                    producto.setIdclaseproducto(rs.getInt("id_claseproducto"));
+                    producto.setDescripcionclase(rs.getString("clase"));
+                    producto.setIdunidadmedida(rs.getInt("id_unidadmedida"));
+                    producto.setDescripcionunidadmedida(rs.getString("medida"));
+                    producto.setCodigo(rs.getString("codigo_interno"));  
+                    producto.setCodigoEAN(rs.getString("codigo_ean"));
+                    producto.setCodigosunat(rs.getString("codigo_sunat"));  
+                    producto.setDescripcion(rs.getString("descripcion")); 
+                    producto.setAfectoIGV(rs.getString("afecto_igv"));  
+                    producto.setAfectoISC(rs.getString("afecto_isc"));
+                    producto.setIdtipoISC(rs.getInt("id_tipoisc"));
+                    producto.setBaseISC(rs.getDouble("base_isc"));
+                    producto.setFactorISC(rs.getDouble("factor_isc"));
+                    producto.setValorcompra(rs.getDouble("valor_compra"));
+                    producto.setPreciocompra(rs.getDouble("precio_compra"));
+                    producto.setFlaglote(rs.getString("flag_lote"));
+                    producto.setImagen(rs.getBytes("imagen"));
+                    producto.setCodigoproveedor(rs.getString("codigo_proveedor"));
+                    producto.setPesoproveedor(rs.getDouble("peso_proveedor"));
+                    producto.setEstado(rs.getString("estado"));          
                 }
 
                 cn.close();
@@ -156,11 +169,10 @@ public class DaoProductoImpl implements DaoAccion{
                         + "', id_tipoisc = " + producto.getIdtipoISC()
                         + ", base_isc = " + producto.getBaseISC()
                         + ", factor_isc = " + producto.getFactorISC()
-                        + ", valor_venta = " + producto.getValorventa()
-                        + ", precio_venta = " + producto.getPrecioventa()
                         + ", valor_compra = " + producto.getValorcompra()
                         + ", precio_compra = " + producto.getPreciocompra()
-                        + ", codigo_proveedor = '" + producto.getCodigoproveedor()
+                        + ", flag_lote = '" + producto.getFlaglote()
+                        + "', codigo_proveedor = '" + producto.getCodigoproveedor()
                         + "', peso_proveedor = " + producto.getPesoproveedor()
                         + ", estado = '" + producto.getEstado().toUpperCase()
                         + "', fecha_modificacion = '" + producto.getFechaModificacion()
@@ -257,36 +269,35 @@ public class DaoProductoImpl implements DaoAccion{
 
                 while (rs.next()) {
                     producto = new BeanProducto();
-                    producto.setIdproducto(rs.getInt(1));
-                    producto.setIdmarca(rs.getInt(2));
-                    producto.setIdcategoriaproducto(rs.getInt(3));
-                    producto.setIdmoneda(rs.getInt(4));
-                    producto.setIdtipoproducto(rs.getInt(5));
-                    producto.setIdunidadmedida(rs.getInt(6));
-                    producto.setCodigo(rs.getString(7));  
-                    producto.setCodigoEAN(rs.getString(8));  
-                    producto.setDescripcion(rs.getString(9)); 
-                    producto.setAfectoIGV(rs.getString(10));  
-                    producto.setAfectoISC(rs.getString(11));
-                    producto.setIdtipoISC(rs.getInt(12));
-                    producto.setBaseISC(rs.getDouble(13));
-                    producto.setFactorISC(rs.getDouble(14));
-                    producto.setValorventa(rs.getDouble(15));
-                    producto.setPrecioventa(rs.getDouble(16));
-                    producto.setValorcompra(rs.getDouble(17));
-                    producto.setPreciocompra(rs.getDouble(18));
-                    producto.setImagen(rs.getBytes(19));
-                    producto.setCodigoproveedor(rs.getString(20));
-                    producto.setPesoproveedor(rs.getDouble(21));
-                    producto.setEstado(rs.getString(22));          
-                    producto.setFechaInsercion(rs.getTimestamp(23));
-                    producto.setUsuarioInsercion(rs.getString(24));
-                    producto.setTerminalInsercion(rs.getString(25));
-                    producto.setIpInsercion(rs.getString(26));
-                    producto.setFechaModificacion(rs.getTimestamp(27));
-                    producto.setUsuarioModificacion(rs.getString(28));
-                    producto.setTerminalModificacion(rs.getString(29));
-                    producto.setIpModificacion(rs.getString(30));
+                    producto.setIdproducto(rs.getInt("id_producto"));
+                    producto.setIdmarca(rs.getInt("id_marca"));
+                    producto.setIdcategoriaproducto(rs.getInt("id_categoriaproducto"));
+                    producto.setIdmoneda(rs.getInt("id_moneda"));
+                    producto.setIdtipoproducto(rs.getInt("id_tipoproducto"));
+                    producto.setIdunidadmedida(rs.getInt("id_unidadmedida"));
+                    producto.setCodigo(rs.getString("codigo_interno"));  
+                    producto.setCodigoEAN(rs.getString("codigo_ean"));  
+                    producto.setDescripcion(rs.getString("descripcion")); 
+                    producto.setAfectoIGV(rs.getString("afecto_igv"));  
+                    producto.setAfectoISC(rs.getString("afecto_isc"));
+                    producto.setIdtipoISC(rs.getInt("id_tipoisc"));
+                    producto.setBaseISC(rs.getDouble("base_isc"));
+                    producto.setFactorISC(rs.getDouble("factor_isc"));
+                    producto.setValorcompra(rs.getDouble("valor_compra"));
+                    producto.setPreciocompra(rs.getDouble("precio_compra"));
+                    producto.setFlaglote("flag_lote");
+                    producto.setImagen(rs.getBytes("imagen"));
+                    producto.setCodigoproveedor(rs.getString("codigo_proveedor"));
+                    producto.setPesoproveedor(rs.getDouble("peso_proveedor"));
+                    producto.setEstado(rs.getString("estado"));          
+                    producto.setFechaInsercion(rs.getTimestamp("fecha_insercion"));
+                    producto.setUsuarioInsercion(rs.getString("usuario_insercion"));
+                    producto.setTerminalInsercion(rs.getString("terminal_insercion"));
+                    producto.setIpInsercion(rs.getString("ip_insercion"));
+                    producto.setFechaModificacion(rs.getTimestamp("fecha_modificacion"));
+                    producto.setUsuarioModificacion(rs.getString("usuario_modificacion"));
+                    producto.setTerminalModificacion(rs.getString("terminal_modificacion"));
+                    producto.setIpModificacion(rs.getString("ip_modificacion"));
                     listProducto.add(producto);
                 }
 
@@ -337,6 +348,65 @@ public class DaoProductoImpl implements DaoAccion{
         }
 
         return msg;
+    }
+    
+    public List<DTOProducto> accionListarDTOProducto() {
+        DTOProducto producto = null;
+
+        ConectaDb db = new ConectaDb();
+        Connection cn = db.getConnection();
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        List<DTOProducto> listProducto = null;
+
+        if (cn != null) {
+            try {
+                String qry = "SELECT p.id_producto,\n" +
+                                    "p.id_marca,\n" +
+                                    "m.descripcion as marca,\n" +
+                                    "p.id_categoriaproducto,\n" +
+                                    "c.descripcion as categoria,\n" +
+                                    "p.id_unidadmedida,\n" +
+                                    "u.descripcion as medida,\n" +
+                                    "p.codigo_interno,\n" +
+                                    "p.descripcion,\n" + 
+                                    "p.estado\n"
+                        + " FROM gcbusiness.producto p INNER JOIN gcbusiness.marca m USING (id_marca)\n"
+                        + " INNER JOIN gcbusiness.categoriaproducto c USING (id_categoriaproducto)\n"
+                        + " INNER JOIN gcbusiness.unidadmedida u USING (id_unidadmedida)\n"
+                        + " ORDER BY p.id_producto";
+
+                st = cn.prepareStatement(qry);
+
+                rs = st.executeQuery();
+
+                listProducto = new LinkedList<DTOProducto>();
+
+                while (rs.next()) {
+                    producto = new DTOProducto();
+                    producto.setIdproducto(rs.getInt("id_producto"));
+                    producto.setIdmarca(rs.getInt("id_marca"));
+                    producto.setDescripcionmarca(rs.getString("marca"));
+                    producto.setIdcategoriaproducto(rs.getInt("id_categoriaproducto"));
+                    producto.setDescripcioncategoria(rs.getString("categoria"));
+                    producto.setIdunidadmedida(rs.getInt("id_unidadmedida"));
+                    producto.setDescripcionunidadmedida(rs.getString("medida"));
+                    producto.setCodigo(rs.getString("codigo_interno"));  
+                    producto.setDescripcion(rs.getString("descripcion")); 
+                    producto.setEstado(rs.getString("estado"));          
+                    listProducto.add(producto);
+                }
+
+                cn.close();
+
+            } catch (SQLException e1) {
+                System.out.println(e1.getMessage());
+                producto = null;
+            }
+        }
+
+        return listProducto;
     }
     
 }

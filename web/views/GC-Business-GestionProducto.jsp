@@ -192,7 +192,7 @@
                                 if(opciones.contains(12)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-RegistrarVenta.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Registrar Venta
                                 </a>
@@ -204,7 +204,7 @@
                                 if(opciones.contains(13)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-GestionNota.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Notas
                                 </a>
@@ -216,7 +216,7 @@
                                 if(opciones.contains(14)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-GestionCotizacion.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Cotización
                                 </a>
@@ -228,7 +228,7 @@
                                 if(opciones.contains(15)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-GestionOrdenVenta.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Orden de Venta
                                 </a>
@@ -283,7 +283,7 @@
                                 if(opciones.contains(34)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-GestionCuentaCobrar.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Cuentas por Cobrar
                                 </a>
@@ -314,7 +314,7 @@
                                 if(opciones.contains(22)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-RegistrarCompra.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Registrar Compra
                                 </a>
@@ -326,7 +326,7 @@
                                 if(opciones.contains(23)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-GestionOrdenCompra.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Orden de Compra
                                 </a>
@@ -369,7 +369,7 @@
                                 if(opciones.contains(43)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-GestionCuentaPagar.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Cuentas por Pagar
                                 </a>
@@ -400,7 +400,7 @@
                                 if(opciones.contains(52)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-GestionIngresoSalida.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Ingresos y Salidas
                                 </a>
@@ -412,7 +412,7 @@
                                 if(opciones.contains(53)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-TrasladoAlmacen.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Traslado entre Almacenes
                                 </a>
@@ -866,7 +866,7 @@
                                         </div>   
                                         
                                         <div class="col-sm-4">
-                                            <button class="btn btn-sm btn-primary" id="btnPrecioVenta">
+                                            <button class="btn btn-sm btn-primary" id="btnPrecioVenta" tabindex="11">
                                                 <i class="ace-icon fa fa-bar-chart-o"></i>
                                                 Precio Venta
                                             </button>
@@ -878,7 +878,7 @@
                                     <div class="form-group">
                                         <label for="tipoproducto" class="col-sm-1 control-label">Tipo Producto</label>
                                         <div class="col-sm-3">
-                                            <select id="tipoproducto" name="tipoproducto" class="col-xs-12 col-sm-12" tabindex="15">
+                                            <select id="tipoproducto" name="tipoproducto" class="col-xs-12 col-sm-12" tabindex="11">
                                                 <%
                                                     DaoTipoProductoImpl daoTipoProducto = new DaoTipoProductoImpl();
                                                     List<BeanTipoProducto> tipoproducto = daoTipoProducto.accionListar();
@@ -894,13 +894,12 @@
                                                 %>
                                             </select>   
                                         </div>
+                                        <label for="codigosunat" class="col-sm-1 control-label">Código SUNAT</label>
+                                        <div class="col-sm-3">
+                                            <input type="text" id="codigosunat" class="form-control"  style="text-transform:uppercase" tabindex="12"/>
+                                        </div>                                      
                                         <div class="col-sm-4">
-                                            <span class="profile-picture" style="display: none" tabindex="16">
-                                                <img class="editable img-responsive" alt="Imagen Producto" id="avatar2" src="assets/images/avatars/profile-pic.jpg" />
-                                            </span>
-                                        </div>                                         
-                                        <div class="col-sm-4">
-                                            <button class="btn btn-sm btn-primary" id="btnAdicionales" tabindex="17">
+                                            <button class="btn btn-sm btn-primary" id="btnAdicionales" tabindex="13">
                                                 <i class="ace-icon fa fa-bookmark"></i>
                                                 Adicionales
                                             </button>
@@ -911,16 +910,16 @@
                                     
                                     <div class="form-group">
                                         <label class="col-sm-2 middle">          
-                                            <input class="ace" type="checkbox" id="igv" tabindex="18"/>
+                                            <input class="ace" type="checkbox" id="igv" tabindex="14"/>
                                             <span class="lbl">  IGV?</span>                                          
                                         </label>     
                                         <label class="col-sm-2 middle">          
-                                            <input class="ace" type="checkbox" id="isc" tabindex="19"/>
+                                            <input class="ace" type="checkbox" id="isc" tabindex="15"/>
                                             <span class="lbl">  ISC?</span>                                          
                                         </label>  
                                         <label for="tipoisc" class="col-sm-1 control-label">Tipo ISC</label>
                                         <div class="col-sm-3">
-                                            <select id="tipoisc" name="tipoisc" class="col-xs-12 col-sm-12" tabindex="20">
+                                            <select id="tipoisc" name="tipoisc" class="col-xs-12 col-sm-12" tabindex="16">
                                                 <%
                                                     DaoTipoISCImpl daoTipoISC = new DaoTipoISCImpl();
                                                     List<BeanTipoISC> tipoisc = daoTipoISC.accionListar();
@@ -938,20 +937,34 @@
                                         </div>
                                         <label for="baseisc" class="col-sm-1 control-label">Base ISC</label>
                                         <div class="col-sm-1">
-                                            <input type="text" id="baseisc" class="form-control" style="text-transform:uppercase" tabindex="21"/>
+                                            <input type="text" id="baseisc" class="form-control" style="text-transform:uppercase" tabindex="17"/>
                                         </div> 
                                         <label for="factorisc" class="col-sm-1 control-label">Factor ISC</label>
                                         <div class="col-sm-1">
-                                            <input type="text" id="factorisc" class="form-control" style="text-transform:uppercase" tabindex="22"/>
+                                            <input type="text" id="factorisc" class="form-control" style="text-transform:uppercase" tabindex="18"/>
                                         </div> 
                                     </div>
-                                            
+                                    
+                                    &nbsp;&nbsp;
+                                    
+                                    <div class="form-group">
+                                        <label class="col-sm-3 middle">          
+                                            <input class="ace" type="checkbox" id="flaglote" tabindex="19"/>
+                                            <span class="lbl"> Agrupar por Lote</span>                                          
+                                        </label>
+                                        <div class="col-sm-4">
+                                            <span class="profile-picture" style="display: none" tabindex="20">
+                                                <img class="editable img-responsive" alt="Imagen Producto" id="avatar2" src="assets/images/avatars/profile-pic.jpg" />
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
                                     &nbsp;&nbsp;
                                     
                                     <div class="form-group" id="divestado">
                                         <label for="estado" class="col-sm-4 control-label">Estado</label>
                                         <div class="col-sm-8">  
-                                            <select id="estado" name="estado" class="form-control" tabindex="5">
+                                            <select id="estado" name="estado" class="form-control" tabindex="21">
                                                <option value="A">ACTIVO</option>
                                                <option value="I">INACTIVO</option>
                                             </select> 
@@ -1180,6 +1193,7 @@
                             "action": function () {
                                 $('#opcion').val('insertar');
                                 $('#codigo').val('');
+                                $('#codigosunat').val('');
                                 $('#descripcion').val('');
                                 $('#marca').val('1');
                                 $('#unidadmedida').val('1');
@@ -1189,6 +1203,13 @@
                                 //$('#tipoisc').val('1');
                                 $('#baseisc').val('0');
                                 $('#factorisc').val('0');
+                                $('#igv').prop('checked',false);
+                                $('#isc').prop('checked',false);
+                                $('#flaglote').prop('checked',false);
+                                
+                                preciosVenta = [];
+                                $('.tarifa').remove();
+                                
                                 $('#codigoproveedor').val('');
                                 $('#pesoproveedor').val('0');
                                 $('#estado').val('A');
@@ -1196,6 +1217,8 @@
                                                                 
                                 var familia = $("#familiaproducto").val();
                                 
+                                
+ 
                                 $.get('../ClaseProducto', {
                                     "familiaproducto": familia
                                 }, function(response){
@@ -1280,14 +1303,46 @@
                     var factorisc = $('#factorisc').val();
                     var codigoproveedor = $('#codigoproveedor').val();
                     var pesoproveedor = $('#pesoproveedor').val();
+                    
+                    var flaglote = "N";
+                    if($("#flaglote").is(':checked')){
+                        flaglote = "S";
+                    }
+                                 
                     var estado = $('#estado').val();
-                    var opcion = $('#opcion').val();                    
+                    
+                    var codigosunat = $('#codigosunat').val();
+                    
+                    var opcion = $('#opcion').val();  
+                    <%--
+                    if(preciosVenta.length===0){                   
+                        $.getJSON("../Tarifa", {idproducto: 0}, function (data, textStatus, jqXHR) {
+                            $.each(data, function (index, item) {//recorremos la lista
+                                //alertify.error("entro: "+item.descripcion);
+                                var valortarifa = item.valor;
+                                var idtarifa = item.idtarifa;
+                                var descritarifa = item.descripcion;
+                                preciosVenta.push({idtarifa:idtarifa, descripcion:descritarifa, valor:valortarifa}); //NO FUNCIONA ???
+                            });          
+                        });      
+                    }
+                    --%>
+                    var precios = "";            
+                    if(preciosVenta.length>0){              
+                        $.each(preciosVenta, function (indice, id) {
+                            precios+=preciosVenta[indice].idtarifa+";"+preciosVenta[indice].valor;
+                            precios+="-/-";
+                        });
+                    }    
+                    //alert("precios: "+preciosVenta.length);
+                    //return;
                     $.ajax({
                         method: "POST",
                         url: "../Producto",
                         data: {"opcion": opcion, "idmarca": idmarca, "idproducto": idproducto,  "descripcion": descripcion, "codigo": codigo, "afectoigv": afectoigv, "afectoisc": afectoisc,
                             "idcategoriaproducto": idcategoriaproducto, "idunidadmedida": idunidadmedida, "idmoneda": idmoneda, "idtipoproducto": idtipoproducto, "preciocompra": preciocompra,
-                            "idtipoisc": idtipoisc, "baseisc": baseisc, "factorisc": factorisc, "codigoproveedor": codigoproveedor, "pesoproveedor": pesoproveedor, "estado": estado}
+                            "idtipoisc": idtipoisc, "baseisc": baseisc, "factorisc": factorisc, "flaglote": flaglote, "codigoproveedor": codigoproveedor, "pesoproveedor": pesoproveedor, 
+                            "preciosVenta": precios, "estado": estado, "codigosunat": codigosunat}
                     }).done(function (data) {
                         var obj = jQuery.parseJSON(data);
                         if (obj.mensaje.indexOf('ERROR') !== -1) {
@@ -1318,8 +1373,8 @@
                             
                             $('#codigo').val(obj.codigo);
                             $('#descripcion').val(obj.descripcion);
-                            
-                            if(obj.afectoigv==='S'){
+
+                            if(obj.afectoigv==="S"){
                                 $('#igv').prop('checked', true);
                             }
                             if(obj.afectoisc==='S'){
@@ -1331,6 +1386,19 @@
                                 $('label[for="factorisc"]').show(); 
                                 $('#factorisc').show();
                             }
+                            
+                            preciosVenta = [];
+                            $.getJSON("../Tarifa", {idproducto: obj.idproducto}, function (data, textStatus, jqXHR) {
+                                $('.tarifa').remove();
+                                $.each(data, function (index, item) {//recorremos la lista
+                                    //alertify.error("entro: "+item.descripcion);
+                                    var valortarifa = item.valor;
+                                    var idtarifa = item.idtarifa;
+                                    var descritarifa = item.descripcion;
+                                    preciosVenta.push({idtarifa:idtarifa, descripcion:descritarifa, valor:valortarifa}); //NO FUNCIONA ???
+                                });          
+                            });  
+                            
                             $('#marca').val(obj.marca);
                             $('#unidadmedida').val(obj.unidadmedida);
                             $('#moneda').val(obj.moneda);
@@ -1341,7 +1409,12 @@
                             $('#factorisc').val(obj.factorisc);
                             $('#codigoproveedor').val(obj.codigoproveedor);
                             $('#pesoproveedor').val(obj.pesoproveedor);
-
+                            $('#codigosunat').val(obj.codigosunat);
+                            
+                            if(obj.flaglote==="S"){
+                                $('#flaglote').prop('checked', true);
+                            }
+                            
                             $('#familiaproducto').val(obj.familiaproducto);    
      
                             $.get('../ClaseProducto', {
@@ -1556,9 +1629,10 @@
                         if(valortarifa===""){
                             valortarifa=0;
                         }
-                        preciosVenta.push({id:idtarifa, descripcion:descritarifa, valor:valortarifa});
-                    });                   
-                    //$('#modalPrecioVenta').one('hidden.bs.modal', function() { $('#modalAgregarProducto').modal('show'); }).modal('hide');
+                        preciosVenta.push({idtarifa:idtarifa, descripcion:descritarifa, valor:valortarifa});
+                    });    
+                    //$('#modalPrecioVenta').hide();
+                    $('#modalPrecioVenta').one('hidden.bs.modal', function() { $('#modalAgregarProducto').modal('show'); }).modal('hide');
                 });
                 
                 $("#btnAdicionales").click(function (){

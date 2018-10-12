@@ -1,23 +1,24 @@
 package gilead.gcbusiness.controller;
 
-import gilead.gcbusiness.dao.impl.DaoAlmacenProductoImpl;
 import gilead.gcbusiness.dao.impl.DaoCategoriaProductoImpl;
 import gilead.gcbusiness.dao.impl.DaoClaseProductoImpl;
-import gilead.gcbusiness.dao.impl.DaoFamiliaProductoImpl;
 import gilead.gcbusiness.dao.impl.DaoLineaProductoImpl;
-import gilead.gcbusiness.dao.impl.DaoMarcaImpl;
 import gilead.gcbusiness.dao.impl.DaoProductoImpl;
-import gilead.gcbusiness.dao.impl.DaoUnidadMedidaImpl;
+import gilead.gcbusiness.dto.DTOProducto;
 import gilead.gcbusiness.model.BeanCategoriaProducto;
 import gilead.gcbusiness.model.BeanClaseProducto;
-import gilead.gcbusiness.model.BeanFamiliaProducto;
 import gilead.gcbusiness.model.BeanLineaProducto;
-import gilead.gcbusiness.model.BeanMarca;
 import gilead.gcbusiness.model.BeanProducto;
-import gilead.gcbusiness.model.BeanUnidadMedida;
+import gilead.gcbusiness.sql.ConectaDb;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -37,25 +38,13 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
         if (opcion.equals("listar")) {
             try (PrintWriter out = response.getWriter()) {
                 DaoProductoImpl daoProductoImpl = new DaoProductoImpl();
-                DaoMarcaImpl daoMarcaImpl = new DaoMarcaImpl();
-                DaoCategoriaProductoImpl daoCategoriaProductoImpl = new DaoCategoriaProductoImpl();
-                DaoUnidadMedidaImpl daoUnidadMedidaImpl = new DaoUnidadMedidaImpl();
-                List<BeanProducto> listProductos = daoProductoImpl.accionListar();
+                List<DTOProducto> listProductos = daoProductoImpl.accionListarDTOProducto();
 
                 org.json.simple.JSONArray datos = new org.json.simple.JSONArray();
 
                 for (int i = 0; i < listProductos.size(); i++) {
                     String acciones = "";
                    
-                    BeanMarca marca = null;                  
-                    marca = daoMarcaImpl.accionObtener(listProductos.get(i).getIdmarca());
-                     
-                    BeanCategoriaProducto categoria = null;                  
-                    categoria = daoCategoriaProductoImpl.accionObtener(listProductos.get(i).getIdcategoriaproducto());
-                    
-                    BeanUnidadMedida unidadmedida = null;                  
-                    unidadmedida = daoUnidadMedidaImpl.accionObtener(listProductos.get(i).getIdunidadmedida());
-                    
                     if (listProductos.get(i).getEstado().equals("A")) {
                         acciones = "<div class=\"hidden-sm hidden-xs btn-group\">"
                                 + "<button type='button' name='actualizar' id='" + listProductos.get(i).getIdproducto() + "' class='btn btn-xs btn-info actualizar' title='Actualizar'><i class=\"ace-icon fa fa-pencil bigger-120\"></i></button>"
@@ -70,9 +59,9 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                     org.json.simple.JSONObject obj = new org.json.simple.JSONObject();
                     obj.put("codigo", listProductos.get(i).getCodigo());
                     obj.put("descripcion", listProductos.get(i).getDescripcion());
-                    obj.put("marca", marca.getDescripcion());
-                    obj.put("categoriaproducto", categoria.getDescripcion());
-                    obj.put("unidadmedida", unidadmedida.getDescripcion());
+                    obj.put("marca", listProductos.get(i).getDescripcionmarca());
+                    obj.put("categoriaproducto", listProductos.get(i).getDescripcioncategoria());
+                    obj.put("unidadmedida", listProductos.get(i).getDescripcionunidadmedida());
                     obj.put("estado", "A".equals(listProductos.get(i).getEstado())?"ACTIVO":"INACTIVO");
                     obj.put("acciones", acciones);
                     datos.add(obj);
@@ -82,10 +71,31 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
             }
         }else if (opcion.equals("insertar")) {  
             System.out.println("INSERTAR PRODUCTO");
-            try (PrintWriter out = response.getWriter()) {
+            PrintWriter out = response.getWriter();
+            ConectaDb db = new ConectaDb();
+            Connection cn = null;
+            Statement st = null;
+            String sqlEjecucion = null;
+            String json = null;
+            try{           
+                cn = db.getConnection();
+                cn.setAutoCommit(false);
+                st = cn.createStatement();
+                
+                Integer idProducto = 0;
+                String query = "SELECT NEXTVAL('gcbusiness.producto_id_producto_seq')";
+                sqlEjecucion = query;
+                
+                java.sql.ResultSet rs = st.executeQuery(query);
+
+                if (rs.next()) {
+                    idProducto = rs.getInt(1);
+                }
+           
                 Integer idmarca = Integer.parseInt(request.getParameter("idmarca"));
                 String descripcion = request.getParameter("descripcion");
                 String codigo = request.getParameter("codigo");
+                String codigosunat = request.getParameter("codigosunat");
                 String afectoigv = request.getParameter("afectoigv");
                 String afectoisc = request.getParameter("afectoisc");
                 Integer idcategoriaproducto = Integer.parseInt(request.getParameter("idcategoriaproducto"));
@@ -93,37 +103,114 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                 Integer idmoneda = Integer.parseInt(request.getParameter("idmoneda"));
                 Integer idtipoproducto = Integer.parseInt(request.getParameter("idtipoproducto"));
                 Double preciocompra = Double.parseDouble(request.getParameter("preciocompra"));
+                String flaglote = request.getParameter("flaglote");
                 Integer idtipoisc = Integer.parseInt(request.getParameter("idtipoisc"));
                 Double baseisc = Double.parseDouble(request.getParameter("baseisc"));
                 Double factorisc = Double.parseDouble(request.getParameter("factorisc"));
+                String preciosventa = request.getParameter("preciosVenta")!=null?(String)request.getParameter("preciosVenta"):"";
                 String codigoproveedor = request.getParameter("codigoproveedor");
                 Double pesoproveedor = Double.parseDouble(request.getParameter("pesoproveedor"));
                 java.util.Date utilDate = new java.util.Date(System.currentTimeMillis());
                 java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
                 java.sql.Timestamp ts = new java.sql.Timestamp(sqlDate.getTime());
                 String login_usuario = (String) session.getAttribute("login_usuario");
-                BeanProducto nuevo_producto = new BeanProducto(null, idmarca, idcategoriaproducto, idmoneda, idtipoproducto, idunidadmedida, codigo, null, descripcion, afectoigv, afectoisc, idtipoisc, baseisc, factorisc, 0.00, 0.00, preciocompra, preciocompra, null, "A", codigoproveedor, pesoproveedor, ts, login_usuario, request.getRemoteHost(), request.getRemoteAddr(), null, null, null, null);
-                DaoProductoImpl daoProductoImpl = new DaoProductoImpl();
-                String msg = daoProductoImpl.accionCrear(nuevo_producto);
-                String json = null;
-                if (msg == null) {
-                    json = "{ \"mensaje\":\"<em>SE CREÓ CORRECTAMENTE EL PRODUCTO</em>\" ";
-                } else {
-                    json = "{ \"mensaje\":\"<em>ERROR AL EJECUTAR LA CONSULTA</em>\" ";
-                    json += ",";
-                    json += " \"html\":\"<div class='alert alert-danger'><button class='close' data-dismiss='alert'><i class='ace-icon fa fa-times'></i></button><span class='ace-icon fa fa-hand-o-right'></span> " + msg.replace("\n", "") + "</div>\" ";
-                }
+                Double valorcompra = preciocompra;
+                if(afectoigv.equals("S"))
+                    valorcompra = preciocompra*(1/(1+0.18));
 
+                query = "INSERT INTO gcbusiness.producto (id_producto, id_marca, id_categoriaproducto, id_moneda, id_tipoproducto, id_unidadmedida, codigo_interno,"
+                      + " codigo_ean, codigo_sunat, descripcion, afecto_igv, afecto_isc, id_tipoisc, base_isc, factor_isc, valor_compra, precio_compra, flag_lote, imagen,"
+                      + " codigo_proveedor, peso_proveedor, estado, fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion)"
+                      + " VALUES ("+idProducto+", "+idmarca+", "+idcategoriaproducto+", "+idmoneda+", "+idtipoproducto+", "+idunidadmedida+", '"+codigo
+                      + "', '"+codigo+"', '"+codigosunat+"', '"+descripcion+"', '"+afectoigv+"', '"+afectoisc+"', "+idtipoisc+", "+baseisc+", "+factorisc+", "+Math.round(valorcompra* Math.pow(10,2)) / Math.pow(10, 2)+", "+preciocompra+", '"+flaglote+"', null"
+                      + ", '"+codigoproveedor+"', "+pesoproveedor+", 'A','"+ts+"', '"+login_usuario+ "', '"+request.getRemoteHost()+ "', '"+request.getRemoteAddr()+"')";
+                
+                sqlEjecucion = query;
+                st.executeUpdate(query); 
+               
+                query = "INSERT INTO gcbusiness.tarifaproducto (id_tarifa, id_producto, valor, estado, fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion) VALUES (";
+                String qry = "";
+                if(!preciosventa.equals("")){
+                    String [] lstPrecios = preciosventa.split("-/-");
+                    String precio [];   
+                    for (String precios : lstPrecios) {
+                        if (!precios.equals("")) {
+                            precio = precios.split(";");
+                            if(precio.length > 0){
+                                qry = query + precio[0] + ", "+idProducto+", "+precio[1]+", 'A','"+ts+"', '"+login_usuario+ "', '"+request.getRemoteHost()+ "', '"+request.getRemoteAddr()+"')";
+                                sqlEjecucion = qry;
+                                st.executeUpdate(qry);
+                            }
+                        }       
+                    }
+                }else{
+                    String qry2 = "SELECT id_tarifa FROM gcbusiness.tarifa ORDER BY id_tarifa";
+                    java.sql.ResultSet rs2 = st.executeQuery(qry2);
+                    Integer idtarifa;
+                    while(rs2.next()){
+                        idtarifa = rs2.getInt(1);
+                        qry = query + idtarifa + ", "+idProducto+", 0.00 , 'A','"+ts+"', '"+login_usuario+ "', '"+request.getRemoteHost()+ "', '"+request.getRemoteAddr()+"')";
+                        sqlEjecucion = qry;
+                        st.executeUpdate(qry);
+                    }
+                }
+                
+                query = "INSERT INTO gcbusiness.proveedorproducto (id_producto, id_proveedor, estado, fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion) "
+                +"SELECT "+idProducto+",id_proveedor, 'N', '"+ts+"', '"+login_usuario+ "', '"+request.getRemoteHost()+ "', '"+request.getRemoteAddr()+"'  FROM gcbusiness.proveedor ";
+                sqlEjecucion = query;
+                st.executeUpdate(query); 
+                    
+                json = "{ \"mensaje\":\"<em>SE CREÓ CORRECTAMENTE EL PRODUCTO</em>\" ";
+
+                cn.commit();
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(GCBusiness_Producto_Servlet.class.getName()).log(Level.SEVERE, null, ex);
+                json = "{ \"mensaje\":\"<em>ERROR AL EJECUTAR LA CONSULTA</em>\" ";
+                json += ",";
+                json += " \"html\":\"<div class='alert alert-danger'><span class='glyphicon glyphicon-remove'></span> "+ex.getMessage().replace("\n", "").concat(". "+sqlEjecucion)+"</div>\" ";
+                if(cn!=null)
+                {
+                    System.out.println("Rollback");
+                    try {
+                        //deshace todos los cambios realizados en los datos
+                        cn.rollback();
+                    } catch (SQLException ex1) {
+                        //System.err.println( "No se pudo deshacer" + ex1.getMessage() );
+                        Logger.getLogger(GCBusiness_Producto_Servlet.class.getName()).log(Level.SEVERE, null, ex1);
+                    }
+                }
+            } finally {
                 json += "}";
-                System.out.println(json);
                 out.print(json);
+                out.close();
+                try {
+                    cn.close();
+                }catch(SQLException ex){
+                    Logger.getLogger(GCBusiness_Producto_Servlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                try {if(cn!=null)cn.close();if(st!=null)st.close();} catch (SQLException ex) {Logger.getLogger(GCBusiness_Producto_Servlet.class.getName()).log(Level.SEVERE, null, ex);}
             }
+            
+            
         }else if (opcion.equals("actualizar")) {
-            try (PrintWriter out = response.getWriter()) {
+            System.out.println("ACTUALIZAR PRODUCTO");
+            PrintWriter out = response.getWriter();
+            ConectaDb db = new ConectaDb();
+            Connection cn = null;
+            Statement st = null;
+            String sqlEjecucion = null;
+            String json = null;
+            try{           
+                cn = db.getConnection();
+                cn.setAutoCommit(false);
+                st = cn.createStatement();
+
                 Integer idproducto = Integer.parseInt(request.getParameter("idproducto"));
                 Integer idmarca = Integer.parseInt(request.getParameter("idmarca"));
                 String descripcion = request.getParameter("descripcion");
                 String codigo = request.getParameter("codigo");
+                String codigosunat = request.getParameter("codigosunat");
                 String afectoigv = request.getParameter("afectoigv");
                 String afectoisc = request.getParameter("afectoisc");
                 Integer idcategoriaproducto = Integer.parseInt(request.getParameter("idcategoriaproducto"));
@@ -131,9 +218,11 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                 Integer idmoneda = Integer.parseInt(request.getParameter("idmoneda"));
                 Integer idtipoproducto = Integer.parseInt(request.getParameter("idtipoproducto"));
                 Double preciocompra = Double.parseDouble(request.getParameter("preciocompra"));
+                String flaglote = request.getParameter("flaglote");
                 Integer idtipoisc = Integer.parseInt(request.getParameter("idtipoisc"));
                 Double baseisc = Double.parseDouble(request.getParameter("baseisc"));
                 Double factorisc = Double.parseDouble(request.getParameter("factorisc"));
+                String preciosventa = request.getParameter("preciosVenta")!=null?(String)request.getParameter("preciosVenta"):"";
                 String codigoproveedor = request.getParameter("codigoproveedor");
                 Double pesoproveedor = Double.parseDouble(request.getParameter("pesoproveedor"));
                 String estado = request.getParameter("estado");
@@ -141,62 +230,99 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                 java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
                 java.sql.Timestamp ts = new java.sql.Timestamp(sqlDate.getTime());
                 String login_usuario = (String) session.getAttribute("login_usuario");
-                BeanProducto nuevo_producto = new BeanProducto(idproducto, idmarca, idcategoriaproducto, idmoneda, idtipoproducto, idunidadmedida, codigo, null, descripcion, afectoigv, afectoisc, idtipoisc, baseisc, factorisc, 0.00, 0.00, preciocompra, preciocompra, null, estado, codigoproveedor, pesoproveedor, null, null, null, null, ts, login_usuario, request.getRemoteHost(), request.getRemoteAddr());
-                DaoProductoImpl daoProductoImpl = new DaoProductoImpl();
-                String msg = daoProductoImpl.accionActualizar(nuevo_producto);
-
-                String json = null;
-                if (msg == null) {
-                    json = "{ \"mensaje\":\"<em>SE ACTUALIZÓ CORRECTAMENTE EL PRODUCTO</em>\" ";
-                } else {
-                    json = "{ \"mensaje\":\"<em>ERROR AL EJECUTAR LA CONSULTA</em>\" ";
-                    json += ",";
-                    json += " \"html\":\"<div class='alert alert-danger'><button class='close' data-dismiss='alert'><i class='ace-icon fa fa-times'></i></button><span class='ace-icon fa fa-hand-o-right'></span> " + msg.replace("\n", "") + "</div>\" ";
+                Double valorcompra = preciocompra;
+                if(afectoigv.equals("S"))
+                    valorcompra = preciocompra*(1/(1+0.18));
+                
+                String query = "UPDATE gcbusiness.producto SET id_marca="+idmarca+", id_categoriaproducto="+idcategoriaproducto+", id_moneda="+idmoneda+", id_tipoproducto="+idtipoproducto
+                + ", id_unidadmedida="+idunidadmedida+", codigo_interno='"+codigo+"', codigo_sunat='"+codigosunat+"', descripcion='"+descripcion+"', afecto_igv='"+afectoigv+"', afecto_isc='"+afectoisc+"', id_tipoisc="+idtipoisc
+                +", base_isc="+baseisc+", factor_isc="+factorisc+", valor_compra="+Math.round(valorcompra* Math.pow(10,2)) / Math.pow(10,2)+", precio_compra="+preciocompra+", flag_lote='"+flaglote+"', estado='"+estado
+                +"', codigo_proveedor='"+codigoproveedor+"', peso_proveedor="+pesoproveedor+", fecha_modificacion='"+ts+"', usuario_modificacion='"+login_usuario+"', terminal_modificacion='"+request.getRemoteHost()
+                +"', ip_modificacion='"+request.getRemoteAddr()+"' WHERE id_producto="+idproducto+";";
+                
+                System.err.println("query: "+query);
+               
+                sqlEjecucion = query;
+                st.executeUpdate(query); 
+               
+                query = "UPDATE gcbusiness.tarifaproducto SET valor=";
+                String qry = "";
+                
+                String [] lstPrecios = preciosventa.split("-/-");
+                String precio [];   
+                for (String precios : lstPrecios) {
+                    if (!precios.equals("")) {
+                        precio = precios.split(";");
+                        if(precio.length > 0){
+                            qry = query + precio[1] + ", fecha_modificacion='"+ts+"', usuario_modificacion='"+login_usuario+
+                                "', terminal_modificacion='"+request.getRemoteHost()+"', ip_modificacion='"+request.getRemoteAddr()+
+                                "' WHERE id_tarifa="+precio[0] + " AND id_producto="+idproducto+";";
+                            sqlEjecucion = qry;
+                            st.executeUpdate(qry);
+                        }
+                    }       
                 }
+                    
+                json = "{ \"mensaje\":\"<em>SE ACTUALIZÓ CORRECTAMENTE EL PRODUCTO</em>\" ";
 
+                cn.commit();
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(GCBusiness_Producto_Servlet.class.getName()).log(Level.SEVERE, null, ex);
+                json = "{ \"mensaje\":\"<em>ERROR AL EJECUTAR LA CONSULTA</em>\" ";
+                json += ",";
+                json += " \"html\":\"<div class='alert alert-danger'><span class='glyphicon glyphicon-remove'></span> "+ex.getMessage().replace("\n", "").concat(". "+sqlEjecucion)+"</div>\" ";
+                if(cn!=null)
+                {
+                    System.out.println("Rollback");
+                    try {
+                        //deshace todos los cambios realizados en los datos
+                        cn.rollback();
+                    } catch (SQLException ex1) {
+                        //System.err.println( "No se pudo deshacer" + ex1.getMessage() );
+                        Logger.getLogger(GCBusiness_Producto_Servlet.class.getName()).log(Level.SEVERE, null, ex1);
+                    }
+                }
+            } finally {
                 json += "}";
-                System.out.println(json);
                 out.print(json);
+                out.close();
+                try {
+                    cn.close();
+                }catch(SQLException ex){
+                    Logger.getLogger(GCBusiness_Producto_Servlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                try {if(cn!=null)cn.close();if(st!=null)st.close();} catch (SQLException ex) {Logger.getLogger(GCBusiness_Producto_Servlet.class.getName()).log(Level.SEVERE, null, ex);}
             }
         } else if (opcion.equals("buscar")) {
             try (PrintWriter out = response.getWriter()) {
                 Integer idproducto = Integer.parseInt(request.getParameter("idproducto"));
                 DaoProductoImpl daoProductoImpl = new DaoProductoImpl();
-                BeanProducto beanProducto = (BeanProducto) daoProductoImpl.accionObtener(idproducto);
-                
-                DaoCategoriaProductoImpl daoCategoriaProductoImpl = new DaoCategoriaProductoImpl();
-                BeanCategoriaProducto beanCategoriaProducto = (BeanCategoriaProducto) daoCategoriaProductoImpl.accionObtener(beanProducto.getIdcategoriaproducto());
-                
-                DaoLineaProductoImpl daoLineaProductoImpl = new DaoLineaProductoImpl();
-                BeanLineaProducto beanLineaProducto = (BeanLineaProducto) daoLineaProductoImpl.accionObtener(beanCategoriaProducto.getIdlineaproducto());
-                
-                DaoClaseProductoImpl daoClaseProductoImpl = new DaoClaseProductoImpl();
-                BeanClaseProducto beanClaseProducto = (BeanClaseProducto) daoClaseProductoImpl.accionObtener(beanLineaProducto.getIdclaseproducto());
-                
-                //DaoFamiliaProductoImpl daoFamiliaProductoImpl = new DaoFamiliaProductoImpl();
-                //BeanFamiliaProducto beanFamiliaProducto = (BeanFamiliaProducto) daoFamiliaProductoImpl.accionObtener(beanClaseProducto.getIdfamiliaproducto());
-                
+                DTOProducto dtoProducto = (DTOProducto) daoProductoImpl.accionObtener(idproducto);
+   
                 org.json.simple.JSONObject obj = new org.json.simple.JSONObject();
-                obj.put("idproducto", beanProducto.getIdproducto());
-                obj.put("codigo", beanProducto.getCodigo());
-                obj.put("descripcion", beanProducto.getDescripcion());
-                obj.put("familiaproducto", beanClaseProducto.getIdfamiliaproducto());
-                obj.put("claseproducto", beanClaseProducto.getIdclaseproducto());
-                obj.put("lineaproducto", beanLineaProducto.getIdlineaproducto());
-                obj.put("categoriaproducto", beanCategoriaProducto.getIdcategoriaproducto());
-                obj.put("afectoigv", beanProducto.getAfectoIGV());
-                obj.put("afectoisc", beanProducto.getAfectoISC());
-                obj.put("marca", beanProducto.getIdmarca());
-                obj.put("unidadmedida", beanProducto.getIdunidadmedida());
-                obj.put("moneda", beanProducto.getIdmoneda());
-                obj.put("tipoproducto", beanProducto.getIdtipoproducto());
-                obj.put("preciocompra", beanProducto.getPreciocompra());
-                obj.put("tipoisc", beanProducto.getIdtipoISC());                
-                obj.put("baseisc", beanProducto.getBaseISC());
-                obj.put("factorisc", beanProducto.getFactorISC());
-                obj.put("codigoproveedor", beanProducto.getCodigoproveedor());
-                obj.put("pesoproveedor", beanProducto.getPesoproveedor());
-                obj.put("estado", beanProducto.getEstado());
+                obj.put("idproducto", dtoProducto.getIdproducto());
+                obj.put("codigo", dtoProducto.getCodigo());
+                obj.put("codigosunat", dtoProducto.getCodigosunat());
+                obj.put("descripcion", dtoProducto.getDescripcion());
+                obj.put("familiaproducto", dtoProducto.getIdfamiliaproducto());
+                obj.put("claseproducto", dtoProducto.getIdclaseproducto());
+                obj.put("lineaproducto", dtoProducto.getIdlineaproducto());
+                obj.put("categoriaproducto", dtoProducto.getIdcategoriaproducto());
+                obj.put("afectoigv", dtoProducto.getAfectoIGV());
+                obj.put("afectoisc", dtoProducto.getAfectoISC());
+                obj.put("marca", dtoProducto.getIdmarca());
+                obj.put("unidadmedida", dtoProducto.getIdunidadmedida());
+                obj.put("moneda", dtoProducto.getIdmoneda());
+                obj.put("tipoproducto", dtoProducto.getIdtipoproducto());
+                obj.put("preciocompra", dtoProducto.getPreciocompra());
+                obj.put("tipoisc", dtoProducto.getIdtipoISC());                
+                obj.put("baseisc", dtoProducto.getBaseISC());
+                obj.put("factorisc", dtoProducto.getFactorISC());
+                obj.put("codigoproveedor", dtoProducto.getCodigoproveedor());
+                obj.put("pesoproveedor", dtoProducto.getPesoproveedor());
+                obj.put("flaglote", dtoProducto.getFlaglote());
+                obj.put("estado", dtoProducto.getEstado());
                 out.print(obj.toJSONString());
 
                 System.out.println("buscar -- " + obj.toJSONString());

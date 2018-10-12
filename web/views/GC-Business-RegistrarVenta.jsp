@@ -1,18 +1,19 @@
 <%-- 
     Compañia            : Gilead Consulting S.A.C.
     Sistema             : GC-Business
-    Módulo              : Administracion
-    Nombre              : GC-Business-GestionSucursal.jsp
+    Módulo              : Ventas
+    Nombre              : GC-Business-RegistrarVenta.jsp
     Versión             : 1.0
     Fecha Creación      : 21-08-2018
     Autor Creación      : Pablo Jimenez Aguado
-    Uso                 : Crear, Modificar, Consultar y Inactivar una sucursal
+    Uso                 : Vista Inicial al acceder al sistema
 --%>
 <%@page import="java.util.List"%>
 <%@page import="gilead.gcbusiness.model.BeanUsuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%
+    //String ID = (String) session.getAttribute("ID");
     List opciones = (List)session.getAttribute("accesos");
     BeanUsuario usuario = (BeanUsuario) session.getAttribute("usuario");
 %>
@@ -20,9 +21,9 @@
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <meta charset="utf-8" />
-        <title>GC BUSINESS - Gestión de Sucursales</title>
+        <title>GC BUSINESS - Registrar Venta</title>
 
-        <meta name="description" content="Dynamic tables and grids using jqGrid plugin" />
+        <meta name="description" content="Common form elements and layouts" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
         <!-- bootstrap & fontawesome -->
@@ -37,8 +38,7 @@
         <link rel="stylesheet" href="../assets/css/daterangepicker.min.css" />
         <link rel="stylesheet" href="../assets/css/bootstrap-datetimepicker.min.css" />
         <link rel="stylesheet" href="../assets/css/bootstrap-colorpicker.min.css" />
-        <link rel="stylesheet" href="../assets/css/ui.jqgrid.min.css" />
-        
+
         <!-- text fonts -->
         <link rel="stylesheet" href="../assets/css/fonts.googleapis.com.css" />
 
@@ -46,17 +46,13 @@
         <link rel="stylesheet" href="../assets/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
 
         <!--[if lte IE 9]>
-                <link rel="stylesheet" href="assets/css/ace-part2.min.css" class="ace-main-stylesheet" />
+                <link rel="stylesheet" href="../assets/css/ace-part2.min.css" class="ace-main-stylesheet" />
         <![endif]-->
-        
-        <!-- Alertify Version Nueva-->
-        <link rel="stylesheet" href="../assets/css/alertify/alertify.css">  
-        
         <link rel="stylesheet" href="../assets/css/ace-skins.min.css" />
         <link rel="stylesheet" href="../assets/css/ace-rtl.min.css" />
 
         <!--[if lte IE 9]>
-          <link rel="stylesheet" href="assets/css/ace-ie.min.css" />
+          <link rel="stylesheet" href="../assets/css/ace-ie.min.css" />
         <![endif]-->
 
         <!-- inline styles related to this page -->
@@ -67,12 +63,9 @@
         <!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
 
         <!--[if lte IE 8]>
-        <script src="assets/js/html5shiv.min.js"></script>
-        <script src="assets/js/respond.min.js"></script>
+        <script src="../assets/js/html5shiv.min.js"></script>
+        <script src="../assets/js/respond.min.js"></script>
         <![endif]-->
-        
-        <!-- Alertas Version Nueva -->
-        <script src="../assets/js/alertify/alertify.js"></script>
     </head>
     <body class="no-skin">
         <%
@@ -107,7 +100,7 @@
                                 <img class="nav-user-photo" src="../assets/images/avatars/avatar2.png" alt="Jason's Photo" />
                                 <span class="user-info">
                                     <small>Bienvenido,</small>
-                                        <%= usuario.getUsuario()%>
+                                        <%= usuario.getUsuario()%>                                    
                                 </span>
 
                                 <i class="ace-icon fa fa-caret-down"></i>
@@ -139,7 +132,7 @@
         <div class="main-container ace-save-state" id="main-container">
             <script type="text/javascript">
                 try {
-                    ace.settings.loadState('main-container');
+                    ace.settings.loadState('main-container')
                 } catch (e) {
                 }
             </script>
@@ -646,21 +639,21 @@
                                 <a href="#">Inicio</a>
                             </li>
                             <li>
-                                <a href="#">AdministraciÓn</a>
+                                <a href="#">Ventas</a>
                             </li>
-                            <li class="active">Sucursales</li>
+                            <li class="active">Registrar Venta</li>
                         </ul><!-- /.breadcrumb -->
 
                     </div>
 
                     <div class="page-content">
-
+                        
                         <div class="page-header">
                             <h1>
-                                Sucursales
+                                Registrar Venta
                                 <small>
                                     <i class="ace-icon fa fa-angle-double-right"></i>
-                                    Crear, modificar, eliminar sucursales
+                                    Emitir facturas y boletas
                                 </small>
                             </h1>
                         </div><!-- /.page-header -->
@@ -668,24 +661,12 @@
                         <div class="row">
                             <div class="col-xs-12">
                                 <!-- PAGE CONTENT BEGINS -->
-                                <div class="clearfix">
-                                    <div class="pull-right tableTools-container"></div>
+                                <div class="alert alert-block alert-success">
+                                <div class="container">
+                                    <h2>COMPROBANTES</h2>
+                                    <a href="GC-Business-Factura.jsp?" class="btn btn-info btn-lg" role="button">FACTURA</a>
+                                    <a href="GC-Business-Boleta.jsp?" class="btn btn-info btn-lg" role="button">BOLETA</a>
                                 </div>
-                                <div>
-                                    <table id="tablaSucursales" class="table table-striped table-bordered table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Nro</th>
-                                                <th>Descripción</th>
-                                                <th>Dirección</th>
-                                                <th>Teléfono</th>        
-                                                <th>Estado</th>
-                                                <th>Acciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="employee_data">
-                                        </tbody>
-                                    </table>
                                 </div>
                                 <!-- PAGE CONTENT ENDS -->
                             </div><!-- /.col -->
@@ -694,80 +675,6 @@
                 </div>
             </div><!-- /.main-content -->
 
-            <!-- Modales -->
-            <div class="modal" id="modalAgregarSucursal" tabindex="-1">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="blue bigger">Registrar Nueva Sucursal</h4>
-                        </div>
-
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-12">
-                                    <input type="hidden" id="idsucursal" value="">
-                                    <input type="hidden" id="opcion" value="">
-
-                                    <div class="form-group">
-                                        <label for="descripcion" class="col-sm-3 control-label">Descripción</label>
-
-                                        <div class="col-sm-9">
-                                            <input type="text" id="descripcion" class="form-control" style="text-transform:uppercase" tabindex="1"/>
-                                        </div>
-                                    </div>
-
-                                    &nbsp;&nbsp;
-
-                                    <div class="form-group">
-                                        <label for="direccion" class="col-sm-3 control-label">Dirección</label>
-
-                                        <div class="col-sm-9">
-                                            <input type="text" id="direccion" class="form-control" style="text-transform:uppercase" tabindex="2"/>
-                                        </div>
-                                    </div>
-
-                                    &nbsp;&nbsp;
-
-                                    <div class="form-group">
-                                        <label for="telefono" class="col-sm-3 control-label">Teléfono</label>
-
-                                        <div class="col-sm-9">
-                                            <input type="text" id="telefono" class="form-control" style="text-transform:uppercase" tabindex="3"/>
-                                        </div>
-                                    </div>
-                                    
-                                    &nbsp;&nbsp;
-
-                                    <div class="form-group" id="divestado">
-                                        <label for="estado" class="col-sm-2 control-label">Estado</label>
-                                        <div class="col-sm-3">  
-                                            <select id="estado" name="estado" class="form-control" tabindex="5">
-                                               <option value="A">ACTIVO</option>
-                                               <option value="I">INACTIVO</option>
-                                            </select> 
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button class="btn btn-sm" data-dismiss="modal">
-                                <i class="ace-icon fa fa-times"></i>
-                                Cancelar
-                            </button>
-
-                            <button class="btn btn-sm btn-primary" id="btnGuardar">
-                                <i class="ace-icon fa fa-check"></i>
-                                Grabar
-                            </button>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            
             <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
                 <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
             </a>
@@ -782,7 +689,7 @@
         <!-- <![endif]-->
 
         <!--[if IE]>
-        <script src="assets/js/jquery-1.11.3.min.js"></script>
+        <script src="../assets/js/jquery-1.11.3.min.js"></script>
         <![endif]-->
         <script type="text/javascript">
                     if ('ontouchstart' in document.documentElement)
@@ -790,248 +697,22 @@
         </script>
         <script src="../assets/js/bootstrap.min.js"></script>
 
-        <!-- page specific plugin scripts 
-        <script src="../assets/js/bootstrap-datepicker.min.js"></script>
-        <script src="../assets/js/jquery.jqGrid.min.js"></script>
-        <script src="../assets/js/grid.locale-en.js"></script>-->
-
         <!-- page specific plugin scripts -->
-        <script src="../assets/js/jquery.dataTables.min.js"></script>
-        <script src="../assets/js/jquery.dataTables.bootstrap.min.js"></script>
-        <script src="../assets/js/dataTables.buttons.min.js"></script>
-        <script src="../assets/js/buttons.flash.min.js"></script>
-        <script src="../assets/js/buttons.html5.min.js"></script>
-        <script src="../assets/js/buttons.print.min.js"></script>
-        <script src="../assets/js/buttons.colVis.min.js"></script>
-        <script src="../assets/js/dataTables.select.min.js"></script>
-        <script src="../assets/js/dataTables/jszip.min.js"></script>
-        <script src="../assets/js/dataTables/pdfmake.min.js"></script>
-        <script src="../assets/js/dataTables/vfs_fonts.js"></script>
+
+        <!--[if lte IE 8]>
+        <script src="../assets/js/excanvas.min.js"></script>
+        <![endif]-->
+        <script src="../assets/js/jquery-ui.custom.min.js"></script>
+        <script src="../assets/js/jquery.ui.touch-punch.min.js"></script>
+        <script src="../assets/js/jquery.easypiechart.min.js"></script>
+        <script src="../assets/js/jquery.sparkline.index.min.js"></script>
+        <script src="../assets/js/jquery.flot.min.js"></script>
+        <script src="../assets/js/jquery.flot.pie.min.js"></script>
+        <script src="../assets/js/jquery.flot.resize.min.js"></script>
 
         <!-- ace scripts -->
         <script src="../assets/js/ace-elements.min.js"></script>
         <script src="../assets/js/ace.min.js"></script>
-
-        <!--<script type="text/javascript" src="../assets/js/jquery.dataTables.min.js"></script>
-        <!--<script type="text/javascript" src="../assets/js/dataTables/dataTables.bootstrap.min.js"></script>-->
-
-        <!--<script type="text/javascript" src="../assets/js/dataTables.buttons.min.js"></script>
-        <!--<script type="text/javascript" src="../assets/js/dataTables/buttons.bootstrap.min.js"></script>-->
-
-        <!--<script type="text/javascript" src="../assets/js/buttons.html5.min.js"></script>
-
-        <!--<script type="text/javascript" src="../assets/js/dataTables/jszip.min.js"></script>
-        <script type="text/javascript" src="../assets/js/dataTables/pdfmake.min.js"></script>
-        <script type="text/javascript" src="../assets/js/dataTables/vfs_fonts.js"></script>-->
-
-        <!-- inline scripts related to this page -->
-        <script type="text/javascript">
-
-            $(document).ready(function () {
-                
-                $('body').on('shown.bs.modal', '#modalAgregarSucursal', function () {
-                    $('input:visible:enabled:first', this).focus();
-                });            
-            
-                var tablaSucursales = $('#tablaSucursales').DataTable({
-                    bAutoWidth: false,
-                    "processing": true,
-                    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
-                    "iDisplayLength": -1,
-                    destroy: true,
-                    responsive: true,
-                    "searching": true,
-                    "order": [[0, 'asc']],
-                    ajax: {
-                        method: "POST",
-                        url: "../Sucursal",
-                        data: {"opcion": "listar"},
-                        dataSrc: "data"
-                    },
-                    columns: [
-                        {"data": "nro"},
-                        {"data": "descripcion"},
-                        {"data": "direccion"},
-                        {"data": "telefono"},
-                        {"data": "estado"},
-                        {"data": "acciones"}
-                    ],
-                    dom: '<"row"<"col-xs-12 col-sm-4 col-md-4"l><"col-xs-12 col-sm-4 col-md-4"B><"col-xs-12 col-sm-4 col-md-4"f>>' +
-                            'tr<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>> ',
-                    'columnDefs': [
-                        {
-                            'targets': [0, 1, 2, 3, 4, 5],
-                            'createdCell': function (td, cellData, rowData, row, col) {
-                                $(td).attr('contenteditable', 'false');
-                            }
-                        }
-                    ],
-                    buttons: [
-                    ],
-                    language: {
-                        "url": "../assets/util/espanol.txt"
-                    }
-                });
-
-                $.fn.dataTable.Buttons.defaults.dom.container.className = 'dt-buttons btn-overlap btn-group btn-overlap';
-                new $.fn.dataTable.Buttons(tablaSucursales, {
-                    buttons: [
-                        {
-                            "text": "<i class='fa fa-plus bigger-110 blue'></i>",
-                            "titleAttr": "Nuevo",
-                            "className": "btn btn-white btn-primary btn-bold",
-                            "action": function () {
-                                $('#opcion').val('insertar');
-                                $('#descripcion').val('');
-                                $('#direccion').val('');
-                                $('#telefono').val('');
-                                $('#estado').val('A');
-                                $('#divestado').hide();
-                                $('#descripcion').prop('disabled', false);
-                                $('#modalAgregarSucursal .blue').text('Registrar Nueva Sucursal');
-                                $('#modalAgregarSucursal').modal('show');
-                                $('.divError').empty();
-                            }
-                        },
-                        {
-                            "extend": "copy",
-                            "text": "<i class='fa fa-copy bigger-110 pink'></i>",
-                            "titleAttr": "Copiar",
-                            "className": "btn btn-white btn-primary btn-bold"
-                        },
-                        {
-                            "extend": 'excel',
-                            "titleAttr": "Excel",
-                            "text": "<i class='fa fa-file-excel-o bigger-110 green'></i>",
-                            "className": "btn btn-white btn-primary btn-bold"
-                        },
-                        {
-                            "extend": "pdf",
-                            "titleAttr": "PDF",
-                            "text": "<i class='fa fa-file-pdf-o bigger-110 red'></i>",
-                            "className": "btn btn-white btn-primary btn-bold"
-                        },
-                        {
-                            "extend": "print",
-                            "titleAttr": "Imprimir",
-                            "text": "<i class='fa fa-print bigger-110 grey'></i>",
-                            "className": "btn btn-white btn-primary btn-bold",
-                            autoPrint: true,
-                            message: 'This print was produced using the Print button for DataTables'
-                        }
-                    ]
-                });
-
-                tablaSucursales.buttons().container().appendTo($('.tableTools-container'));
-
-                $('#btnGuardar').click(function (event) {
-                    var idsucursal = $('#idsucursal').val();
-                    var descripcion = $('#descripcion').val();
-                    var direccion = $('#direccion').val();
-                    var telefono = $('#telefono').val();
-                    var estado = $('#estado').val();
-                    var opcion = $('#opcion').val();
-                    $.ajax({
-                        method: "POST",
-                        url: "../Sucursal",
-                        data: {"opcion": opcion, "idsucursal": idsucursal, "descripcion": descripcion, "direccion": direccion, "telefono": telefono,
-                            "estado": estado}
-                    }).done(function (data) {
-                        var obj = jQuery.parseJSON(data);
-                        if (obj.mensaje.indexOf('ERROR') !== -1) {
-                            $('.divError').html(obj.html);
-                            $('.divError').addClass('tada animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
-                                $('.divError').removeClass('tada animated');
-                            });
-                        } else {
-                            tablaSucursales.ajax.reload();
-                            alertify.success(obj.mensaje);
-                        }
-                        $('#modalAgregarSucursal').modal('hide');
-                    });
-                });                         
-
-                //Actualizar registro
-                $(document).on('click', '.actualizar', function () {
-                    var idsucursal = $(this).attr('id');
-                    var row = $(this).parent().parent();
-                    $.ajax({
-                        url: "../Sucursal",
-                        method: "POST",
-                        data: {"opcion": "buscar", "idsucursal": idsucursal},
-                        success: function (data) {
-                            var obj = jQuery.parseJSON(data);
-                            $('#opcion').val('actualizar');
-                            $('#idsucursal').val(obj.idsucursal);
-                            $('#descripcion').val(obj.descripcion);
-                            $('#direccion').val(obj.direccion);
-                            $('#telefono').val(obj.telefono);
-                            $('#estado').val(obj.estado);
-                            $('#divestado').hide();
-                            $('#modalAgregarSucursal .blue').text('Modificar Sucursal');
-                            $('#modalAgregarSucursal').modal('show');
-                        },
-                        error: function (error) {
-                            alertify.error("ERROR AL EJECUTAR AJAX DE OBTENER DATOS USUARIO");
-                        }
-                    }).done();
-
-                });
-
-                //Eliminar registro
-                $(document).on('click', '.eliminar', function () {
-                    var idsucursal = $(this).attr('id');
-                    var row = $(this).parent().parent();
-                    $.ajax({
-                        url: "../Sucursal",
-                        method: "POST",
-                        data: {"opcion": "eliminar", "idsucursal": idsucursal},
-                        success: function (data) {
-                            var obj = jQuery.parseJSON(data);
-                            if (obj.mensaje.indexOf('ERROR') !== -1) {
-                                $('.divError').html(obj.html);
-                                $('.divError').addClass('tada animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
-                                    $('.divError').removeClass('tada animated');
-                                });
-                            } else {
-                                tablaSucursales.ajax.reload();
-                                alertify.success(obj.mensaje);
-                            }
-                        },
-                        error: function (error) {
-                            alertify.error("ERROR AL EJECUTAR AJAX DE INHABILITAR");
-                        }
-                    }).done();
-                });
-
-                //Activar sucursal
-                $(document).on('click', '.activar', function () {
-                    var idsucursal = $(this).attr('id');
-                    var row = $(this).parent().parent();
-                    $.ajax({
-                        url: "../Sucursal",
-                        method: "POST",
-                        data: {"opcion": "activar", "idsucursal": idsucursal},
-                        success: function (data) {
-                            var obj = jQuery.parseJSON(data);
-                            if (obj.mensaje.indexOf('ERROR') !== -1) {
-                                $('.divError').html(obj.html);
-                                $('.divError').addClass('tada animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
-                                    $('.divError').removeClass('tada animated');
-                                });
-                            } else {
-                                tablaSucursales.ajax.reload();
-                                alertify.success(obj.mensaje);
-                            }
-                        },
-                        error: function (error) {
-                            alertify.error("ERROR AL EJECUTAR AJAX DE INHABILITAR");
-                        }
-                    }).done();
-                });
-
-            });
-        </script>
     </body>
     <%
         } else {
