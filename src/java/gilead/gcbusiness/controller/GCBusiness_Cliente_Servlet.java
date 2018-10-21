@@ -36,7 +36,7 @@ public class GCBusiness_Cliente_Servlet extends HttpServlet {
                 List<BeanCliente> listClientes = daoClienteImpl.accionListar();
 
                 org.json.simple.JSONArray datos = new org.json.simple.JSONArray();
-
+ 
                 for (int i = 0; i < listClientes.size(); i++) {
                     String acciones = "";
                    
@@ -47,7 +47,7 @@ public class GCBusiness_Cliente_Servlet extends HttpServlet {
                     tipopersona = daoTipoPersonaImpl.accionObtener(listClientes.get(i).getIdtipopersona());
                     
                     BeanVendedor vendedor = null;                  
-                    vendedor = daoVendedorImpl.accionObtener(listClientes.get(i).getIdtipodocumento());
+                    vendedor = daoVendedorImpl.accionObtener(listClientes.get(i).getIdvendedor());
                     
                     if (listClientes.get(i).getEstado().equals("A")) {
                         acciones = "<div class=\"hidden-sm hidden-xs btn-group\">"

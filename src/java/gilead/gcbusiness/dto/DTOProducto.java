@@ -22,6 +22,7 @@ public class DTOProducto implements Serializable{
     private String descripciontipoproducto;
     private Integer idunidadmedida;
     private String descripcionunidadmedida;
+    private String abreviaturaunidadmedida;
     private String codigo;
     private String codigoEAN;
     private String codigosunat;
@@ -42,7 +43,7 @@ public class DTOProducto implements Serializable{
     public DTOProducto() {
     }
 
-    public DTOProducto(Integer idproducto, Integer idmarca, String descripcionmarca, Integer idcategoriaproducto, String descripcioncategoria, Integer idfamiliaproducto, String descripcionfamilia, Integer idclaseproducto, String descripcionclase, Integer idlineaproducto, String descripcionlinea, Integer idmoneda, String descripcionmoneda, String simbolomoneda, Integer idtipoproducto, String descripciontipoproducto, Integer idunidadmedida, String descripcionunidadmedida, String codigo, String codigoEAN, String codigosunat, String descripcion, String afectoIGV, String afectoISC, Integer idtipoISC, Double baseISC, Double factorISC, Double valorcompra, Double preciocompra, String flaglote, byte[] imagen, String estado, String codigoproveedor, Double pesoproveedor) {
+    public DTOProducto(Integer idproducto, Integer idmarca, String descripcionmarca, Integer idcategoriaproducto, String descripcioncategoria, Integer idfamiliaproducto, String descripcionfamilia, Integer idclaseproducto, String descripcionclase, Integer idlineaproducto, String descripcionlinea, Integer idmoneda, String descripcionmoneda, String simbolomoneda, Integer idtipoproducto, String descripciontipoproducto, Integer idunidadmedida, String descripcionunidadmedida, String abreviaturaunidadmedida, String codigo, String codigoEAN, String codigosunat, String descripcion, String afectoIGV, String afectoISC, Integer idtipoISC, Double baseISC, Double factorISC, Double valorcompra, Double preciocompra, String flaglote, byte[] imagen, String estado, String codigoproveedor, Double pesoproveedor) {
         this.idproducto = idproducto;
         this.idmarca = idmarca;
         this.descripcionmarca = descripcionmarca;
@@ -61,6 +62,7 @@ public class DTOProducto implements Serializable{
         this.descripciontipoproducto = descripciontipoproducto;
         this.idunidadmedida = idunidadmedida;
         this.descripcionunidadmedida = descripcionunidadmedida;
+        this.abreviaturaunidadmedida = abreviaturaunidadmedida;
         this.codigo = codigo;
         this.codigoEAN = codigoEAN;
         this.codigosunat = codigosunat;
@@ -332,6 +334,20 @@ public class DTOProducto implements Serializable{
     }
 
     /**
+     * @return the abreviaturaunidadmedida
+     */
+    public String getAbreviaturaunidadmedida() {
+        return abreviaturaunidadmedida;
+    }
+
+    /**
+     * @param abreviaturaunidadmedida the abreviaturaunidadmedida to set
+     */
+    public void setAbreviaturaunidadmedida(String abreviaturaunidadmedida) {
+        this.abreviaturaunidadmedida = abreviaturaunidadmedida;
+    }
+
+    /**
      * @return the codigo
      */
     public String getCodigo() {
@@ -555,5 +571,6 @@ public class DTOProducto implements Serializable{
         this.pesoproveedor = pesoproveedor;
     }
 
+    
     
 }

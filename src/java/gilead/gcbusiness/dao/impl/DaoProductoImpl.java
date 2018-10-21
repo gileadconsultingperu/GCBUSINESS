@@ -285,7 +285,7 @@ public class DaoProductoImpl implements DaoAccion{
                     producto.setFactorISC(rs.getDouble("factor_isc"));
                     producto.setValorcompra(rs.getDouble("valor_compra"));
                     producto.setPreciocompra(rs.getDouble("precio_compra"));
-                    producto.setFlaglote("flag_lote");
+                    producto.setFlaglote(rs.getString("flag_lote"));
                     producto.setImagen(rs.getBytes("imagen"));
                     producto.setCodigoproveedor(rs.getString("codigo_proveedor"));
                     producto.setPesoproveedor(rs.getDouble("peso_proveedor"));
@@ -369,6 +369,7 @@ public class DaoProductoImpl implements DaoAccion{
                                     "c.descripcion as categoria,\n" +
                                     "p.id_unidadmedida,\n" +
                                     "u.descripcion as medida,\n" +
+                                    "u.abreviatura as abreviaturamedida,\n" +
                                     "p.codigo_interno,\n" +
                                     "p.descripcion,\n" + 
                                     "p.estado\n"
@@ -392,6 +393,7 @@ public class DaoProductoImpl implements DaoAccion{
                     producto.setDescripcioncategoria(rs.getString("categoria"));
                     producto.setIdunidadmedida(rs.getInt("id_unidadmedida"));
                     producto.setDescripcionunidadmedida(rs.getString("medida"));
+                    producto.setAbreviaturaunidadmedida(rs.getString("abreviaturamedida"));
                     producto.setCodigo(rs.getString("codigo_interno"));  
                     producto.setDescripcion(rs.getString("descripcion")); 
                     producto.setEstado(rs.getString("estado"));          

@@ -139,7 +139,6 @@ public class DaoUbigeoImpl {
                     ubidistrito.setCodigo_ubidistrito(rs.getString(1));
                     ubidistrito.setCodigo_ubiprovincia(rs.getString(2));
                     ubidistrito.setCodigo_ubidepartamento(rs.getString(2).substring(0, 3));
-                    System.out.println("Dpto: "+ubidistrito.getCodigo_ubidepartamento());;
                     ubidistrito.setDescripcionUbigeo(rs.getString(3));   
                     ubidistrito.setEstado(rs.getString(4));
                     ubidistrito.setFechaInsercion(rs.getTimestamp(5));

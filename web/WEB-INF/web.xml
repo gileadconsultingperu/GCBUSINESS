@@ -68,6 +68,18 @@
         <servlet-name>Proveedor</servlet-name>
         <servlet-class>gilead.gcbusiness.controller.GCBusiness_Proveedor_Servlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Serie</servlet-name>
+        <servlet-class>gilead.gcbusiness.controller.GCBusiness_Serie_Servlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Lote</servlet-name>
+        <servlet-class>gilead.gcbusiness.controller.GCBusiness_Lote_Servlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Venta</servlet-name>
+        <servlet-class>gilead.gcbusiness.controller.GCBusiness_Venta_Servlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>GCBusiness_Login_Servlet</servlet-name>
         <url-pattern>/Login</url-pattern>
@@ -135,6 +147,18 @@
     <servlet-mapping>
         <servlet-name>Proveedor</servlet-name>
         <url-pattern>/Proveedor</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Serie</servlet-name>
+        <url-pattern>/Serie</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Lote</servlet-name>
+        <url-pattern>/Lote</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Venta</servlet-name>
+        <url-pattern>/Venta</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

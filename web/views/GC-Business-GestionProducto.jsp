@@ -829,7 +829,7 @@
                                                     for (int i = 0; i < unidadmedida.size(); i++) {
                                                 %>
                                                             <option value="<%= unidadmedida.get(i).getIdunidadmedida() %>">
-                                                                <%= unidadmedida.get(i).getDescripcion() %> 
+                                                                <%= unidadmedida.get(i).getAbreviatura() %> 
                                                             </option>
                                                 <%
                                                        
@@ -909,11 +909,15 @@
                                     &nbsp;&nbsp;
                                     
                                     <div class="form-group">
-                                        <label class="col-sm-2 middle">          
-                                            <input class="ace" type="checkbox" id="igv" tabindex="14"/>
-                                            <span class="lbl">  IGV?</span>                                          
-                                        </label>     
-                                        <label class="col-sm-2 middle">          
+                                        <label for="igv" class="col-sm-1 control-label">IGV</label>
+                                        <div class="col-sm-2">
+                                            <select id="igv" name="igv" class="col-xs-12 col-sm-12" tabindex="14">
+                                                <option value="G">GRAVADO</option>
+                                                <option value="E">EXONERADO</option>
+                                                <option value="I">INAFECTO</option>
+                                            </select>   
+                                        </div>
+                                        <label class="col-sm-1 middle">          
                                             <input class="ace" type="checkbox" id="isc" tabindex="15"/>
                                             <span class="lbl">  ISC?</span>                                          
                                         </label>  
@@ -1203,7 +1207,8 @@
                                 //$('#tipoisc').val('1');
                                 $('#baseisc').val('0');
                                 $('#factorisc').val('0');
-                                $('#igv').prop('checked',false);
+                                //$('#igv').prop('checked', false);
+                                $('#igv').val('E');
                                 $('#isc').prop('checked',false);
                                 $('#flaglote').prop('checked',false);
                                 
@@ -1284,10 +1289,7 @@
                     //var idfamiliaproducto = $('#familiaproducto').val();
                     //var idclaseproducto = $('#claseproducto').val();
                     //var idlineaproducto= $('#lineaproducto').val();
-                    var afectoigv = "N";
-                    if($('#igv').is(':checked')){
-                        afectoigv = "S";
-                    }
+                    var afectoigv = $('#igv').val();
                     var afectoisc = "N";
                     if($('#isc').is(':checked')){
                         afectoisc = "S";
@@ -1374,9 +1376,10 @@
                             $('#codigo').val(obj.codigo);
                             $('#descripcion').val(obj.descripcion);
 
-                            if(obj.afectoigv==="S"){
+                            /*if (obj.afectoigv === "S") {
                                 $('#igv').prop('checked', true);
-                            }
+                            }*/
+                            $('#igv').val(obj.afectoigv);
                             if(obj.afectoisc==='S'){
                                 $('#isc').prop('checked', true);
                                 $('label[for="tipoisc"]').show(); 

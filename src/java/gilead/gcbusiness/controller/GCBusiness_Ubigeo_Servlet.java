@@ -20,10 +20,7 @@ public class GCBusiness_Ubigeo_Servlet extends HttpServlet {
         String codigo_ubidepartamento = request.getParameter("codigo_ubidepartamento")!=null?(String) request.getParameter("codigo_ubidepartamento"):"";
         String codigo_ubiprovincia = request.getParameter("codigo_ubiprovincia")!=null?(String) request.getParameter("codigo_ubiprovincia"):"";
         
-        System.out.println("codigo_ubiprovincia: "+codigo_ubiprovincia + "  codigo_ubidepartamento"+codigo_ubidepartamento);
-        
         if(!codigo_ubidepartamento.equals("") && codigo_ubiprovincia.equals("")){
-            System.out.println("codigo_ubidepartamento "+codigo_ubidepartamento);
             List<BeanUbigeo> listaProvincia = daoUbigeo.accionListarProvincias(codigo_ubidepartamento);
 
             for(BeanUbigeo ubigeo : listaProvincia){
@@ -32,7 +29,6 @@ public class GCBusiness_Ubigeo_Servlet extends HttpServlet {
             }
         }
         if(codigo_ubidepartamento.equals("") && !codigo_ubiprovincia.equals("")){
-            System.out.println("codigo_ubiprovincia "+codigo_ubiprovincia);
             List<BeanUbigeo> listaDistrito = daoUbigeo.accionListarDistritos(codigo_ubiprovincia);
 
             for(BeanUbigeo ubigeo : listaDistrito){
