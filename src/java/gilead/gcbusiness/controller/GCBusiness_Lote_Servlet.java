@@ -94,7 +94,7 @@ public class GCBusiness_Lote_Servlet extends HttpServlet {
             PrintWriter out = response.getWriter();
             String idAlmacen = request.getParameter("idAlmacen");
             String idProducto = request.getParameter("idProducto");
-            Integer idLote = request.getParameter("idLote") == null ? 0 : Integer.parseInt(request.getParameter("idLote"));
+            Integer idLote = request.getParameter("idLote") == null ? null : Integer.parseInt(request.getParameter("idLote"));
             if (idProducto != null && !"".equals(idProducto.trim())) {
                 DaoAlmacenProductoLoteImpl almacenProductoLoteImpl = new DaoAlmacenProductoLoteImpl();
                 BeanAlmacenProductoLote almacenProductoLote = almacenProductoLoteImpl.obtenerAlmacenProductoLote(Integer.parseInt(idAlmacen), Integer.parseInt(idProducto), idLote);

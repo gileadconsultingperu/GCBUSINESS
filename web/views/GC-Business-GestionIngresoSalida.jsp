@@ -1,12 +1,12 @@
 <%-- 
     Compañia            : Gilead Consulting S.A.C.
     Sistema             : GC-Business
-    Módulo              : Inventario
-    Nombre              : GC-Business-GestionIngresoSalida.jsp
+    Módulo              : Administracion
+    Nombre              : GC-Business-GestionProducto.jsp
     Versión             : 1.0
-    Fecha Creación      : 09-10-2018
+    Fecha Creación      : 21-08-2018
     Autor Creación      : Pablo Jimenez Aguado
-    Uso                 : Lista de Ingreso y/o Salidas de Inventario - Ingreso y/o Salida manual
+    Uso                 : Crear, Modificar, Consultar e Inactivar un producto
 --%>
 <%@page import="gilead.gcbusiness.model.BeanProducto"%>
 <%@page import="gilead.gcbusiness.dao.impl.DaoProductoImpl"%>
@@ -47,7 +47,7 @@
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <meta charset="utf-8" />
-        <title>GC BUSINESS - Gestión de Productos</title>
+        <title>GC BUSINESS - Gestión de Ingresos y Salidas</title>
 
         <meta name="description" content="Dynamic tables and grids using jqGrid plugin" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
@@ -100,6 +100,9 @@
 
         <!-- Alertas Version Nueva -->
         <script src="../assets/js/alertify/alertify.js"></script>
+        <!--<script src="../assets/js/jquery.tabletojson.min.js"></script>
+        <script src="../assets/js/jquery-2.1.4.min.js"></script>
+        <script src="../assets/js/jquery-ui.min.js"></script>-->
 
         <style>
             .table-wrapper-scroll-y {
@@ -708,19 +711,18 @@
                                     <div class="pull-right tableTools-container"></div>
                                 </div>
                                 <div>
-                                    <table id="tablaProductos" class="table table-striped table-bordered table-hover">
+                                    <table id="tablaIngresosSalidas" class="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
-                                                <th>Código</th>
-                                                <th>Descripción</th>   
-                                                <th>Marca</th>
-                                                <th>Categoría</th>
-                                                <th>Unidad Medida</th>   
-                                                <th>Estado</th>
+                                                <th>Fecha</th>
+                                                <th>Almacén</th>   
+                                                <th>Tipo Movimiento</th>
+                                                <th>Motivo Movimiento</th>
+                                                <th>Observación</th>  
                                                 <th>Acciones</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="employee_data">
+                                        <tbody id="ingresossalidas_data">
                                         </tbody>
                                     </table>
                                 </div>
@@ -732,7 +734,7 @@
             </div><!-- /.main-content -->
 
             <!-- Modales -->
-            <div class="modal" id="modalAgregarIngresoSalida" tabindex="-1">
+            <div class="modal" id="modalAgregarIngresoSalida" tabindex="-1" style="overflow-y:auto">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -800,6 +802,7 @@
 
                                     &nbsp;&nbsp;
 
+                                    <h5 class="blue bigger">Detalle</h5>
                                     <hr/>
 
                                     <div class="form-group">                                        
@@ -817,18 +820,10 @@
                                                 %>
                                             </select>
                                         </div>  
-                                        <div class="space-6"></div>                                            
-                                        <div id="divLote">
-                                            <label for="lote" class="col-sm-1 control-label">Lote|F.V.</label>
-                                            <div class="col-sm-3">
-                                                <select id="lote" name="lote" class="col-xs-12 col-sm-12" tabindex="3">
-                                                </select>
-                                            </div>
-                                            <div class="col-sm-1">
-                                                <button class="btn btn-sm btn-primary" id="btnNuevoLote" tabindex="13" title="Nuevo Lote">
-                                                    <i class="ace-icon fa fa-inbox"></i>
-                                                </button>
-                                            </div> 
+                                        <label for="lote" class="col-sm-2 control-label">Lote|F.V.</label>
+                                        <div class="col-sm-3">
+                                            <select id="lote" name="lote" class="col-xs-12 col-sm-12" tabindex="3">
+                                            </select>
                                         </div>
                                     </div>
 
@@ -839,11 +834,12 @@
                                         <div class="col-sm-3">
                                             <input type="text" id="stockactual" class="form-control"  style="text-transform:uppercase; text-align: right" readonly="readonly" tabindex="1"/>
                                         </div>
+                                        <div class="col-sm-1"></div>
                                         <label for="cantidad" class="col-sm-2 control-label">Cantidad</label>
                                         <div class="col-sm-3">
                                             <input type="text" id="cantidad" class="form-control"  style="text-transform:uppercase; text-align: right"  tabindex="1"/>
                                         </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-1">
                                             <button class="btn btn-sm btn-primary" id="btnAgregarDetalle" tabindex="13" title="Agregar Detalle">
                                                 <i class="ace-icon fa fa-plus"></i>
                                             </button>
@@ -858,12 +854,12 @@
                                                 <table id="detalleMovimiento" class="table table-striped table-bordered table-hover" sortable="1">
                                                     <thead>
                                                         <tr>
-                                                            <th>IdProducto</th>
+                                                            <th style="display: none">IdProducto</th>
                                                             <th>Código</th>
                                                             <th>Descripción</th>
                                                             <th>Cantidad</th>
-                                                            <th>FlagLote</th>
-                                                            <th>IdLote</th>
+                                                            <th style="display: none">FlagLote</th>
+                                                            <th style="display: none">IdLote</th>
                                                             <th>Lote|F.V.</th>
                                                             <th>Acciones</th>
                                                         </tr>
@@ -893,44 +889,6 @@
                 </div>
             </div>
 
-            <div class="modal" id="modalNuevoLote" tabindex="-1">
-                <div class="modal-dialog">                                            
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="blue bigger">Nuevo Lote</h4>
-                        </div>
-                        <div class="modal-body">                                  
-                            <div class="row">                
-                                <div class="col-xs-12 col-sm-12">      			
-                                    <div class="form-group">
-                                        <label for="numerolote" class="col-sm-2 control-label">Número</label>
-                                        <div class="col-sm-4">
-                                            <input type="text" id="numerolote" class="form-control"  style="text-transform:uppercase" tabindex="1"/>
-                                        </div>
-                                        <label for="fechavencimiento" class="col-sm-2 control-label">Fecha Vencimiento</label>
-                                        <div class="col-sm-4">
-                                            <input type="text" id="fechavencimiento" class="form-control input-mask-date" tabindex="2"/>
-                                        </div>
-                                    </div> 
-                                </div>        		
-                            </div>
-                        </div>
-                        <div class="modal-footer">               
-                            <button class="btn btn-sm" data-dismiss="modal">
-                                <i class="ace-icon fa fa-times"></i>
-                                Cancelar
-                            </button>
-
-                            <button class="btn btn-sm btn-primary" id="btnGuardarLote">
-                                <i class="ace-icon fa fa-check"></i>
-                                Grabar
-                            </button>
-                        </div>
-                    </div>                 
-                </div>
-            </div>
-
             <div class="modal" id="modalActualizarDetalle" tabindex="-1" style="overflow-y:auto">
                 <div class="modal-dialog">                                            
                     <div class="modal-content">
@@ -949,14 +907,11 @@
                                         <label for="madproducto" class="col-sm-2 control-label">Producto</label>
                                         <div class="col-sm-4">
                                             <input type="text" id="madproducto" class="form-control"  readonly="readonly" tabindex="1"/>
-                                        </div>  
-                                        <div class="space-6"></div>                                            
-                                        <div id="maddivLote">
-                                            <label for="madlote" class="col-sm-2 control-label">Lote | F.V.</label>
-                                            <div class="col-sm-4">
-                                                <select id="madlote" name="madlote" class="col-xs-12 col-sm-12" tabindex="3">
-                                                </select>
-                                            </div>
+                                        </div>
+                                        <label for="madlote" class="col-sm-2 control-label">Lote | F.V.</label>
+                                        <div class="col-sm-4">
+                                            <select id="madlote" name="madlote" class="col-xs-12 col-sm-12" tabindex="3">
+                                            </select>
                                         </div>
                                     </div>
 
@@ -1053,15 +1008,15 @@
 
                     $(document).ready(function () {
 
-                        /*$('body').on('shown.bs.modal', '#modalAgregarProducto', function () {
-                         $('input:visible:enabled:first', this).focus();
-                         });
-                         
-                         $('body').on('shown.bs.modal', '#modalAdicionales', function () {
-                         $('input:visible:enabled:first', this).focus();
-                         });*/
+                        $('body').on('shown.bs.modal', '#modalAgregarIngresoSalida', function () {
+                            $('input:visible:enabled:first', this).focus();
+                        });
 
-                        var tablaProductos = $('#tablaProductos').DataTable({
+                        $('body').on('shown.bs.modal', '#modalActualizarDetalle', function () {
+                            $('input:visible:enabled:first', this).focus();
+                        });
+
+                        var tablaIngresosSalidas = $('#tablaIngresosSalidas').DataTable({
                             bAutoWidth: false,
                             "processing": true,
                             "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
@@ -1069,27 +1024,26 @@
                             destroy: true,
                             responsive: true,
                             "searching": true,
-                            "order": [[1, 'asc']],
+                            "order": [[0, 'asc']],
                             ajax: {
                                 method: "POST",
-                                url: "../Producto",
+                                url: "../IngresoSalida",
                                 data: {"opcion": "listar"},
                                 dataSrc: "data"
                             },
                             columns: [
-                                {"data": "codigo"},
-                                {"data": "descripcion"},
-                                {"data": "marca"},
-                                {"data": "categoriaproducto"},
-                                {"data": "unidadmedida"},
-                                {"data": "estado"},
+                                {"data": "fecha"},
+                                {"data": "almacen"},
+                                {"data": "tipomovimiento"},
+                                {"data": "motivomovimiento"},
+                                {"data": "observacion"},
                                 {"data": "acciones"}
                             ],
                             dom: '<"row"<"col-xs-12 col-sm-4 col-md-4"l><"col-xs-12 col-sm-4 col-md-4"B><"col-xs-12 col-sm-4 col-md-4"f>>' +
                                     'tr<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>> ',
                             'columnDefs': [
                                 {
-                                    'targets': [0, 1, 2, 3, 4, 5],
+                                    'targets': [0, 1, 2, 3, 4],
                                     'createdCell': function (td, cellData, rowData, row, col) {
                                         $(td).attr('contenteditable', 'false');
                                     }
@@ -1102,8 +1056,21 @@
                             }
                         });
 
+                        function limpiardetalle() {
+                            $('#producto')
+                                    .find('option:first-child').prop('selected', true)
+                                    .end().trigger('chosen:updated');
+                            $('#idproducto').val('');
+                            $('#codigoproducto').val('');
+                            $('#stockactual').val('');
+                            $('#cantidad').val('');
+                            $('#flaglote').val('');
+                            $('#lote').empty();
+                            $('#lote').prop('disabled', true);
+                        }
+
                         $.fn.dataTable.Buttons.defaults.dom.container.className = 'dt-buttons btn-overlap btn-group btn-overlap';
-                        new $.fn.dataTable.Buttons(tablaProductos, {
+                        new $.fn.dataTable.Buttons(tablaIngresosSalidas, {
                             buttons: [
                                 {
                                     "text": "<i class='fa fa-plus bigger-110 blue'></i>",
@@ -1129,16 +1096,10 @@
                                         });
                                         $('#motivomovimiento').prop('selectedIndex', 0);
                                         $('#observacion').val('');
-                                        $('#producto')
-                                                .find('option:first-child').prop('selected', true)
-                                                .end().trigger('chosen:updated');
-                                        $('#stockactual').val('');
-                                        $('#cantidad').val('');
-                                        $('#lote').empty();
-                                        $('#divLote').hide();
+                                        limpiardetalle();
+
                                         $('#detalleMovimiento tbody').remove();
 
-                                        $('#modalAgregarIngresoSalida .blue').text('Registrar Nuevo Ingreso o Salida');
                                         $('#modalAgregarIngresoSalida').modal('show');
                                         $('.divError').empty();
                                     }
@@ -1172,81 +1133,124 @@
                             ]
                         });
 
-                        tablaProductos.buttons().container().appendTo($('.tableTools-container'));
+                        tablaIngresosSalidas.buttons().container().appendTo($('.tableTools-container'));
 
+                        function tableToJSON(tblObj) {
+                            var data = [];
+                            var $headers = $(tblObj).find("th");
+                            var $rows = $(tblObj).find("tbody tr").each(function (index) {
+                                $cells = $(this).find("td");
+                                data[index] = {};
+                                $cells.each(function (cellIndex) {
+                                    data[index][$($headers[cellIndex]).html()] = $(this).html();
+                                });
+                            });
+                            return data;
+                        }
+
+                        //Guardar registo ingreso o salida
                         $('#btnGuardar').click(function (event) {
+                            var idalmacen = $('#almacen').val();
+                            var tipomovimiento = $('#tipomovimiento').val();
+                            var idmotivomovimiento = $('#motivomovimiento').val();
+                            var observacion = $('#observacion').val();
+                            var detalle = tableToJSON($('#detalleMovimiento'));
 
+                            if (detalle.length === 0) {
+                                alertify.error("NO HAY DETALLE EN EL REGISTRO");
+                                return;
+                            }
+
+                            $.ajax({
+                                method: "POST",
+                                url: "../IngresoSalida",
+                                data: {"opcion": "insertar", "idalmacen": idalmacen, "tipomovimiento": tipomovimiento, "idmotivomovimiento": idmotivomovimiento, "observacion": observacion, "detalle": JSON.stringify(detalle)}
+                            }).done(function (data) {
+                                var obj = JSON.parse(data);
+                                if (obj.mensaje.indexOf('ERROR') !== -1) {
+                                    /*$('.divError').html(obj.html);
+                                     $('.divError').addClass('tada animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+                                     $('.divError').removeClass('tada animated');
+                                     });*/
+                                    alertify.error(obj.html);
+                                } else {
+                                    tablaIngresosSalidas.ajax.reload();
+                                    alertify.success(obj.mensaje);
+                                    $('#modalAgregarIngresoSalida').modal('hide');
+                                }
+                            });
                         });
 
-                        //Actualizar registro
+                        //Imprimir registro
                         $(document).on('click', '.actualizar', function () {
 
                         });
 
-                        //Eliminar registro
-                        $(document).on('click', '.eliminar', function () {
-
-                        });
-
-                        //Activar producto
-                        $(document).on('click', '.activar', function () {
-
-                        });
-
-                        $("#btnGuardarLote").click(function () {
-                            var idProducto = $("#idproducto").val();
-                            var numeroLote = $("#numerolote").val();
-                            var fechaVencimiento = $("#fechavencimiento").val();
-                            $.ajax({
-                                method: "POST",
-                                url: "../Lote",
-                                data: {"accion": "insertar", "idProducto": idProducto, "numeroLote": numeroLote, "fechaVencimiento": fechaVencimiento}
-                            }).done(function (data) {
-                                var obj = jQuery.parseJSON(data);
-                                if (obj.mensaje.indexOf('ERROR') !== -1) {
-                                    $('.divError').html(obj.html);
-                                    $('.divError').addClass('tada animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
-                                        $('.divError').removeClass('tada animated');
-                                    });
-                                } else {
-                                    $.get('../Lote', {
-                                        "idProducto": idProducto,
-                                        "accion": "lote"
-                                    }, function (response) {
-                                        $('#lote').html(response);
-                                    });
-                                    alertify.success(obj.mensaje);
-                                }
-                                $('#modalNuevoLote').modal('hide');
-                            });
-                        });
-
-                        $("#btnNuevoLote").click(function () {
-                            $('#modalNuevoLote').modal({backdrop: 'static', keyboard: false});
-                        });
-
                         $("#btnAgregarDetalle").click(function () {
+                            if ($('#flaglote').val() === 'N') {
+                                if ($('#cantidad').val() === "" || $('#cantidad').val() === null) {
+                                    alertify.error("Debe ingresar la cantidad");
+                                    $('#cantidad').focus();
+                                    return;
+                                }
+                                if (parseFloat($('#cantidad').val()) === 0) {
+                                    alertify.error("Cuidado! Esta ingresando CERO");
+                                    $('#cantidad').focus();
+                                    return;
+                                }
+                                //Validar stock por salida
+                                if ($('#tipomovimiento').val() === 'E') {
+                                    if (parseFloat($('#cantidad').val()) > parseFloat($('#stockactual').val())) {
+                                        alertify.error("NO HAY STOCK SUFICIENTE");
+                                        $('#cantidad').focus();
+                                        return;
+                                    }
+                                }
+                            } else if ($('#flaglote').val() === 'S') {
+                                if ($('#lote').val() === "" || $('#lote').val() === null) {
+                                    alertify.error("Debe seleccionar un lote");
+                                    $('#lote').focus();
+                                    return;
+                                }
+                                if ($('#cantidad').val() === "" || $('#cantidad').val() === null) {
+                                    alertify.error("Debe ingresar la cantidad");
+                                    $('#cantidad').focus();
+                                    return;
+                                }
+                                if (parseFloat($('#cantidad').val()) === 0) {
+                                    alertify.error("Cuidado! Esta ingresando CERO");
+                                    $('#cantidad').focus();
+                                    return;
+                                }
+                                //Validar stock por salida
+                                if ($('#tipomovimiento').val() === 'E') {
+                                    if (parseFloat($('#cantidad').val()) > parseFloat($('#stockactual').val())) {
+                                        alertify.error("NO HAY STOCK SUFICIENTE");
+                                        $('#cantidad').focus();
+                                        return;
+                                    }
+                                }
+                            } else {
+                                alertify.error("Debe seleccion un producto");
+                                $('#producto').focus();
+                                return;
+                            }
+
                             var rowCount = $('#detalleMovimiento >tbody >tr').length;
                             var idrow = rowCount + 1;
                             var nuevaFila = "<tr id=\"" + idrow + "\">";
-                            nuevaFila += "<td>" + $('#idproducto').val() + "</td>";
+                            nuevaFila += "<td style=\"display: none\">" + $('#idproducto').val() + "</td>";
                             nuevaFila += "<td>" + $('#codigoproducto').val() + "</td>";
                             nuevaFila += "<td>" + $('#descripcionproducto').val() + "</td>"
                             nuevaFila += "<td>" + $('#cantidad').val() + "</td>";
-                            nuevaFila += "<td>" + $('#flaglote').val() + "</td>";
-                            nuevaFila += "<td>" + $('#lote').val() + "</td>";
+                            nuevaFila += "<td style=\"display: none\">" + $('#flaglote').val() + "</td>";
+                            nuevaFila += "<td style=\"display: none\">" + $('#lote').val() + "</td>";
                             nuevaFila += "<td>" + $("#lote option:selected").text() + "</td>";
                             nuevaFila += "<td><button type='button' name='actualizarDetalleMovimiento' id='" + idrow + "' class='btn btn-info btn-xs actualizarDetalleMovimiento' title='Actualizar'  ><span class='glyphicon glyphicon-edit'></span></button>  <button type='button' name='eliminarDetalleMovimiento' id='" + idrow + "' class='btn btn-danger btn-xs eliminarDetalleMovimiento' title='Eliminar'  ><span class='glyphicon glyphicon-trash'></span></button></td>";
 
                             $("#detalleMovimiento").append(nuevaFila);
 
-                            $('#producto')
-                                    .find('option:first-child').prop('selected', true)
-                                    .end().trigger('chosen:updated');
-                            $('#stockactual').val('');
-                            $('#cantidad').val('');
-                            $('#lote').empty();
-                            $('#divLote').hide();
+                            limpiardetalle();
                         });
 
                         $("#detalleMovimiento").on('click', '.eliminarDetalleMovimiento', function () {
@@ -1275,7 +1279,7 @@
                                     $('#madlote').html(response);
                                     $('#madlote').val(array[5]);
                                 });
-                                $('#maddivLote').show();
+                                $('#madlote').prop('disabled', false);
                                 $('#madstockactual').val('');
                                 //Obtener stock
                                 if (array[5] !== '') {
@@ -1291,7 +1295,6 @@
                                     });
                                 }
                             } else {
-                                //alert(idProducto);
                                 if (array[0] !== '') {
                                     var idAlmacen = $('#almacen').val();
                                     $.get('../Lote', {
@@ -1303,12 +1306,28 @@
                                     });
                                 }
                                 $('#madlote').empty();
-                                $('#maddivLote').hide();
+                                $('#madlote').prop('disabled', true);
                             }
                             $('#modalActualizarDetalle').modal({backdrop: 'static', keyboard: false});
                         });
 
                         $("#btnActualizarDetalle").click(function () {
+                            if ($('#madcantidad').val() === "" || $('#madcantidad').val() === null) {
+                                alertify.error("Debe ingresar la cantidad");
+                                $('#madcantidad').focus();
+                                return;
+                            }
+                            if (parseFloat($('#madcantidad').val()) === 0) {
+                                alertify.error("Cuidado! Esta ingresando CERO");
+                                $('#madcantidad').focus();
+                                return;
+                            }
+                            if (parseFloat($('#madcantidad').val()) > parseFloat($('#madstockactual').val())) {
+                                alertify.error("NO HAY STOCK SUFICIENTE");
+                                $('#madcantidad').focus();
+                                return;
+                            }
+
                             var idrow = $('#madidrow').val();
                             $("#" + idrow).closest('tr').remove();
 
@@ -1318,12 +1337,12 @@
                             var descripcionProducto = array[1];
 
                             var nuevaFila = "<tr id=\"" + idrow + "\">";
-                            nuevaFila += "<td>" + $('#madidproducto').val() + "</td>";
+                            nuevaFila += "<td style=\"display: none\">" + $('#madidproducto').val() + "</td>";
                             nuevaFila += "<td>" + codigoProducto + "</td>";
                             nuevaFila += "<td>" + descripcionProducto + "</td>"
                             nuevaFila += "<td>" + $('#madcantidad').val() + "</td>";
-                            nuevaFila += "<td>" + $('#madflaglote').val() + "</td>";
-                            nuevaFila += "<td>" + $('#madlote').val() + "</td>";
+                            nuevaFila += "<td style=\"display: none\">" + $('#madflaglote').val() + "</td>";
+                            nuevaFila += "<td style=\"display: none\">" + $('#madlote').val() + "</td>";
                             nuevaFila += "<td>" + $("#madlote option:selected").text() + "</td>";
                             nuevaFila += "<td><button type='button' name='actualizarDetalleMovimiento' id='" + idrow + "' class='btn btn-info btn-xs actualizarDetalleMovimiento' title='Actualizar'  ><span class='glyphicon glyphicon-edit'></span></button>  <button type='button' name='eliminarDetalleMovimiento' id='" + idrow + "' class='btn btn-danger btn-xs eliminarDetalleMovimiento' title='Eliminar'  ><span class='glyphicon glyphicon-trash'></span></button></td>";
 
@@ -1344,7 +1363,9 @@
                             }).appendTo($tbody);
 
                             $('#madidrow').val('');
-                            $('#modalActualizarDetalle').modal('hide');
+                            $('#modalActualizarDetalle').one('hidden.bs.modal', function () {
+                                $('#modalAgregarIngresoSalida').modal('show');
+                            }).modal('hide');
                         });
 
                         $('#sucursal').change(function () {
@@ -1387,7 +1408,7 @@
                                 }, function (response) {
                                     $('#lote').html(response);
                                 });
-                                $('#divLote').show();
+                                $('#lote').prop('disabled', false);
                             } else {
                                 if (idProducto !== '') {
                                     var idAlmacen = $('#almacen').val();
@@ -1400,7 +1421,7 @@
                                     });
                                 }
                                 $('#lote').empty();
-                                $('#divLote').hide();
+                                $('#lote').prop('disabled', true);
                             }
                         });
 
