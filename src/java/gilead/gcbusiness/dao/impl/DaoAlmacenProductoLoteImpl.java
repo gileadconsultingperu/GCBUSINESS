@@ -9,8 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DaoAlmacenProductoLoteImpl {
-    
-    
+
     public String accionCrear(Object obj) {
         String msg = null;
 
@@ -23,13 +22,13 @@ public class DaoAlmacenProductoLoteImpl {
         if (cn != null) {
             try {
                 String qry = "INSERT INTO gcbusiness.almacenproductolote (id_almacen, id_producto, id_lote, stock_actual,fecha_insercion,usuario_insercion,terminal_insercion,ip_insercion) "
-                        + "VALUES (" + almacenproductolote.getIdalmacen() + "," + almacenproductolote.getIdproducto()+ ","  + almacenproductolote.getIdlote() + "," + almacenproductolote.getStockactual() + ",'"+almacenproductolote.getFechaInsercion()
-                        + "', '" + almacenproductolote.getUsuarioInsercion()+"', '"+almacenproductolote.getTerminalInsercion()+"', '"+almacenproductolote.getIpInsercion()+"')";
-                
+                        + "VALUES (" + almacenproductolote.getIdalmacen() + "," + almacenproductolote.getIdproducto() + "," + almacenproductolote.getIdlote() + "," + almacenproductolote.getStockactual() + ",'" + almacenproductolote.getFechaInsercion()
+                        + "', '" + almacenproductolote.getUsuarioInsercion() + "', '" + almacenproductolote.getTerminalInsercion() + "', '" + almacenproductolote.getIpInsercion() + "')";
+
                 st = cn.createStatement();
 
                 int n = st.executeUpdate(qry);
-                
+
                 if (n <= 0) {
                     msg = "0 filas afectadas";
                 }
@@ -50,8 +49,8 @@ public class DaoAlmacenProductoLoteImpl {
         }
         return msg;
     }
-    
-    public BeanAlmacenProductoLote obtenerAlmacenProductoLote(Integer idalmacen, Integer idproducto, Integer idlote){
+
+    public BeanAlmacenProductoLote obtenerAlmacenProductoLote(Integer idalmacen, Integer idproducto, Integer idlote) {
         BeanAlmacenProductoLote almacenproductolote = null;
         ConectaDb db = new ConectaDb();
         Connection cn = db.getConnection();
@@ -59,19 +58,27 @@ public class DaoAlmacenProductoLoteImpl {
         ResultSet rs = null;
         if (cn != null) {
             try {
-                String qry = "SELECT id_almacen, id_producto, id_lote, stock_actual\n" +
-                            "FROM gcbusiness.almacenproductolote\n" +
-                            "WHERE id_almacen = ? AND id_producto = ? AND id_lote = ? ORDER BY id_almacen, id_producto";
-
+                String qry;
+                if (idlote != null) {
+                    qry = "SELECT id_almacen, id_producto, id_lote, stock_actual\n"
+                            + "FROM gcbusiness.almacenproductolote\n"
+                            + "WHERE id_almacen = ? AND id_producto = ? AND id_lote = ? ORDER BY id_almacen, id_producto";
+                } else {
+                    qry = "SELECT id_almacen, id_producto, id_lote, stock_actual\n"
+                            + "FROM gcbusiness.almacenproductolote\n"
+                            + "WHERE id_almacen = ? AND id_producto = ? ORDER BY id_almacen, id_producto";
+                }
                 st = cn.prepareStatement(qry);
-                
+
                 st.setInt(1, idalmacen);
                 st.setInt(2, idproducto);
-                st.setInt(3, idlote);
+                if (idlote != null) {
+                    st.setInt(3, idlote);
+                }
 
                 rs = st.executeQuery();
-                
-                while(rs.next()){
+
+                while (rs.next()) {
                     almacenproductolote = new BeanAlmacenProductoLote();
                     almacenproductolote.setIdalmacen(rs.getInt(1));
                     almacenproductolote.setIdproducto(rs.getInt(2));
