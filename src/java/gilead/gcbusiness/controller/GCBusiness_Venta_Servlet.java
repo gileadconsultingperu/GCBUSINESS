@@ -198,9 +198,9 @@ public class GCBusiness_Venta_Servlet extends HttpServlet {
                     idMovimientoInventario = rs.getInt(1);
                 }
 
-                query = "INSERT INTO gcbusiness.movimientoinventario (id_movimientoinventario, id_almacen, id_motivomovimiento, fecha, observacion, estado,"
+                query = "INSERT INTO gcbusiness.movimientoinventario (id_movimientoinventario, id_almacen, id_motivomovimiento, fecha, observacion, id_referencia, estado,"
                         + " fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion)"
-                        + " VALUES (" + idMovimientoInventario + ", " + idalmacen + ", 9 , '" + ts + "', '" + observacion + "', 'A',"
+                        + " VALUES (" + idMovimientoInventario + ", " + idalmacen + ", 9 , '" + ts + "', '" + observacion + "', " + idVenta + ", 'A',"
                         + " '" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
 
                 sqlEjecucion = query;

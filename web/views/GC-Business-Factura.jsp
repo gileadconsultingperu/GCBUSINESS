@@ -1261,7 +1261,7 @@
                         $('#montopagado').val('');
                     }
                 });
-
+                <%--
                 $('#montopagado').blur(function (){             
                     var montopagado = parseFloat($(this).val()).toFixed(2);
                     if(isNaN(montopagado) || montopagado==="0.00"){
@@ -1269,7 +1269,7 @@
                         $('#montopagado').focus();
                     }
                 });
-
+                --%>
                 $('#departamento').change(function(){
                     var codigoDpto = $('#departamento').val();
                     $.get('../Ubigeo', {
@@ -1742,6 +1742,47 @@
                         }
                     });
 
+                });
+                
+                $('.limpiar').click(function () {
+                    $('#serie').prop('selectedIndex', 0);
+                    cargarCorrelativo();
+                    $('#moneda').prop('selectedIndex', 0);
+                    
+                    $('#formapago').prop('selectedIndex', 0);
+                    $('#lblnumeroletra').addClass('hide');
+                    $('#numeroletra').addClass('hide');
+                    $('#lblmontoletra').addClass('hide');
+                    $('#montoletra').addClass('hide');
+                    $('#fechavencimientoletra').addClass('hide');
+                    $('#lblfechavencimientoletra').addClass('hide');
+                    $('#iconfechavencimientoletra').addClass('hide');
+                        
+                    $('#estadopago').prop('selectedIndex', 0);
+                    $('#lblmontopagado').addClass('hide');
+                    $('#montopagado').addClass('hide');
+                    $('#montopagado').val('');
+                        
+                    $('#switch-negociable').prop('checked', false);
+                    $('#fechavencimiento').addClass('hide');
+                    $('#lblfechavencimiento').addClass('hide');
+                    $('#iconfechavencimiento').addClass('hide');
+                    $('#lbldepartamento').addClass('hide');
+                    $('#departamento').addClass('hide');
+                    $('#lblprovincia').addClass('hide');
+                    $('#provincia').addClass('hide');
+                    $('#lbldistrito').addClass('hide');
+                    $('#distrito').addClass('hide');
+                    $("#fechavencimiento").datepicker({
+                        dateFormat: 'dd/mm/yy',
+                        minDate: '+1d'
+                    }).datepicker("setDate", new Date());
+                    $("#fechavencimientoletra").datepicker({
+                        dateFormat: 'dd/mm/yy',
+                        minDate: '+1d'
+                    }).datepicker("setDate", new Date());
+                    $('#detalleVenta tbody').remove();
+                    $('.registrar_venta').prop('disabled', false);
                 });
             });
         </script>
