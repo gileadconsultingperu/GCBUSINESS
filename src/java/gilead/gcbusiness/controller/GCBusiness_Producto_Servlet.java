@@ -89,7 +89,7 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                     }
                     valor_unitario = precio_unitario/(1+igvDecimal);
                     igv = valor_unitario*igvDecimal; 
-                    
+
                     //COLUMNA 06:  Precio Unitario
                     respuesta += comboTarifas;
 
