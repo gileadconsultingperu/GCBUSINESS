@@ -25,7 +25,7 @@
         <!-- bootstrap & fontawesome -->
         <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
         <link rel="stylesheet" href="assets/font-awesome/4.5.0/css/font-awesome.min.css" />
-        
+
         <!-- page specific plugin styles -->
         <link rel="stylesheet" href="assets/css/jquery-ui.custom.min.css" />
         <link rel="stylesheet" href="assets/css/chosen.min.css" />
@@ -34,7 +34,7 @@
         <link rel="stylesheet" href="assets/css/daterangepicker.min.css" />
         <link rel="stylesheet" href="assets/css/bootstrap-datetimepicker.min.css" />
         <link rel="stylesheet" href="assets/css/bootstrap-colorpicker.min.css" />
-                
+
         <!-- text fonts -->
         <link rel="stylesheet" href="assets/css/fonts.googleapis.com.css" />
 
@@ -57,7 +57,7 @@
         <script src="assets/js/html5shiv.min.js"></script>
         <script src="assets/js/respond.min.js"></script>
         <![endif]-->
-        
+
         <!-- ace settings handler -->
         <script src="assets/js/ace-extra.min.js"></script>
     </head>
@@ -86,7 +86,7 @@
                                                 <i class="ace-icon fa fa-coffee green"></i>
                                                 Iniciar Sesión
                                             </h4>
-                            
+
                                             <form id="login-form" action="" method="post" role="form" style="display: block;">
                                                 <fieldset>
                                                     <div class="form-group">
@@ -115,16 +115,16 @@
                                                             </select>
                                                         </div>
                                                     </div>  
-                                                    
+
                                                     <div class="space"></div>
-                                                     
+
                                                     <div class="clearfix">
                                                         <button type="button" name="login-submit" id="login-submit" class="width-35 pull-right btn btn-sm btn-primary">
                                                             <i class="ace-icon fa fa-key"></i>
                                                             <span class="bigger-110">Ingresar</span>
                                                         </button>
                                                     </div>
-                                                    
+
                                                     <div class="space-4"></div>
                                                 </fieldset>
                                             </form>
@@ -147,13 +147,13 @@
                                     <div class="widget-body">
                                         <div class="widget-main">
                                             <h4 class="header red lighter bigger">
-                                                    <i class="ace-icon fa fa-key"></i>
-                                                    Retrieve Password
+                                                <i class="ace-icon fa fa-key"></i>
+                                                Retrieve Password
                                             </h4>
 
                                             <div class="space-6"></div>
                                             <p>
-                                                    Enter your email and to receive instructions
+                                                Enter your email and to receive instructions
                                             </p>
 
                                             <form>
@@ -176,10 +176,10 @@
                                         </div><!-- /.widget-main -->
 
                                         <div class="toolbar center">
-                                                <a href="#" data-target="#login-box" class="back-to-login-link">
-                                                        Back to login
-                                                        <i class="ace-icon fa fa-arrow-right"></i>
-                                                </a>
+                                            <a href="#" data-target="#login-box" class="back-to-login-link">
+                                                Back to login
+                                                <i class="ace-icon fa fa-arrow-right"></i>
+                                            </a>
                                         </div>
                                     </div><!-- /.widget-body -->
                                 </div><!-- /.forgot-box -->
@@ -196,13 +196,13 @@
         <!--[if !IE]> -->
         <script src="assets/js/jquery-2.1.4.min.js"></script>
         <script src="assets/js/bootstrap.min.js"></script>
-        
+
         <!-- <![endif]-->
-        
+
         <!--[if IE]>
         <script src="assets/js/jquery-1.11.3.min.js"></script>
         <![endif]-->
-        
+
         <script src="assets/js/jquery-ui.custom.min.js"></script>
         <script src="assets/js/jquery.ui.touch-punch.min.js"></script>
         <script src="assets/js/chosen.jquery.min.js"></script>
@@ -218,38 +218,39 @@
         <script src="assets/js/jquery.inputlimiter.min.js"></script>
         <script src="assets/js/jquery.maskedinput.min.js"></script>
         <script src="assets/js/bootstrap-tag.min.js"></script>
-        
+
         <!-- ace scripts -->
         <script src="assets/js/ace-elements.min.js"></script>
         <script src="assets/js/ace.min.js"></script>
-        
+
         <script type="text/javascript">
-            if('ontouchstart' in document.documentElement) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+            if ('ontouchstart' in document.documentElement)
+                document.write("<script src='assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
         </script>
 
         <!-- inline scripts related to this page -->
         <script type="text/javascript">
-            jQuery(function($) {
-             $(document).on('click', '.toolbar a[data-target]', function(e) {
+            jQuery(function ($) {
+                $(document).on('click', '.toolbar a[data-target]', function (e) {
                     e.preventDefault();
                     var target = $(this).data('target');
                     $('.widget-box.visible').removeClass('visible');//hide others
                     $(target).addClass('visible');//show target
-             });
+                });
             });
-            
-            $("#username").click(function(){
-                $("#almacen").empty(); 
-                $("#sucursal").empty(); 
+
+            $("#username").click(function () {
+                $("#almacen").empty();
+                $("#sucursal").empty();
                 $("#passwordlogin").empty();//limpiamos el contenido
             });
-            
-            function controlLogin(){
+
+            function controlLogin() {
                 var user = $('#username').val(); //tomamos el valor seleccionado
                 var pass = $('#passwordlogin').val();
-                if(user!=='' && user!==undefined && pass!=='' && pass!==undefined){
+                if (user !== '' && user !== undefined && pass !== '' && pass !== undefined) {
                     //Obtenemos la lista json de Estados Registros
-                    $.getJSON("SucursalAlmacen", {user: user, pass: pass, accion:"sucursal"}, function (data, textStatus, jqXHR) {
+                    $.getJSON("SucursalAlmacen", {user: user, pass: pass, accion: "sucursal"}, function (data, textStatus, jqXHR) {
                         //preparamos el combo con la lista obtenida de data
                         $("#sucursal").empty(); //limpiamos el contenido
                         $.each(data, function (index, item) {//recorremos la lista
@@ -258,53 +259,55 @@
                                     .text(item.nombreSucursal) //.. el texto a mostrar
                                     .appendTo("#sucursal"); //.. y lo agregamos al combo
                         });
-                        
+
                         var sucursalActual = $("#sucursal").val();
-                        
+
                         $.get('SucursalAlmacen', {
                             "idSucursal": sucursalActual,
-                            "accion"    : "almacen"
-                        }, function(response){
+                            "accion": "almacen"
+                        }, function (response) {
                             $('#almacen').html(response);
-                        });   
-                    }); 
-                }  
-            };
-            
-            $('#sucursal').change(function(){
+                        });
+                    });
+                }
+            }
+            ;
+
+            $('#sucursal').change(function () {
                 var idSucursal = $('#sucursal').val();
                 $.get('SucursalAlmacen', {
                     "idSucursal": idSucursal,
-                    "accion"    : "almacen"
-                }, function(response){
+                    "accion": "almacen"
+                }, function (response) {
                     $('#almacen').html(response);
                 });
-            });  
-            
-            $("#login-form").on('keypress', 'input:password[name=passwordlogin]', function(event) {
-                if(event.keyCode === 13){
-                    controlLogin();
-                    $("#sucursal").focus();
-                }            
             });
 
-            $("#login-form").on('keypress', 'input:text[name=username]', function(event) {
-                if(event.keyCode === 13){
+            $("#login-form").on('keypress', 'input:password[name=passwordlogin]', function (event) {
+                if (event.keyCode === 13) {
+                    controlLogin();
+                    $("#sucursal").focus();
+                }
+            });
+
+            $("#login-form").on('keypress', 'input:text[name=username]', function (event) {
+                if (event.keyCode === 13) {
                     $("#passwordlogin").focus();
-                }            
+                }
             });
 
             $('#passwordlogin').blur(function () {
-                controlLogin();   
+                controlLogin();
                 $("#sucursal").focus();
             });
-            
-            $('#login-submit').click(function() {
+
+            $('#login-submit').click(function () {
                 var user = $('#username').val(); //tomamos el valor seleccionado
                 var pass = $('#passwordlogin').val();
                 var sucursal = $('#sucursal').val();
                 var almacen = $('#almacen').val();
-                var pagina="GC-Business/../Login?user="+user+"&pass="+pass+"&sucursal="+sucursal+"&almacen="+almacen;
+                var descripcionalmacen = $('#almacen option:selected').text();
+                var pagina = "GC-Business/../Login?user=" + user + "&pass=" + pass + "&sucursal=" + sucursal + "&almacen=" + almacen + "&descripcionalmacen=" + descripcionalmacen;
                 //alertify.error("pagina2: "+pagina);
                 $("#login-form").attr("action", pagina);
                 //alertify.error("accion: "+$("#login-form").attr("action"));

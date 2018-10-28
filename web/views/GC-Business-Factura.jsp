@@ -26,9 +26,10 @@
 <!DOCTYPE html>
 <%
     //String ID = (String) session.getAttribute("ID");
-    List opciones = (List)session.getAttribute("accesos");
+    List opciones = (List) session.getAttribute("accesos");
     BeanUsuario usuario = (BeanUsuario) session.getAttribute("usuario");
     String idalmacen = (String) session.getAttribute("idAlmacen");
+    String descripcionalmacen = (String) session.getAttribute("descripcionAlmacen");
 %>
 <html>
     <head>
@@ -125,7 +126,7 @@
                                 <img class="nav-user-photo" src="../assets/images/avatars/avatar2.png" alt="Jason's Photo" />
                                 <span class="user-info">
                                     <small>Bienvenido,</small>
-                                        <%= usuario.getUsuario()%>
+                                    <%= usuario.getUsuario()%>
                                 </span>
 
                                 <i class="ace-icon fa fa-caret-down"></i>
@@ -172,7 +173,7 @@
 
                 <ul class="nav nav-list">
                     <%
-                        if(opciones.contains(11)){
+                        if (opciones.contains(11)) {
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
@@ -186,7 +187,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(12)){
+                                if (opciones.contains(12)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-RegistrarVenta.jsp">
@@ -198,7 +199,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(13)){
+                                if (opciones.contains(13)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionNota.jsp">
@@ -210,7 +211,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(14)){
+                                if (opciones.contains(14)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionCotizacion.jsp">
@@ -222,7 +223,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(15)){
+                                if (opciones.contains(15)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionOrdenVenta.jsp">
@@ -239,7 +240,7 @@
                     </li>
                     <%
                         }
-                        if(opciones.contains(31)){
+                        if (opciones.contains(31)) {
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
@@ -253,7 +254,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(32)){
+                                if (opciones.contains(32)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionCliente.jsp">
@@ -265,7 +266,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(33)){
+                                if (opciones.contains(33)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionContacto.jsp">
@@ -277,7 +278,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(34)){
+                                if (opciones.contains(34)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionCuentaCobrar.jsp">
@@ -294,7 +295,7 @@
                     </li>
                     <%
                         }
-                        if(opciones.contains(21)){
+                        if (opciones.contains(21)) {
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
@@ -308,7 +309,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(22)){
+                                if (opciones.contains(22)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-RegistrarCompra.jsp">
@@ -320,7 +321,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(23)){
+                                if (opciones.contains(23)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionOrdenCompra.jsp">
@@ -337,7 +338,7 @@
                     </li>
                     <%
                         }
-                        if(opciones.contains(41)){
+                        if (opciones.contains(41)) {
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
@@ -351,7 +352,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(42)){
+                                if (opciones.contains(42)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionProveedor.jsp">
@@ -363,7 +364,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(43)){
+                                if (opciones.contains(43)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionCuentaPagar.jsp">
@@ -380,7 +381,7 @@
                     </li>
                     <%
                         }
-                        if(opciones.contains(51)){
+                        if (opciones.contains(51)) {
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
@@ -394,7 +395,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(52)){
+                                if (opciones.contains(52)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionIngresoSalida.jsp">
@@ -406,7 +407,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(53)){
+                                if (opciones.contains(53)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-TrasladoAlmacen.jsp">
@@ -423,7 +424,7 @@
                     </li>
                     <%
                         }
-                        if(opciones.contains(1)){
+                        if (opciones.contains(1)) {
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
@@ -436,7 +437,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(10)){
+                                if (opciones.contains(10)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionProducto.jsp">
@@ -448,7 +449,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(2)){
+                                if (opciones.contains(2)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionFamiliaProducto.jsp">
@@ -460,7 +461,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(3)){
+                                if (opciones.contains(3)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionClaseProducto.jsp">
@@ -472,7 +473,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(4)){
+                                if (opciones.contains(4)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionLineaProducto.jsp">
@@ -484,7 +485,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(5)){
+                                if (opciones.contains(5)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionCategoriaProducto.jsp">
@@ -496,7 +497,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(6)){
+                                if (opciones.contains(6)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionMarca.jsp">
@@ -508,7 +509,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(7)){
+                                if (opciones.contains(7)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionTarifa.jsp">
@@ -525,7 +526,7 @@
                     </li>
                     <%
                         }
-                        if(opciones.contains(61)){
+                        if (opciones.contains(61)) {
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
@@ -539,7 +540,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(62)){
+                                if (opciones.contains(62)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionEmpresa.jsp">
@@ -551,7 +552,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(63)){
+                                if (opciones.contains(63)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionSucursal.jsp">
@@ -563,7 +564,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(64)){
+                                if (opciones.contains(64)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionAlmacen.jsp">
@@ -575,7 +576,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(65)){
+                                if (opciones.contains(65)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionVendedor.jsp">
@@ -587,7 +588,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(66)){
+                                if (opciones.contains(66)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionUsuario.jsp">
@@ -599,7 +600,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(67)){
+                                if (opciones.contains(67)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionAcceso.jsp">
@@ -616,7 +617,7 @@
                     </li>
                     <%
                         }
-                        if(opciones.contains(71)){
+                        if (opciones.contains(71)) {
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
@@ -630,7 +631,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(72)){
+                                if (opciones.contains(72)) {
                             %>
                             <li class="">
                                 <a href="#">
@@ -678,7 +679,7 @@
 
                         <div class="page-header">
                             <h1>
-                                Emitir factura electrónica
+                                Emitir factura electrónica - Almacén: <%=descripcionalmacen%>
                             </h1>
                         </div><!-- /.page-header -->
 
@@ -698,9 +699,9 @@
 
                                                         for (int i = 0; i < serie.size(); i++) {
                                                     %>
-                                                            <option value="<%= serie.get(i).getIdserie() %>">
-                                                                <%= serie.get(i).getSerie() %>
-                                                            </option>
+                                                    <option value="<%= serie.get(i).getIdserie()%>">
+                                                        <%= serie.get(i).getSerie()%>
+                                                    </option>
                                                     <%
                                                         }
                                                     %>
@@ -717,9 +718,9 @@
 
                                                         for (int i = 0; i < moneda.size(); i++) {
                                                     %>
-                                                            <option value="<%= moneda.get(i).getIdmoneda() %>">
-                                                                <%= moneda.get(i).getDescripcion() %>
-                                                            </option>
+                                                    <option value="<%= moneda.get(i).getIdmoneda()%>">
+                                                        <%= moneda.get(i).getDescripcion()%>
+                                                    </option>
                                                     <%
 
                                                         }
@@ -786,21 +787,26 @@
                         <div class="row datos_cliente">
                             <div class="col-xs-12">
                                 <input type="hidden" id="idcliente" value="0">
+                                <input type="hidden" id="ubigeocliente" value="">
                                 <div class="panel panel-primary">
                                     <div class="panel-heading"> Datos Cliente </div>
                                     <div class="panel-body">
                                         <div class="row col-md-12">
                                             <div class="form-group">
+                                                <label id="lblnuevocliente" for="nuevocliente" class="control-label hide" style="width: 80px;">Nuevo Cliente:</label>
+                                                <input type="text" name="nuevocliente" id="nuevocliente" class="hide" tabindex="16" style="width: 540px;" disabled>
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="cliente" class="control-label" style="width: 80px;">Cliente:</label>
                                                 <select class="chosen-select" id="cliente" tabindex="14" style="width: 540px;" data-placeholder="Seleccione cliente...">
-                                                    <option value="" selected="selected"></option>
+                                                    <option value="0" selected="selected"></option>
                                                     <%
                                                         DaoClienteImpl daoCliente = new DaoClienteImpl();
                                                         List<BeanCliente> cliente = daoCliente.accionListar();
                                                         for (int i = 0; i < cliente.size(); i++) {
-                                                            if(cliente.get(i).getIdtipodocumento()==2){%>
-                                                                <option value="<%= cliente.get(i).getIdcliente() %>"><%= cliente.get(i).getNumerodocumento() + " | " + cliente.get(i).getNombre() %>
-                                                                </option>
+                                                            if (cliente.get(i).getIdtipodocumento() == 2) {%>
+                                                    <option value="<%= cliente.get(i).getIdcliente()%>"><%= cliente.get(i).getNumerodocumento() + " | " + cliente.get(i).getNombre()%>
+                                                    </option>
                                                     <%
                                                             }
                                                         }
@@ -815,9 +821,9 @@
 
                                                         for (int i = 0; i < departamento.size(); i++) {
                                                     %>
-                                                            <option value="<%= departamento.get(i).getCodigo_ubidepartamento() %>">
-                                                                <%= departamento.get(i).getDescripcionUbigeo() %>
-                                                            </option>
+                                                    <option value="<%= departamento.get(i).getCodigo_ubidepartamento()%>">
+                                                        <%= departamento.get(i).getDescripcionUbigeo()%>
+                                                    </option>
                                                     <%
 
                                                         }
@@ -828,7 +834,7 @@
                                                 <label for="ruc" class="control-label" style="width: 80px;">RUC:</label>
                                                 <input type="text" name="ruc" id="ruc" tabindex="15" style="width: 433px;">
                                                 &nbsp;
-                                                <button type="button" class="btn btn-xs btn-primary buscar_sunat" >Buscar SUNAT</button>
+                                                <button type="button" class="btn btn-xs btn-primary" id="buscarsunat">Buscar SUNAT</button>
                                                 &nbsp;&nbsp;
                                                 <label id="lblprovincia" class="control-label hide" style="width: 110px;">Provincia:</label>
                                                 <select id="provincia" name="provincia" class="hide"  style="width: 220px;" tabindex="51">
@@ -852,9 +858,9 @@
 
                                                         for (int i = 0; i < vendedor.size(); i++) {
                                                     %>
-                                                            <option value="<%= vendedor.get(i).getIdvendedor() %>">
-                                                                <%= vendedor.get(i).getDescripcion() %>
-                                                            </option>
+                                                    <option value="<%= vendedor.get(i).getIdvendedor()%>">
+                                                        <%= vendedor.get(i).getDescripcion()%>
+                                                    </option>
                                                     <%
 
                                                         }
@@ -872,6 +878,7 @@
                                     <div class="panel-heading"> Productos </div>
                                     <div class="panel-body">
                                         <input type="hidden" id="idproducto" value="0">
+                                        <input type="hidden" id="rowdetalle" value="0">
 
                                         <div class="row col-md-12">
                                             <div class="form-group">
@@ -880,9 +887,9 @@
                                                     <option value="" selected="selected"></option>
                                                     <%
                                                         DaoProductoImpl daoProducto = new DaoProductoImpl();
-                                                        List<BeanProducto> producto = daoProducto.accionListar();
+                                                        List<BeanProducto> producto = daoProducto.accionListarActivo();
                                                         for (int i = 0; i < producto.size(); i++) {%>
-                                                    <option value="<%= producto.get(i).getIdproducto() %>"><%= producto.get(i).getCodigo() + " | " + producto.get(i).getDescripcion()%></option>
+                                                    <option value="<%= producto.get(i).getIdproducto()%>"><%= producto.get(i).getCodigo() + " | " + producto.get(i).getDescripcion()%></option>
                                                     <%
                                                         }
                                                     %>
@@ -908,11 +915,19 @@
                                                             <th>Medida</th>
                                                             <th>Precio Unitario</th>
                                                             <th style="display: none">Valor Unitario</th>
+                                                            <th style="display: none">Precio Total sDscto</th>
+                                                            <th style="display: none">Valor Total</th>
                                                             <th style="display: none">Afecto IGV</th>
-                                                            <th>IGV</th>
+                                                            <th style="display: none">IGV sDscto</th>
                                                             <th style="display: none">ISC</th>
-                                                            <th>Importe</th>
+                                                            <th style="display: none">Precio Unitario Dscto</th>
+                                                            <th style="display: none">Valor Unitario Dscto</th>
+                                                            <th>Precio Total</th>
+                                                            <th>IGV</th>
+                                                            <th style="display: none">Valor Total Dscto</th>
                                                             <th>Descuento</th>
+                                                            <th style="display: none">Descuento Porc</th>
+                                                            <th style="display: none">Descuento Mont</th>
                                                             <th>Lote|F.V.</th>
                                                             <th>Stock Actual</th>
                                                             <th>Bonificación</th>
@@ -972,7 +987,9 @@
                             </div>
                             <div class="col-md-5">
                                 <input type="hidden" id="total_valorventa" value="0">
-                                <input type="hidden" id="total_precioventa" value="0">          
+                                <input type="hidden" id="total_precioventa" value="0">
+                                <input type="hidden" id="dcto_global_monto" value="0"> 
+                                <input type="hidden" id="dcto_global_pcto" value="0"> 
                                 <div class="panel panel-primary">
                                     <div class="panel-heading">Totales factura</div>
                                     <div class="panel-body">
@@ -1128,663 +1145,775 @@
         <script src="../assets/js/jquery.ui.touch-punch.min.js"></script>
 
         <script type="text/javascript">
-            $(document).ready(function () {
-                $(window).load(function () {
-                    cargarCorrelativo();
-                });
-
-                var cargarCorrelativo = function () {
-                    var idSerie = $('#serie').val();
-                    $.get('../Serie', {
-                        idSerie: idSerie
-                    }, function (response) {
-                        $('#correlativo').val(response);
-                    });
-
-                    var departamentoActual = $("#departamento").val();
-
-                    $.get('../Ubigeo', {
-                        "codigo_ubidepartamento": departamentoActual
-                    }, function(response){
-                        $('#provincia').html(response);
-
-                        var provinciaActual = $("#provincia").val();
-
-                        $.get('../Ubigeo', {
-                            "codigo_ubiprovincia": provinciaActual
-                        }, function(response){
-                            $('#distrito').html(response);
+                    $(document).ready(function () {
+                        $(window).load(function () {
+                            cargarCorrelativo();
                         });
-                    });
 
-                };
+                        var cargarCorrelativo = function () {
+                            var idSerie = $('#serie').val();
+                            $.get('../Serie', {
+                                idSerie: idSerie
+                            }, function (response) {
+                                $('#correlativo').val(response);
+                            });
 
-                $('#serie').change(function () {
-                    var idSerie = $('#serie').val();
-                    $.get('../Serie', {
-                        idSerie: idSerie
-                    }, function (response) {
-                        $('#correlativo').val(response);
-                    });
-                });
+                            var departamentoActual = $("#departamento").val();
 
+                            $.get('../Ubigeo', {
+                                "codigo_ubidepartamento": departamentoActual
+                            }, function (response) {
+                                $('#provincia').html(response);
 
-                $('#switch-negociable').removeAttr('checked').on('click', function(){
-                    //$validation = this.checked;
-                    if(this.checked) {
-                        $('#fechavencimiento').removeClass('hide');
-                        $('#lblfechavencimiento').removeClass('hide');
-                        $('#iconfechavencimiento').removeClass('hide');
-                        $('#lbldepartamento').removeClass('hide');
-                        $('#departamento').removeClass('hide');
-                        $('#lblprovincia').removeClass('hide');
-                        $('#provincia').removeClass('hide');
-                        $('#lbldistrito').removeClass('hide');
-                        $('#distrito').removeClass('hide');
-                    }
-                    else {
-                        $('#fechavencimiento').addClass('hide');
-                        $('#lblfechavencimiento').addClass('hide');
-                        $('#iconfechavencimiento').addClass('hide');
-                        $('#lbldepartamento').addClass('hide');
-                        $('#departamento').addClass('hide');
-                        $('#lblprovincia').addClass('hide');
-                        $('#provincia').addClass('hide');
-                        $('#lbldistrito').addClass('hide');
-                        $('#distrito').addClass('hide');
-                    }
-                });
+                                var provinciaActual = $("#provincia").val();
 
-                $("#fechavencimiento").datepicker({
-                    dateFormat: 'dd/mm/yy',
-                    minDate: '+1d'
-                }).datepicker("setDate", new Date());
+                                $.get('../Ubigeo', {
+                                    "codigo_ubiprovincia": provinciaActual
+                                }, function (response) {
+                                    $('#distrito').html(response);
+                                });
+                            });
 
-                $.datepicker.regional['es'] = {
-                    closeText: 'Cerrar',
-                    prevText: '< Ant',
-                    nextText: 'Sig >',
-                    currentText: 'Hoy',
-                    monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-                    monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-                    dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-                    dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
-                    dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
-                    weekHeader: 'Sm',
-                    dateFormat: 'dd/mm/yy',
-                    firstDay: 1,
-                    isRTL: false,
-                    showMonthAfterYear: false,
-                    yearSuffix: ''
-                };
-                $.datepicker.setDefaults($.datepicker.regional['es']);
+                        };
 
-
-
-                $('#formapago').change(function(){
-                    var formapago = $('#formapago').val();
-                    if(formapago==="L"){
-                        $('#lblnumeroletra').removeClass('hide');
-                        $('#numeroletra').removeClass('hide');
-                        $('#lblmontoletra').removeClass('hide');
-                        $('#montoletra').removeClass('hide');
-                        $('#fechavencimientoletra').removeClass('hide');
-                        $('#lblfechavencimientoletra').removeClass('hide');
-                        $('#iconfechavencimientoletra').removeClass('hide');
-                    }else{
-                        $('#lblnumeroletra').addClass('hide');
-                        $('#numeroletra').addClass('hide');
-                        $('#lblmontoletra').addClass('hide');
-                        $('#montoletra').addClass('hide');
-                        $('#fechavencimientoletra').addClass('hide');
-                        $('#lblfechavencimientoletra').addClass('hide');
-                        $('#iconfechavencimientoletra').addClass('hide');
-                    }
-                });
-
-                $( "#fechavencimientoletra" ).datepicker({
-                    dateFormat: 'dd/mm/yy',
-                    minDate: '+1d'
-                }).datepicker("setDate", new Date());
-
-
-
-                $('#estadopago').change(function(){
-                    var formapago = $('#estadopago').val();
-                    if(formapago==="P"){
-                        $('#lblmontopagado').removeClass('hide');
-                        $('#montopagado').removeClass('hide');
-                        $('#montopagado').focus();
-                    }else{
-                        $('#lblmontopagado').addClass('hide');
-                        $('#montopagado').addClass('hide');
-                        $('#montopagado').val('');
-                    }
-                });
-                <%--
-                $('#montopagado').blur(function (){             
-                    var montopagado = parseFloat($(this).val()).toFixed(2);
-                    if(isNaN(montopagado) || montopagado==="0.00"){
-                        alertify.error("ERROR! DEBE INGRESAR UN MONTO MAYOR A CERO");
-                        $('#montopagado').focus();
-                    }
-                });
-                --%>
-                $('#departamento').change(function(){
-                    var codigoDpto = $('#departamento').val();
-                    $.get('../Ubigeo', {
-                        "codigo_ubidepartamento": codigoDpto
-                    }, function(response){
-                        $('#provincia').html(response);
-
-                        var provinciaActual = $("#provincia").val();
-
-                        $.get('../Ubigeo', {
-                            "codigo_ubiprovincia": provinciaActual
-                        }, function(response){
-                            $('#distrito').html(response);
+                        $('#serie').change(function () {
+                            var idSerie = $('#serie').val();
+                            $.get('../Serie', {
+                                idSerie: idSerie
+                            }, function (response) {
+                                $('#correlativo').val(response);
+                            });
                         });
-                    });
-                });
-
-                $('#provincia').change(function(){
-                    var codigoProv = $('#provincia').val();
-                    $.get('../Ubigeo', {
-                        "codigo_ubiprovincia": codigoProv
-                    }, function(response){
-                        $('#distrito').html(response);
-                    });
-                });
 
 
-                $('#cliente').change(function () {
-                    var idcliente = $(this).val();
-                    if(idcliente!==null || idcliente!==""){
-                        $.ajax({
-                            url: "../Cliente",
-                            method: "POST",
-                            data: {"opcion": "buscar", "idcliente": idcliente},
-                            success: function (data) {
-                                var obj = jQuery.parseJSON(data);
-                                $('#idcliente').val(obj.idcliente);
-                                $('#ruc').val(obj.numerodocumento);
-                                $('#direccion').val(obj.direccion);
-                                $('#vendedor').val(obj.vendedor);
-                            },
-                            error: function (error) {
-                                alertify.error("ERROR AL EJECUTAR AJAX DE OBTENER DATOS USUARIO");
+                        $('#switch-negociable').removeAttr('checked').on('click', function () {
+                            //$validation = this.checked;
+                            if (this.checked) {
+                                $('#fechavencimiento').removeClass('hide');
+                                $('#lblfechavencimiento').removeClass('hide');
+                                $('#iconfechavencimiento').removeClass('hide');
+                                $('#lbldepartamento').removeClass('hide');
+                                $('#departamento').removeClass('hide');
+                                $('#lblprovincia').removeClass('hide');
+                                $('#provincia').removeClass('hide');
+                                $('#lbldistrito').removeClass('hide');
+                                $('#distrito').removeClass('hide');
+                            } else {
+                                $('#fechavencimiento').addClass('hide');
+                                $('#lblfechavencimiento').addClass('hide');
+                                $('#iconfechavencimiento').addClass('hide');
+                                $('#lbldepartamento').addClass('hide');
+                                $('#departamento').addClass('hide');
+                                $('#lblprovincia').addClass('hide');
+                                $('#provincia').addClass('hide');
+                                $('#lbldistrito').addClass('hide');
+                                $('#distrito').addClass('hide');
                             }
-                        }).done();
-                    }
-                });
+                        });
+
+                        $("#fechavencimiento").datepicker({
+                            dateFormat: 'dd/mm/yy',
+                            minDate: '+1d'
+                        }).datepicker("setDate", new Date());
+
+                        $.datepicker.regional['es'] = {
+                            closeText: 'Cerrar',
+                            prevText: '< Ant',
+                            nextText: 'Sig >',
+                            currentText: 'Hoy',
+                            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+                            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+                            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+                            weekHeader: 'Sm',
+                            dateFormat: 'dd/mm/yy',
+                            firstDay: 1,
+                            isRTL: false,
+                            showMonthAfterYear: false,
+                            yearSuffix: ''
+                        };
+                        $.datepicker.setDefaults($.datepicker.regional['es']);
 
 
-                $("#btnAgregarDetalle").click(function () {
-                    var rowCount = $('#detalleVenta >tbody >tr').length;
-                    var idproducto = $('#producto').val();
-                    if(idproducto !== "0" && idproducto !== ""){
-                        $.get('../Producto', {
-                            "opcion": "agregarVenta",
-                            "idproducto": idproducto,
-                            "numeroproductos" : rowCount
-                        }, function(response){
-                            $('#detalleVenta').append(response);
-                            $('#producto')
-                                .find('option:first-child').prop('selected', true)
-                                .end().trigger('chosen:updated');
+
+                        $('#formapago').change(function () {
+                            var formapago = $('#formapago').val();
+                            if (formapago === "L") {
+                                $('#lblnumeroletra').removeClass('hide');
+                                $('#numeroletra').removeClass('hide');
+                                $('#lblmontoletra').removeClass('hide');
+                                $('#montoletra').removeClass('hide');
+                                $('#fechavencimientoletra').removeClass('hide');
+                                $('#lblfechavencimientoletra').removeClass('hide');
+                                $('#iconfechavencimientoletra').removeClass('hide');
+                            } else {
+                                $('#lblnumeroletra').addClass('hide');
+                                $('#numeroletra').addClass('hide');
+                                $('#lblmontoletra').addClass('hide');
+                                $('#montoletra').addClass('hide');
+                                $('#fechavencimientoletra').addClass('hide');
+                                $('#lblfechavencimientoletra').addClass('hide');
+                                $('#iconfechavencimientoletra').addClass('hide');
+                            }
+                        });
+
+                        $("#fechavencimientoletra").datepicker({
+                            dateFormat: 'dd/mm/yy',
+                            minDate: '+1d'
+                        }).datepicker("setDate", new Date());
+
+
+
+                        $('#estadopago').change(function () {
+                            var formapago = $('#estadopago').val();
+                            if (formapago === "P") {
+                                $('#lblmontopagado').removeClass('hide');
+                                $('#montopagado').removeClass('hide');
+                                $('#montopagado').focus();
+                            } else {
+                                $('#lblmontopagado').addClass('hide');
+                                $('#montopagado').addClass('hide');
+                                $('#montopagado').val('');
+                            }
+                        });
+
+                        $('#departamento').change(function () {
+                            var codigoDpto = $('#departamento').val();
+                            $.get('../Ubigeo', {
+                                "codigo_ubidepartamento": codigoDpto
+                            }, function (response) {
+                                $('#provincia').html(response);
+
+                                var provinciaActual = $("#provincia").val();
+
+                                $.get('../Ubigeo', {
+                                    "codigo_ubiprovincia": provinciaActual
+                                }, function (response) {
+                                    $('#distrito').html(response);
+                                });
+                            });
+                        });
+
+                        $('#provincia').change(function () {
+                            var codigoProv = $('#provincia').val();
+                            $.get('../Ubigeo', {
+                                "codigo_ubiprovincia": codigoProv
+                            }, function (response) {
+                                $('#distrito').html(response);
+                            });
+                        });
+
+
+                        $('#cliente').change(function () {
+                            $('#idcliente').val('0');
+                            $('#ruc').val('');
+                            $('#direccion').val('');
+                            $('#vendedor').val('0');
+                            $('#vendedor').attr('disabled', true);
+                            $('#nuevocliente').val('');
+                            $('#nuevocliente').addClass('hide');
+                            $('#lblnuevocliente').addClass('hide');
+                            $('#ubigeocliente').val('');
+                            var idcliente = $(this).val();
+                            if (idcliente !== "0") {
+                                $.ajax({
+                                    url: "../Cliente",
+                                    method: "POST",
+                                    data: {"opcion": "buscar", "idcliente": idcliente},
+                                    success: function (data) {
+                                        var obj = jQuery.parseJSON(data);
+                                        $('#idcliente').val(obj.idcliente);
+                                        $('#ruc').val(obj.numerodocumento);
+                                        $('#direccion').val(obj.direccion);
+                                        $('#vendedor').val(obj.vendedor);
+                                    },
+                                    error: function (error) {
+                                        alertify.error("ERROR AL EJECUTAR AJAX DE OBTENER DATOS USUARIO");
+                                    }
+                                }).done();
+                            }
+                        });
+
+
+                        $("#btnAgregarDetalle").click(function () {
+                            var rowCount = $('#detalleVenta >tbody >tr').length;
+                            var cont = parseInt($('#rowdetalle').val());
+                            var newRow = cont + 1;
+                            $('#rowdetalle').val(newRow);
+                            var idproducto = $('#producto').val();
+                            if (idproducto !== "0" && idproducto !== "") {
+                                $.get('../Producto', {
+                                    "opcion": "agregarVenta",
+                                    "idproducto": idproducto,
+                                    "numeroproductos": newRow
+                                }, function (response) {
+                                    $('#detalleVenta').append(response);
+                                    $('#producto')
+                                            .find('option:first-child').prop('selected', true)
+                                            .end().trigger('chosen:updated');
+                                    calcular(newRow);
+                                    calcularTotales();
+                                });
+                            }
+                        });
+
+                        $("#detalleVenta").on('click', '.eliminarDetalleVenta', function () {
+                            $(this).closest('tr').remove();
                             calcularTotales();
                         });
-                    }
-                });
-
-                $("#detalleVenta").on('click', '.eliminarDetalleVenta', function () {
-                    $(this).closest('tr').remove();
-                    calcularTotales();
-                });
-                   
-                   
-                function calcular(orden){
-                    var cantidad = $('#cantidad_'+orden).val();
-                    var stockActual = $('#stock_'+orden).html();
-                    if(parseFloat(cantidad).toFixed(2)>stockActual*1){
-                        alertify.error("Alerta! El stock disponible es de "+stockActual);
-                        $('#stock_'+orden).css({"background-color":"red","color":"white"});
-                        $('#cantidad_'+orden).focus();
-                        return;
-                    }
-                    var precio = $('#tarifa_'+orden+' option:selected').text();
-                    var descuento = $('#descuento_'+orden).val();
-                    var tipoDcto = $('#dcto_prod_'+orden).val();
-                    var importe = 0;
-                    if(tipoDcto === 'P'){
-                        importe = cantidad*precio*(1 - descuento/100) ;
-                    }else{
-                        importe = cantidad*precio - descuento;
-                    }
-                    $('#importe_'+orden).html(parseFloat(importe).toFixed(2));
-                    var afecto_igv = $('#afecto_igv_'+orden).html();
-                    var valorIGV = 0;
-                    var igv = 0;
-                    if(afecto_igv==='G'){
-                        valorIGV = 0.18;
-                        igv =  importe*valorIGV;
-                    }
-                    $('#igv_'+orden).html(parseFloat(igv).toFixed(2));
-                    var valor_unitario = precio/(1+valorIGV);
-                    $('#valor_uni_'+orden).html(parseFloat(valor_unitario).toFixed(2));
-                };
 
 
-                $('#detalleVenta').on('change', '.input_cantidad', function(){
-                    var orden = $(this).parents('tr').find('td:eq(16)').find('button.eliminarDetalleVenta').attr('id');
-                    var bonificacion = $('#bonificacion_'+orden).is(':checked');
-                    $('#stock_'+orden).css({"background-color":"transparent","color":"black"});
-                    if(bonificacion){
-                        var precio = $('#tarifa_'+orden+' option:selected').text();
-                        var importe = $('#importe_'+orden).html();
-                        var afecto_igv = $('#afecto_igv_'+orden).html();
-                        var valorIGV = 0;
-                        var igv = 0;
-                        if(afecto_igv==='G'){
-                            valorIGV = 0.18;
-                            igv =  importe*valorIGV;
-                        }
-                        //$('#igv_'+orden).html(parseFloat(igv).toFixed(2));
-                        var valor_unitario = precio/(1+valorIGV);
-                        $('#valor_uni_'+orden).html(parseFloat(valor_unitario).toFixed(2));
-                    }else{
-                        calcular(orden);
-                    }
-                    calcularTotales();
-                });
-
-                $('#detalleVenta').on('keyup', '.input_cantidad', function(){
-                    var orden = $(this).parents('tr').find('td:eq(16)').find('button.eliminarDetalleVenta').attr('id');
-                    var bonificacion = $('#bonificacion_'+orden).is(':checked');
-                    $('#stock_'+orden).css({"background-color":"transparent","color":"black"});
-                    if(bonificacion){
-                        var precio = $('#tarifa_'+orden+' option:selected').text();
-                        var importe = $('#importe_'+orden).html();
-                        var afecto_igv = $('#afecto_igv_'+orden).html();
-                        var valorIGV = 0;
-                        var igv = 0;
-                        if(afecto_igv==='G'){
-                            valorIGV = 0.18;
-                            igv =  importe*valorIGV;
-                        }
-                        //$('#igv_'+orden).html(parseFloat(igv).toFixed(2));
-                        var valor_unitario = precio/(1+valorIGV);
-                        $('#valor_uni_'+orden).html(parseFloat(valor_unitario).toFixed(2));
-                    }else{
-                        calcular(orden);
-                    }
-                    calcularTotales();
-                });
-
-                $('#detalleVenta').on('click', '.bonificacion', function(){
-                    var orden = $(this).parents('tr').find('td:eq(16)').find('button.eliminarDetalleVenta').attr('id');
-                    if($(this).is(':checked')){
-                        var precio = $('#tarifa_'+orden+' option:selected').text();
-                        var importe = $('#importe_'+orden).html();
-                        var afecto_igv = $('#afecto_igv_'+orden).html();
-                        var valorIGV = 0;
-                        var igv = 0;
-                        if(afecto_igv==='G'){
-                            valorIGV = 0.18;
-                            igv =  importe*valorIGV;
-                        }
-                        //$('#igv_'+orden).html(parseFloat(igv).toFixed(2));
-                        var valor_unitario = precio/(1+valorIGV);
-                        $('#valor_uni_'+orden).html(parseFloat(valor_unitario).toFixed(2));
-                        $('#importe_'+orden).html(parseFloat(0).toFixed(2));
-                        $('#igv_'+orden).html(parseFloat(0).toFixed(2));
-                        $('#descuento_'+orden).val('');
-                        $('#descuento_'+orden).prop('disabled', true);
-                    }else{
-                        calcular(orden);
-                        $('#descuento_'+orden).val('');
-                        $('#descuento_'+orden).prop('disabled', false);
-                    }
-                    calcularTotales();
-                });
-
-                $('#detalleVenta').on('change', '.select_tarifa', function(){
-                    var orden = $(this).parents('tr').find('td:eq(16)').find('button.eliminarDetalleVenta').attr('id');
-                    var bonificacion = $('#bonificacion_'+orden).is(':checked');
-                    if(bonificacion){
-                        var precio = $('#tarifa_'+orden+' option:selected').text();
-                        var importe = $('#importe_'+orden).html();
-                        var afecto_igv = $('#afecto_igv_'+orden).html();
-                        var valorIGV = 0;
-                        var igv = 0;
-                        if(afecto_igv==='G'){
-                            valorIGV = 0.18;
-                            igv =  importe*valorIGV;
-                        }
-                        //$('#igv_'+orden).html(parseFloat(igv).toFixed(2));
-                        var valor_unitario = precio/(1+valorIGV);
-                        $('#valor_uni_'+orden).html(parseFloat(valor_unitario).toFixed(2));
-                    }else{
-                        calcular(orden);
-                    }
-                    calcularTotales();
-                });
-
-
-
-                $('#detalleVenta').on('keyup', '.monto_descuento', function(){
-                    var orden = $(this).parents('tr').find('td:eq(16)').find('button.eliminarDetalleVenta').attr('id');
-                    var bonificacion = $('#bonificacion_'+orden).is(':checked');
-                    if(!bonificacion){
-                        calcular(orden);
-                    }
-                    calcularTotales();
-                });
-
-                $('#detalleVenta').on('blur', '.monto_descuento', function(){
-                    var orden = $(this).parents('tr').find('td:eq(16)').find('button.eliminarDetalleVenta').attr('id');
-                    var bonificacion = $('#bonificacion_'+orden).is(':checked');
-                    if(!bonificacion){
-                        calcular(orden);
-                    }
-                    calcularTotales();
-                });
-
-                $('#detalleVenta').on('change', '.select_tipo_dcto', function(){
-                    var orden = $(this).parents('tr').find('td:eq(16)').find('button.eliminarDetalleVenta').attr('id');
-                    var bonificacion = $('#bonificacion_'+orden).is(':checked');
-                    if(!bonificacion){
-                        calcular(orden);
-                    }
-                    calcularTotales();
-                });
-
-                $('#detalleVenta').on('change', '.select_lote', function(){
-                    var orden = $(this).parents('tr').find('td:eq(16)').find('button.eliminarDetalleVenta').attr('id');
-                    var array = [];
-                    array = $('#lote_'+orden).val().split("|");
-                    var idlote = array[0];
-                    var stock = array[1];
-                    $('#stock_'+orden).html(parseFloat(stock).toFixed(2));
-                });
-
-                function calcularTotales(){
-                    var bonificacion;
-                    var afecto_igv = "";
-                    var total_igv = 0;
-                    var total_isc = 0;
-                    var total_gravadas = 0;
-                    var total_inafectas = 0;
-                    var total_exoneradas = 0;
-                    var total_gratuitas = 0;
-                    var total_descuentos = 0;
-                    var total_valorventa = 0;
-                    var total_precioventa = 0;
-                    $(".valor_unitario").each(function () {
-                        bonificacion = $(this).parent().find('td:eq(15)').find('input.bonificacion').is(':checked');
-                        var orden = $(this).parents('tr').find('td:eq(16)').find('button.eliminarDetalleVenta').attr('id');
-                        var cantidad = $('#cantidad_'+orden).val();
-                        if(bonificacion){
-                            total_gratuitas += parseFloat($(this).html())*cantidad || 0;
-                        }else{
-                            afecto_igv = $(this).parent().find('td:eq(8)').html();
-                            if(afecto_igv==='G'){
-                                total_gravadas += parseFloat($(this).html()) || 0;
-                            }
-                            if(afecto_igv==='E'){
-                                total_exoneradas += parseFloat($(this).html()) || 0;
-                            }
-                            if(afecto_igv==='I'){
-                                total_inafectas += parseFloat($(this).html()) || 0;
-                            }
-                        }
-                        total_igv += parseFloat($(this).parent().find('td:eq(9)').html()) || 0;
-                        var tipoDcto = $('#dcto_prod_'+orden).val(); //$(this).parent().find('td:eq(12)').find('select.select_tipo_dcto').val(); //$('#dcto_prod_'+orden).val();
-                        var cantidad = $('#cantidad_'+orden).val();
-                        var precio = $('#tarifa_'+orden+' option:selected').text();
-                        var dcto = $('#descuento_'+orden).val();
-                        //alertify.error("precio: "+precio);
-                        if(tipoDcto === 'P'){
-                            total_descuentos += precio*(dcto/100)*cantidad ;
-                        }else{
-                            total_descuentos += dcto;
-                        }
-                        total_valorventa += $(this).text()*cantidad;
-                        total_precioventa += precio*cantidad;
-                        //alertify.error("total_valorventa: "+total_valorventa+ "  total_precioventa: "+total_precioventa);
-                    });
-                    var dctoGlobal = $('#input_dcto_global').val();
-                    var tipoDctoGlobal = $('#select_dcto_total').val();
-                    var total_otros_cargos = $('#total_otros_cargos').val();
-                    var dctoGlobalMonto = 0;
-                    $('#total_igv').val(parseFloat(total_igv).toFixed(2));
-                    //$('#total_isc').val(parseFloat(total_isc).toFixed(2));
-                    $('#total_gravadas').val(parseFloat(total_gravadas).toFixed(2));
-                    $('#total_exoneradas').val(parseFloat(total_exoneradas).toFixed(2));
-                    $('#total_inafectas').val(parseFloat(total_inafectas).toFixed(2));
-                    $('#total_gratuitas').val(parseFloat(total_gratuitas).toFixed(2));
-
-                    $('#total_valorventa').val(parseFloat(total_valorventa).toFixed(2));
-                    $('#total_precioventa').val(parseFloat(total_precioventa).toFixed(2));
-
-                    var total_venta = total_gravadas + total_exoneradas + total_inafectas + total_igv + total_isc + total_otros_cargos*1;
-                    if(total_venta>0){
-                        if(tipoDctoGlobal === 'P'){
-                            dctoGlobalMonto = total_venta*dctoGlobal/100;
-                        }else{
-                            dctoGlobalMonto = dctoGlobal*1;
-                        }
-                    }
-                    total_descuentos += dctoGlobalMonto;
-                    total_venta -= dctoGlobalMonto;
-                    $('#total_descuentos').val(parseFloat(total_descuentos).toFixed(2));
-                    $('#total_venta').val(parseFloat(total_venta).toFixed(2));
-                    
-                    var total_impuestos = total_igv + total_isc;
-                    $('#total_impuestos').val(parseFloat(total_impuestos).toFixed(2));
-                };
-
-
-                $("#input_dcto_global").keyup(function () {
-                    calcularTotales();
-                });
-
-                $("#input_dcto_global").blur(function () {
-                    calcularTotales();
-                });
-
-                $("#select_dcto_total").change(function () {
-                    calcularTotales();
-                });
-
-                $("#total_otros_cargos").keyup(function () {
-                    calcularTotales();
-                });
-
-                $("#total_otros_cargos").blur(function () {
-                    calcularTotales();
-                });
-
-                if (!ace.vars['touch']) {
-                    $('.chosen-select').chosen({allow_single_deselect: true});
-                    //resize the chosen on window resize
-
-                    $(window)
-                            .off('resize.chosen')
-                            .on('resize.chosen', function () {
-                                $('.chosen-select').each(function () {
-                                    var $this = $(this);
-                                    $this.next().css({'width': 540});
-                                });
-                            }).trigger('resize.chosen');
-                    //resize chosen on sidebar collapse/expand
-                    $(document).on('settings.ace.chosen', function (e, event_name, event_val) {
-                        if (event_name !== 'sidebar_collapsed')
-                            return;
-                        $('.chosen-select').each(function () {
-                            var $this = $(this);
-                            $this.next().css({'width': $this.parent().width()});
-                        });
-                    });
-                }
-
-
-                $('.registrar_venta').click(function (event) {
-                    event.preventDefault();
-                    if ($('#idcliente').val() === "0") {
-                        alertify.error("DEBE SELECCIONAR EL CLIENTE");
-                        return;
-                    }
-
-                    var rowCount = $('#detalleVenta >tbody >tr').length;
-                    if (rowCount === 0) {
-                        alertify.error("NO HA INGRESADO NINGÚN PRODUCTO");
-                        $('#producto').focus();
-                        return;
-                    }
-                    
-                    $("#detalleVenta tr").each(function () {
-                        var nombre = $(this).find("td:eq(3)").html();
-                        var disponible = $(this).find("td:eq(14)").html();
-                        var cantidad = $(this).find("td:eq(4)").find(':input').val();
-                        var unidad = $(this).find("td:eq(5)").html();
-                        if(cantidad!==undefined && disponible!==undefined){
-                            if(parseInt(cantidad)>parseInt(disponible)){
-                                alertify.error("ERROR! SÓLO HAY "+disponible+" "+unidad+"(S) DE "+nombre);
+                        function calcular(orden) {
+                            var cantidad = $('#cantidad_' + orden).val();
+                            var stockActual = Number($('#stock_' + orden).html());
+                            if (cantidad > stockActual) {
+                                alertify.error("Alerta! El stock disponible es de " + stockActual);
+                                $('#stock_' + orden).css({"background-color": "red", "color": "white"});
+                                $('#cantidad_' + orden).focus();
                                 return;
                             }
-                        }             
-                    });
-                    
-                    var table = $('#detalleVenta tbody tr').map(function (idxRow, ele) {
-                        // comienza construyendo el objeto retVal
-                        var retVal = {};
-                        // Por cada celda
-                        var $td = $(ele).find('td').map(function (idxCell, ele) {
-                            var input = $(ele).find(':input');
-                                   
-                            // Si la celda contiene un input o un select
-                            if (input.length === 1) {
-                                var attr = $('#detalleVenta thead tr th').eq(idxCell).text();
-                                if(attr==="Bonificación"){
-                                    retVal[attr] = input.is(':checked')?"S":"N";
-                                }else {
-                                    retVal[attr] = input.val();
+                            var precioUni = Number($('#tarifa_' + orden + ' option:selected').text());
+
+                            var afecto_igv = $('#afecto_igv_' + orden).html();
+                            var valorIGV = 0;
+                            var igv = 0;
+                            var valorUni = 0;
+                            if (afecto_igv === 'G') {
+                                valorIGV = 0.18;
+                                igv = precioUni * (valorIGV / (1 + valorIGV));
+                            }
+                            $('#igv_' + orden).html(parseFloat(igv * cantidad).toFixed(2));
+
+                            var valorUni = precioUni - igv;
+                            $('#valor_uni_' + orden).html(parseFloat(valorUni).toFixed(2));
+                            var precioTot = Number(cantidad * precioUni);
+                            var valorTot = Number(cantidad * valorUni);
+                            $('#precio_tot_' + orden).html(parseFloat(precioTot).toFixed(2));
+                            $('#valor_tot_' + orden).html(parseFloat(valorTot).toFixed(2));
+
+                            var descuento = Number($('#descuento_' + orden).val());
+                            var tipoDcto = $('#dcto_prod_' + orden).val();
+                            var valorTotDscto = 0;
+                            if (tipoDcto === 'P') {
+                                var montDscto = valorTot * (descuento / 100);
+                                $('#dscto_porc_' + orden).html(parseFloat(descuento).toFixed(2));
+                                $('#dscto_mont_' + orden).html(parseFloat(montDscto).toFixed(2));
+                                valorTotDscto = valorTot - montDscto;
+                            } else {
+                                var porcDscto = (descuento / valorTot) * 100;
+                                $('#dscto_porc_' + orden).html(parseFloat(porcDscto).toFixed(2));
+                                $('#dscto_mont_' + orden).html(parseFloat(descuento).toFixed(2));
+                                valorTotDscto = valorTot - descuento;
+                            }
+
+                            var valorUniDscto = valorTotDscto / cantidad;
+                            $('#valor_tot_dscto_' + orden).html(parseFloat(valorTotDscto).toFixed(2));
+                            $('#valor_uni_dscto_' + orden).html(parseFloat(valorUniDscto).toFixed(2));
+
+                            var igvDscto = 0;
+                            if (afecto_igv === 'G') {
+                                valorIGV = 0.18;
+                                igvDscto = valorTotDscto * valorIGV;
+                            }
+                            $('#igv_dscto_' + orden).html(parseFloat(igvDscto).toFixed(2));
+
+                            var precioTotDscto = valorTotDscto + igvDscto;
+                            var precioUniDscto = precioTotDscto / cantidad;
+                            $('#precio_tot_dscto_' + orden).html(parseFloat(precioTotDscto).toFixed(2));
+                            $('#precio_uni_dscto_' + orden).html(parseFloat(precioUniDscto).toFixed(2));
+                        }
+
+                        $('#detalleVenta').on('change', '.input_cantidad', function () {
+                            var orden = $(this).parents('tr').find('td:eq(24)').find('button.eliminarDetalleVenta').attr('id');
+                            var bonificacion = $('#bonificacion_' + orden).is(':checked');
+                            $('#stock_' + orden).css({"background-color": "transparent", "color": "black"});
+                            if (bonificacion) {
+                                var cantidad = $('#cantidad_' + orden).val();
+                                var stockActual = Number($('#stock_' + orden).html());
+                                if (cantidad > stockActual) {
+                                    alertify.error("Alerta! El stock disponible es de " + stockActual);
+                                    $('#stock_' + orden).css({"background-color": "red", "color": "white"});
+                                    $('#cantidad_' + orden).focus();
+                                    return;
                                 }
                             } else {
-                                if (input.length === 2){
-                                    var attr = $('#detalleVenta thead tr th').eq(idxCell).text();
-                                    retVal[attr] = $(ele).find('.monto_descuento').val()+" | "+$(ele).find('.select_tipo_dcto').val();
-                                } else {   
-                                    var attr = $('#detalleVenta thead tr th').eq(idxCell).text();
-                                    retVal[attr] = $(ele).text();
+                                calcular(orden);
+                            }
+                            calcularTotales();
+                        });
+
+                        $('#detalleVenta').on('keyup', '.input_cantidad', function () {
+                            var orden = $(this).parents('tr').find('td:eq(24)').find('button.eliminarDetalleVenta').attr('id');
+                            var bonificacion = $('#bonificacion_' + orden).is(':checked');
+                            $('#stock_' + orden).css({"background-color": "transparent", "color": "black"});
+                            if (bonificacion) {
+                                var cantidad = $('#cantidad_' + orden).val();
+                                var stockActual = Number($('#stock_' + orden).html());
+                                if (cantidad > stockActual) {
+                                    alertify.error("Alerta! El stock disponible es de " + stockActual);
+                                    $('#stock_' + orden).css({"background-color": "red", "color": "white"});
+                                    $('#cantidad_' + orden).focus();
+                                    return;
+                                }
+                            } else {
+                                calcular(orden);
+                            }
+                            calcularTotales();
+                        });
+
+                        $('#detalleVenta').on('click', '.bonificacion', function () {
+                            var orden = $(this).parents('tr').find('td:eq(24)').find('button.eliminarDetalleVenta').attr('id');
+                            if ($(this).is(':checked')) {
+                                var precioUni = Number($('#tarifa_' + orden + ' option:selected').text());
+                                $('#valor_uni_' + orden).html(parseFloat(precioUni).toFixed(2));
+                                $('#precio_tot_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#valor_tot_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#igv_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#precio_uni_dscto_' + orden).html(parseFloat(precioUni).toFixed(2));
+                                $('#valor_uni_dscto_' + orden).html(parseFloat(precioUni).toFixed(2));
+                                $('#precio_tot_dscto_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#valor_tot_dscto_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#igv_dscto_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#descuento_' + orden).val('');
+                                $('#descuento_' + orden).prop('disabled', true);
+                                $('#dscto_porc_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#dscto_mont_' + orden).html(parseFloat(0).toFixed(2));
+                            } else {
+                                calcular(orden);
+                                $('#descuento_' + orden).val('');
+                                $('#descuento_' + orden).prop('disabled', false);
+                            }
+                            calcularTotales();
+                        });
+
+                        $('#detalleVenta').on('change', '.select_tarifa', function () {
+                            var orden = $(this).parents('tr').find('td:eq(24)').find('button.eliminarDetalleVenta').attr('id');
+                            var bonificacion = $('#bonificacion_' + orden).is(':checked');
+                            if (bonificacion) {
+                                var precioUni = Number($('#tarifa_' + orden + ' option:selected').text());
+                                $('#valor_uni_' + orden).html(parseFloat(precioUni).toFixed(2));
+                                $('#precio_uni_dscto_' + orden).html(parseFloat(precioUni).toFixed(2));
+                                $('#valor_uni_dscto_' + orden).html(parseFloat(precioUni).toFixed(2));
+                            } else {
+                                calcular(orden);
+                            }
+                            calcularTotales();
+                        });
+
+
+
+                        $('#detalleVenta').on('keyup', '.monto_descuento', function () {
+                            var orden = $(this).parents('tr').find('td:eq(24)').find('button.eliminarDetalleVenta').attr('id');
+                            var bonificacion = $('#bonificacion_' + orden).is(':checked');
+                            if (!bonificacion) {
+                                calcular(orden);
+                            }
+                            calcularTotales();
+                        });
+
+                        $('#detalleVenta').on('blur', '.monto_descuento', function () {
+                            var orden = $(this).parents('tr').find('td:eq(24)').find('button.eliminarDetalleVenta').attr('id');
+                            var bonificacion = $('#bonificacion_' + orden).is(':checked');
+                            if (!bonificacion) {
+                                calcular(orden);
+                            }
+                            calcularTotales();
+                        });
+
+                        $('#detalleVenta').on('change', '.select_tipo_dcto', function () {
+                            var orden = $(this).parents('tr').find('td:eq(24)').find('button.eliminarDetalleVenta').attr('id');
+                            var bonificacion = $('#bonificacion_' + orden).is(':checked');
+                            if (!bonificacion) {
+                                calcular(orden);
+                            }
+                            calcularTotales();
+                        });
+
+                        $('#detalleVenta').on('change', '.select_lote', function () {
+                            var orden = $(this).parents('tr').find('td:eq(24)').find('button.eliminarDetalleVenta').attr('id');
+                            var array = [];
+                            array = $('#lote_' + orden).val().split("|");
+                            var idlote = array[0];
+                            var stock = array[1];
+                            $('#stock_' + orden).html(parseFloat(stock).toFixed(2));
+                        });
+
+                        function calcularTotales() {
+                            var bonificacion;
+                            var afecto_igv = "";
+                            var total_igv = 0;
+                            var total_isc = 0;
+                            var total_gravadas = 0;
+                            var total_inafectas = 0;
+                            var total_exoneradas = 0;
+                            var total_gravadas_sdscto = 0;
+                            var total_inafectas_sdscto = 0;
+                            var total_exoneradas_sdscto = 0;
+                            var total_gratuitas = 0;
+                            var total_descuentos = 0;
+                            $(".valor_unitario").each(function () {
+                                bonificacion = $(this).parent().find('td:eq(23)').find('input.bonificacion').is(':checked');
+                                var orden = $(this).parents('tr').find('td:eq(24)').find('button.eliminarDetalleVenta').attr('id');
+                                var cantidad = $('#cantidad_' + orden).val();
+                                if (bonificacion) {
+                                    total_gratuitas += Number($('#precio_uni_dscto_' + orden).html()) * cantidad;
+                                } else {
+                                    afecto_igv = $(this).parent().find('td:eq(10)').html();
+                                    if (afecto_igv === 'G') {
+                                        total_gravadas += Number($('#valor_tot_dscto_' + orden).html());
+                                        total_gravadas_sdscto += Number($('#valor_tot_' + orden).html());
+                                    }
+                                    if (afecto_igv === 'E') {
+                                        total_exoneradas += Number($('#valor_tot_dscto_' + orden).html());
+                                        total_exoneradas_sdscto += Number($('#valor_tot_' + orden).html());
+                                    }
+                                    if (afecto_igv === 'I') {
+                                        total_inafectas += Number($('#valor_tot_dscto_' + orden).html());
+                                        total_inafectas_sdscto += Number($('#valor_tot_' + orden).html());
+                                    }
+                                }
+                                total_igv += Number($('#igv_dscto_' + orden).html());
+                                total_descuentos += Number($('#dscto_mont_' + orden).html());
+                            });
+
+                            //Valor total de venta sin descuento ni impuestos
+                            var totalValorVenta = total_gravadas_sdscto + total_exoneradas_sdscto + total_inafectas_sdscto;
+                            $('#total_valorventa').val(parseFloat(totalValorVenta).toFixed(2));
+
+                            var dctoGlobal = $('#input_dcto_global').val();
+                            var tipoDctoGlobal = $('#select_dcto_total').val();
+                            var dctoGlobalMonto = 0;
+                            var dctoGlobalPorcentaje = 0;
+                            if (dctoGlobal !== '') {
+                                if (total_gravadas + total_exoneradas + total_inafectas + total_igv + total_isc > 0) {
+                                    if (tipoDctoGlobal === 'P') {
+                                        dctoGlobalPorcentaje = dctoGlobal;
+                                        $('#dcto_global_pcto').val(dctoGlobalPorcentaje);
+                                        dctoGlobalMonto = (total_gravadas + total_exoneradas + total_inafectas + total_igv + total_isc) * dctoGlobalPorcentaje / 100;
+                                        $('#dcto_global_monto').val(dctoGlobalMonto);
+                                    } else {
+                                        dctoGlobalPorcentaje = (dctoGlobal / (total_gravadas + total_exoneradas + total_inafectas + total_igv + total_isc)) * 100;
+                                        $('#dcto_global_pcto').val(dctoGlobalPorcentaje);
+                                        dctoGlobalMonto = (total_gravadas + total_exoneradas + total_inafectas + total_igv + total_isc) * dctoGlobalPorcentaje / 100;
+                                        $('#dcto_global_monto').val(dctoGlobalMonto);
+                                    }
+                                } else {
+                                    $('#input_dcto_global').val('');
+                                    alertify.error("NO EXISTE MONTO PARA APLICAR DESCUENTO GLOBAL");
+                                    calcularTotales();
                                 }
                             }
-                        });
-                        return retVal;
-                    }).get();
-                    //alert(JSON.stringify(table)+"");
-                    //return;
-                    if($('#estadopago').val()==="P"){
-                        if($('#estadopago').val()>=$('#total_venta').val()){
-                            alertify.error("PARA UN PAGO PARCIAL EL MONTO A PAGAR: " +$('#montopagado').val()+ " DEBE SER MENOR AL MONTO TOTAL DE LA VENTA: "+$('#total_venta').val());
-                            $('#montopagado').focus();
-                        }
-                    }
-                    //return;
-                    var flag_negociable = $('#switch-negociable').is(':checked')?"S":"N";
-        
-                    var tipo_dctoglobal = $("#select_dcto_total").val();
-                    var monto_dctoglobal = 0;
-                    var pcto_dctoglobal = 0;
-                    
-                    if(tipo_dctoglobal==="P")
-                        pcto_dctoglobal = $("#input_dcto_global").val() || 0;
-                    else
-                        monto_dctoglobal = $("#input_dcto_global").val() || 0;
-                    
-                    var flag_gravada = $('#switch-gravada').is(':checked')?"S":"N";
-                    
-                    var total_anticipo = 0;
-                    
-                    //CALCULO IMPORTE PAGO
-                    var importe_pago = 0;
-                    var monto_efectivo = 0;
-                    var monto_otro = 0;
-                    var referencia_otro = "";
-                    var cambio_pago = 0;
-                    //alertify.error(pcto_dctoglobal +" , "+monto_descuentoglobal );
-                    //return;
-   
-                    $('.registrar_venta').prop('disabled', true);
-                    $.ajax({
-                        method: "POST",
-                        url: "../Venta",
-                        data: {"opcion": "insertar", "detalleventa": JSON.stringify(table), "idcliente": $('#idcliente').val(), "idtipoComprobante": 1, "idvendedor": $('#vendedor').val(),
-                               "idserie": $('#serie').val(), "flag_negociable": flag_negociable, "fecha_vencimiento": $("#fechavencimiento").val(), "idmoneda": $('#moneda').val(),
-                               "formapago": $('#formapago').val(), "estatuspago": $('#estadopago').val(), "montopagado": $('#montopagado').val(), "tipo_dctoglobal": tipo_dctoglobal, "pcto_dctoglobal": pcto_dctoglobal, 
-                               "monto_dctoglobal": monto_dctoglobal, "flag_gravada": flag_gravada, "total_gravada": $('#total_gravadas').val(), "total_inafecta": $('#total_inafectas').val(),
-                               "total_exonerada": $('#total_exoneradas').val(), "total_gratuita": $('#total_gratuitas').val(), "total_impuesto": $('#total_impuestos').val(), "total_igv": $('#total_igv').val(),
-                               "total_isc": $('#total_isc').val(), "total_otrotributo": $('#total_otros_impuestos').val(), "total_valorventa": $('#total_valorventa').val(), "total_precioventa": $('#total_precioventa').val(),
-                               "total_descuento": $('#total_descuentos').val(), "total_otrocargo": $('#total_otros_cargos').val(), "total_anticipo": total_anticipo, "total_venta": $('#total_venta').val(),
-                               "importe_pago": importe_pago, "monto_efectivo": monto_efectivo, "monto_otro": monto_otro, "referencia_otro": referencia_otro, "cambio_pago": cambio_pago
-                              }
-                    }).done(function (data) {
-                        var obj = jQuery.parseJSON(data);
-                        if (obj.mensaje.indexOf('ERROR') !== -1) {
-                            $('.divError').html(obj.html);
-                            $('.divError').addClass('tada animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
-                                $('.divError').removeClass('tada animated');
-                            });
-                        } else {
-                            alertify.success(obj.mensaje);
-                            //$('.imprimir').attr('href', 'Print?linkpdf=' + obj.linkpdf);
-                        }
-                    });
+                            total_gravadas = total_gravadas * (1 - dctoGlobalPorcentaje / 100);
+                            total_exoneradas = total_exoneradas * (1 - dctoGlobalPorcentaje / 100);
+                            total_inafectas = total_inafectas * (1 - dctoGlobalPorcentaje / 100);
+                            total_igv = total_igv * (1 - dctoGlobalPorcentaje / 100);
+                            total_isc = total_isc * (1 - dctoGlobalPorcentaje / 100);
+                            total_descuentos = total_descuentos + dctoGlobalMonto;
 
-                });
-                
-                $('.limpiar').click(function () {
-                    $('#serie').prop('selectedIndex', 0);
-                    cargarCorrelativo();
-                    $('#moneda').prop('selectedIndex', 0);
-                    
-                    $('#formapago').prop('selectedIndex', 0);
-                    $('#lblnumeroletra').addClass('hide');
-                    $('#numeroletra').addClass('hide');
-                    $('#lblmontoletra').addClass('hide');
-                    $('#montoletra').addClass('hide');
-                    $('#fechavencimientoletra').addClass('hide');
-                    $('#lblfechavencimientoletra').addClass('hide');
-                    $('#iconfechavencimientoletra').addClass('hide');
-                        
-                    $('#estadopago').prop('selectedIndex', 0);
-                    $('#lblmontopagado').addClass('hide');
-                    $('#montopagado').addClass('hide');
-                    $('#montopagado').val('');
-                        
-                    $('#switch-negociable').prop('checked', false);
-                    $('#fechavencimiento').addClass('hide');
-                    $('#lblfechavencimiento').addClass('hide');
-                    $('#iconfechavencimiento').addClass('hide');
-                    $('#lbldepartamento').addClass('hide');
-                    $('#departamento').addClass('hide');
-                    $('#lblprovincia').addClass('hide');
-                    $('#provincia').addClass('hide');
-                    $('#lbldistrito').addClass('hide');
-                    $('#distrito').addClass('hide');
-                    $("#fechavencimiento").datepicker({
-                        dateFormat: 'dd/mm/yy',
-                        minDate: '+1d'
-                    }).datepicker("setDate", new Date());
-                    $("#fechavencimientoletra").datepicker({
-                        dateFormat: 'dd/mm/yy',
-                        minDate: '+1d'
-                    }).datepicker("setDate", new Date());
-                    $('#detalleVenta tbody').remove();
-                    $('.registrar_venta').prop('disabled', false);
-                });
-            });
+                            $('#total_igv').val(parseFloat(total_igv).toFixed(2));
+                            $('#total_gravadas').val(parseFloat(total_gravadas).toFixed(2));
+                            $('#total_exoneradas').val(parseFloat(total_exoneradas).toFixed(2));
+                            $('#total_inafectas').val(parseFloat(total_inafectas).toFixed(2));
+                            $('#total_gratuitas').val(parseFloat(total_gratuitas).toFixed(2));
+                            $('#total_descuentos').val(parseFloat(total_descuentos).toFixed(2));
+
+                            var total_impuestos = total_igv + total_isc;
+                            $('#total_impuestos').val(parseFloat(total_impuestos).toFixed(2));
+
+                            var total_otros_cargos = $('#total_otros_cargos').val() * 1;
+
+                            var total_venta = total_gravadas + total_exoneradas + total_inafectas + total_igv + total_isc + total_otros_cargos;
+                            $('#total_venta').val(parseFloat(total_venta).toFixed(2));
+
+                            //Precio total de venta incluye impuestos y descuentos, pero no cargos.
+                            var totalPrecioVenta = total_gravadas + total_exoneradas + total_inafectas + total_igv + total_isc;
+                            $('#total_precioventa').val(parseFloat(totalPrecioVenta).toFixed(2));
+                        }
+
+                        $("#input_dcto_global").keyup(function () {
+                            calcularTotales();
+                        });
+
+                        $("#input_dcto_global").blur(function () {
+                            calcularTotales();
+                        });
+
+                        $("#select_dcto_total").change(function () {
+                            calcularTotales();
+                        });
+
+                        $("#total_otros_cargos").keyup(function () {
+                            calcularTotales();
+                        });
+
+                        $("#total_otros_cargos").blur(function () {
+                            calcularTotales();
+                        });
+
+                        if (!ace.vars['touch']) {
+                            $('.chosen-select').chosen({allow_single_deselect: true});
+                            //resize the chosen on window resize
+
+                            $(window)
+                                    .off('resize.chosen')
+                                    .on('resize.chosen', function () {
+                                        $('.chosen-select').each(function () {
+                                            var $this = $(this);
+                                            $this.next().css({'width': 540});
+                                        });
+                                    }).trigger('resize.chosen');
+                            //resize chosen on sidebar collapse/expand
+                            $(document).on('settings.ace.chosen', function (e, event_name, event_val) {
+                                if (event_name !== 'sidebar_collapsed')
+                                    return;
+                                $('.chosen-select').each(function () {
+                                    var $this = $(this);
+                                    $this.next().css({'width': $this.parent().width()});
+                                });
+                            });
+                        }
+
+
+                        $('.registrar_venta').click(function (event) {
+                            event.preventDefault();
+                            if ($('#idcliente').val() === "0" && $('#nuevocliente').val() === "") {
+                                alertify.error("DEBE SELECCIONAR EL CLIENTE O INGRESAR NUEVO CLIENTE");
+                                return;
+                            }
+
+                            if ($('#idcliente').val() === "0" && $('#nuevocliente').val() !== "" && $('#vendedor').val() === "0") {
+                                alertify.error("DEBE SELECCIONAR UN VENDEDOR");
+                                return;
+                            }
+
+                            var rowCount = $('#detalleVenta >tbody >tr').length;
+                            if (rowCount === 0) {
+                                alertify.error("NO HA INGRESADO NINGÚN PRODUCTO");
+                                $('#producto').focus();
+                                return;
+                            }
+
+                            var boolean = false;
+                            $("#detalleVenta tbody tr").each(function () {
+                                var nombre = $(this).find("td:eq(3)").html();
+                                var disponible = $(this).find("td:eq(22)").html();
+                                var cantidad = $(this).find("td:eq(4)").find(':input').val();
+                                var unidad = $(this).find("td:eq(5)").html();
+                                if (cantidad !== undefined && disponible !== undefined) {
+                                    if (Number(cantidad) > Number(disponible)) {
+                                        alertify.error("ERROR! SÓLO HAY " + disponible + " " + unidad + "(S) DE " + nombre);
+                                        boolean = true;
+                                    }
+                                }
+                            });
+
+                            if (boolean) {
+                                alertify.error("ERROR! VALIDAR LAS CANTIDADES DEL DETALLE");
+                                return false;
+                            }
+
+                            var table = $('#detalleVenta tbody tr').map(function (idxRow, ele) {
+                                // comienza construyendo el objeto retVal
+                                var retVal = {};
+                                // Por cada celda
+                                var $td = $(ele).find('td').map(function (idxCell, ele) {
+                                    var input = $(ele).find(':input');
+
+                                    // Si la celda contiene un input o un select
+                                    if (input.length === 1) {
+                                        var attr = $('#detalleVenta thead tr th').eq(idxCell).text();
+                                        if (attr === "Bonificación") {
+                                            retVal[attr] = input.is(':checked') ? "S" : "N";
+                                        } else {
+                                            retVal[attr] = input.val();
+                                        }
+                                    } else {
+                                        if (input.length === 2) {
+                                            var attr = $('#detalleVenta thead tr th').eq(idxCell).text();
+                                            retVal[attr] = $(ele).find('.monto_descuento').val() + " | " + $(ele).find('.select_tipo_dcto').val();
+                                        } else {
+                                            var attr = $('#detalleVenta thead tr th').eq(idxCell).text();
+                                            retVal[attr] = $(ele).text();
+                                        }
+                                    }
+                                });
+                                return retVal;
+                            }).get();
+
+                            if ($('#estadopago').val() === "P") {
+                                if ($('#estadopago').val() >= $('#total_venta').val()) {
+                                    alertify.error("PARA UN PAGO PARCIAL EL MONTO A PAGAR: " + $('#montopagado').val() + " DEBE SER MENOR AL MONTO TOTAL DE LA VENTA: " + $('#total_venta').val());
+                                    $('#montopagado').focus();
+                                }
+                            }
+
+                            var flag_negociable = $('#switch-negociable').is(':checked') ? "S" : "N";
+
+                            var tipo_dctoglobal = $("#select_dcto_total").val();
+                            /*var monto_dctoglobal = 0;
+                             var pcto_dctoglobal = 0;
+                             
+                             if (tipo_dctoglobal === "P")
+                             pcto_dctoglobal = $("#input_dcto_global").val() || 0;
+                             else
+                             monto_dctoglobal = $("#input_dcto_global").val() || 0;*/
+
+                            var flag_gravada = $('#switch-gravada').is(':checked') ? "S" : "N";
+
+                            var total_anticipo = 0;
+
+                            //CALCULO IMPORTE PAGO
+                            var importe_pago = 0;
+                            var monto_efectivo = 0;
+                            var monto_otro = 0;
+                            var referencia_otro = "";
+                            var cambio_pago = 0;
+                            $('.registrar_venta').prop('disabled', true);
+                            $.ajax({
+                                method: "POST",
+                                url: "../Venta",
+                                data: {"opcion": "insertar", "detalleventa": JSON.stringify(table), "idcliente": $('#idcliente').val(), "idtipoComprobante": 1, "idvendedor": $('#vendedor').val(),
+                                    "idserie": $('#serie').val(), "flag_negociable": flag_negociable, "fecha_vencimiento": $("#fechavencimiento").val(), "idmoneda": $('#moneda').val(),
+                                    "formapago": $('#formapago').val(), "estatuspago": $('#estadopago').val(), "montopagado": $('#montopagado').val(), "tipo_dctoglobal": tipo_dctoglobal, "pcto_dctoglobal": $('#dcto_global_pcto').val(),
+                                    "monto_dctoglobal": $('#dcto_global_monto').val(), "flag_gravada": flag_gravada, "total_gravada": $('#total_gravadas').val(), "total_inafecta": $('#total_inafectas').val(),
+                                    "total_exonerada": $('#total_exoneradas').val(), "total_gratuita": $('#total_gratuitas').val(), "total_impuesto": $('#total_impuestos').val(), "total_igv": $('#total_igv').val(),
+                                    "total_isc": $('#total_isc').val(), "total_otrotributo": $('#total_otros_impuestos').val(), "total_valorventa": $('#total_valorventa').val(), "total_precioventa": $('#total_precioventa').val(),
+                                    "total_descuento": $('#total_descuentos').val(), "total_otrocargo": $('#total_otros_cargos').val(), "total_anticipo": total_anticipo, "total_venta": $('#total_venta').val(),
+                                    "importe_pago": importe_pago, "monto_efectivo": monto_efectivo, "monto_otro": monto_otro, "referencia_otro": referencia_otro, "cambio_pago": cambio_pago,
+                                    "ruc": $('#ruc').val(), "nuevocliente": $('#nuevocliente').val(), "direccion": $('#direccion').val(), "ubigeocliente": $('#ubigeocliente').val()
+                                }
+                            }).done(function (data) {
+                                var obj = jQuery.parseJSON(data);
+                                if (obj.mensaje.indexOf('ERROR') !== -1) {
+                                    $('.divError').html(obj.html);
+                                    $('.divError').addClass('tada animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+                                        $('.divError').removeClass('tada animated');
+                                    });
+                                } else {
+                                    alertify.success(obj.mensaje);
+                                }
+                            });
+
+                        });
+
+                        $('.limpiar').click(function () {
+                            $('#cliente')
+                                    .find('option:first-child').prop('selected', true)
+                                    .end().trigger('chosen:updated');
+                            $('#idcliente').val('0');
+                            $('#producto')
+                                    .find('option:first-child').prop('selected', true)
+                                    .end().trigger('chosen:updated');
+                            $('#ruc').val('');
+                            $('#direccion').val('');
+                            $('#vendedor').val('0');
+                            $('#vendedor').attr('disabled', true);
+                            $('#nuevocliente').val('');
+                            $('#nuevocliente').addClass('hide');
+                            $('#lblnuevocliente').addClass('hide');
+                            $('#ubigeocliente').val('');
+                            $('#dcto_global_pcto').val('0');
+                            $('#dcto_global_monto').val('0');
+                            $('#total_valorventa').val('0');
+                            $('#total_precioventa').val('0');
+
+                            $('#total_igv').val('0.00');
+                            $('#total_impuestos').val('0.00');
+                            $('#input_dcto_global').val('');
+                            $('#select_dcto_global').prop('selectedIndex', 0);
+                            $('#total_gravadas').val('0.00');
+                            $('#total_inafectas').val('0.00');
+                            $('#total_exoneradas').val('0.00');
+                            $('#total_gratuitas').val('0.00');
+                            $('#total_otros_cargos').val('');
+                            $('#total_descuentos').val('0.00');
+                            $('#total_venta').val('0.00');
+
+                            $('#serie').prop('selectedIndex', 0);
+                            cargarCorrelativo();
+                            $('#moneda').prop('selectedIndex', 0);
+
+                            $('#formapago').prop('selectedIndex', 0);
+                            $('#lblnumeroletra').addClass('hide');
+                            $('#numeroletra').addClass('hide');
+                            $('#lblmontoletra').addClass('hide');
+                            $('#montoletra').addClass('hide');
+                            $('#fechavencimientoletra').addClass('hide');
+                            $('#lblfechavencimientoletra').addClass('hide');
+                            $('#iconfechavencimientoletra').addClass('hide');
+
+                            $('#estadopago').prop('selectedIndex', 0);
+                            $('#lblmontopagado').addClass('hide');
+                            $('#montopagado').addClass('hide');
+                            $('#montopagado').val('');
+
+                            $('#switch-negociable').prop('checked', false);
+                            $('#fechavencimiento').addClass('hide');
+                            $('#lblfechavencimiento').addClass('hide');
+                            $('#iconfechavencimiento').addClass('hide');
+                            $('#lbldepartamento').addClass('hide');
+                            $('#departamento').addClass('hide');
+                            $('#lblprovincia').addClass('hide');
+                            $('#provincia').addClass('hide');
+                            $('#lbldistrito').addClass('hide');
+                            $('#distrito').addClass('hide');
+                            $("#fechavencimiento").datepicker({
+                                dateFormat: 'dd/mm/yy',
+                                minDate: '+1d'
+                            }).datepicker("setDate", new Date());
+                            $("#fechavencimientoletra").datepicker({
+                                dateFormat: 'dd/mm/yy',
+                                minDate: '+1d'
+                            }).datepicker("setDate", new Date());
+                            $('#detalleVenta tbody').remove();
+                            $('.registrar_venta').prop('disabled', false);
+                        });
+
+                        $('#buscarsunat').click(function (event) {
+                            var idtipodocumento = '2';
+                            var numerodocumento = $('#ruc').val();
+                            $.ajax({
+                                method: "POST",
+                                url: "../Cliente",
+                                data: {"opcion": "buscarexistencia", "idtipodocumento": idtipodocumento, "numerodocumento": numerodocumento}
+                            }).done(function (data) {
+                                if (data !== 'nulo') {
+                                    var obj = jQuery.parseJSON(data);
+                                    $('#cliente').val(obj.idcliente);
+                                    $('#cliente').trigger("chosen:updated");
+                                    $('#idcliente').val(obj.idcliente);
+                                    $('#ruc').val(obj.numerodocumento);
+                                    $('#direccion').val(obj.direccion);
+                                    $('#vendedor').val(obj.vendedor);
+                                    $('#vendedor').attr('disabled', true);
+                                    $('#nuevocliente').val('');
+                                    $('#nuevocliente').addClass('hide');
+                                    $('#lblnuevocliente').addClass('hide');
+                                } else {
+                                    $('#nuevocliente').val('');
+                                    $('#ubigeocliente').val('');
+                                    $('#direccion').val('');
+                                    $('#cliente')
+                                            .find('option:first-child').prop('selected', true)
+                                            .end().trigger('chosen:updated');
+                                    $('#vendedor').attr('disabled', false);
+                                    $.ajax({
+                                        method: "POST",
+                                        url: "../Cliente",
+                                        data: {"opcion": "buscarws", "idtipodocumento": idtipodocumento, "numerodocumento": numerodocumento}
+                                    }).done(function (data) {
+                                        var obj = jQuery.parseJSON(data);
+                                        $('#nuevocliente').val(obj.razon_social);
+                                        $('#nuevocliente').removeClass('hide');
+                                        $('#lblnuevocliente').removeClass('hide');
+                                        $('#direccion').val(obj.direccioncompleta);
+                                        $('#ubigeocliente').val(obj.ubigeo);
+                                    });
+                                }
+                            });
+                        });
+                    });
         </script>
     </body>
     <%

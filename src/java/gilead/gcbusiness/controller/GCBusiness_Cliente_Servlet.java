@@ -8,14 +8,21 @@ import gilead.gcbusiness.model.BeanCliente;
 import gilead.gcbusiness.model.BeanTipoDocumento;
 import gilead.gcbusiness.model.BeanTipoPersona;
 import gilead.gcbusiness.model.BeanVendedor;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 public class GCBusiness_Cliente_Servlet extends HttpServlet {
 
@@ -23,9 +30,9 @@ public class GCBusiness_Cliente_Servlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         // Obtengo la sesion activa
-        HttpSession session = request.getSession(false);    
-        
-        String opcion = request.getParameter("opcion");     
+        HttpSession session = request.getSession(false);
+
+        String opcion = request.getParameter("opcion");
         System.out.println("Entro GESTION CLIENTE");
         if (opcion.equals("listar")) {
             try (PrintWriter out = response.getWriter()) {
@@ -36,19 +43,19 @@ public class GCBusiness_Cliente_Servlet extends HttpServlet {
                 List<BeanCliente> listClientes = daoClienteImpl.accionListar();
 
                 org.json.simple.JSONArray datos = new org.json.simple.JSONArray();
- 
+
                 for (int i = 0; i < listClientes.size(); i++) {
                     String acciones = "";
-                   
-                    BeanTipoDocumento tipodocumento = null;                  
+
+                    BeanTipoDocumento tipodocumento = null;
                     tipodocumento = daoTipoDocumentoImpl.accionObtener(listClientes.get(i).getIdtipodocumento());
-                     
-                    BeanTipoPersona tipopersona = null;                  
+
+                    BeanTipoPersona tipopersona = null;
                     tipopersona = daoTipoPersonaImpl.accionObtener(listClientes.get(i).getIdtipopersona());
-                    
-                    BeanVendedor vendedor = null;                  
+
+                    BeanVendedor vendedor = null;
                     vendedor = daoVendedorImpl.accionObtener(listClientes.get(i).getIdvendedor());
-                    
+
                     if (listClientes.get(i).getEstado().equals("A")) {
                         acciones = "<div class=\"hidden-sm hidden-xs btn-group\">"
                                 + "<button type='button' name='actualizar' id='" + listClientes.get(i).getIdcliente() + "' class='btn btn-xs btn-info actualizar' title='Actualizar'><i class=\"ace-icon fa fa-pencil bigger-120\"></i></button>"
@@ -61,7 +68,7 @@ public class GCBusiness_Cliente_Servlet extends HttpServlet {
                     }
 
                     org.json.simple.JSONObject obj = new org.json.simple.JSONObject();
-                    obj.put("nro", (i+1));
+                    obj.put("nro", (i + 1));
                     obj.put("nombre", listClientes.get(i).getNombre());
                     obj.put("tipodocumento", tipodocumento.getAbreviatura());
                     obj.put("numerodocumento", listClientes.get(i).getNumerodocumento());
@@ -70,14 +77,14 @@ public class GCBusiness_Cliente_Servlet extends HttpServlet {
                     obj.put("correo", listClientes.get(i).getCorreo());
                     obj.put("tipopersona", tipopersona.getDescripcion());
                     obj.put("vendedor", vendedor.getDescripcion());
-                    obj.put("estado", "A".equals(listClientes.get(i).getEstado())?"ACTIVO":"INACTIVO");
+                    obj.put("estado", "A".equals(listClientes.get(i).getEstado()) ? "ACTIVO" : "INACTIVO");
                     obj.put("acciones", acciones);
                     datos.add(obj);
                 }
 
                 out.print(" {\"data\":" + datos.toJSONString() + "} ");
             }
-        }else if (opcion.equals("insertar")) {  
+        } else if (opcion.equals("insertar")) {
             System.out.println("INSERTAR CLIENTE");
             try (PrintWriter out = response.getWriter()) {
                 Integer idtipodocumento = Integer.parseInt(request.getParameter("idtipodocumento"));
@@ -109,7 +116,7 @@ public class GCBusiness_Cliente_Servlet extends HttpServlet {
                 System.out.println(json);
                 out.print(json);
             }
-        }else if (opcion.equals("actualizar")) {
+        } else if (opcion.equals("actualizar")) {
             try (PrintWriter out = response.getWriter()) {
                 Integer idcliente = Integer.parseInt(request.getParameter("idcliente"));
                 Integer idtipodocumento = Integer.parseInt(request.getParameter("idtipodocumento"));
@@ -164,6 +171,67 @@ public class GCBusiness_Cliente_Servlet extends HttpServlet {
                 out.print(obj.toJSONString());
 
                 System.out.println("buscar -- " + obj.toJSONString());
+            }
+        } else if (opcion.equals("buscarexistencia")) {
+            try (PrintWriter out = response.getWriter()) {
+                Integer idtipodocumento = Integer.parseInt(request.getParameter("idtipodocumento"));
+                String numerodocumento = request.getParameter("numerodocumento");
+                DaoClienteImpl daoClienteImpl = new DaoClienteImpl();
+                BeanCliente beanCliente = (BeanCliente) daoClienteImpl.accionObtenerExistencia(idtipodocumento, numerodocumento);
+
+                if (beanCliente != null) {
+                    org.json.simple.JSONObject obj = new org.json.simple.JSONObject();
+                    obj.put("idcliente", beanCliente.getIdcliente());
+                    obj.put("nombre", beanCliente.getNombre());
+                    obj.put("tipodocumento", beanCliente.getIdtipodocumento());
+                    obj.put("numerodocumento", beanCliente.getNumerodocumento());
+                    obj.put("direccion", beanCliente.getDireccion());
+                    obj.put("telefono", beanCliente.getTelefono());
+                    obj.put("correo", beanCliente.getCorreo());
+                    obj.put("tipopersona", beanCliente.getIdtipopersona());
+                    obj.put("vendedor", beanCliente.getIdvendedor());
+                    obj.put("codigoubidistrito", beanCliente.getCodigoubidistrito());
+                    obj.put("estado", beanCliente.getEstado());
+                    out.print(obj.toJSONString());
+
+                    System.out.println("buscarexistencia -- " + obj.toJSONString());
+                } else {
+                    out.print("nulo");
+                }
+            }
+        } else if (opcion.equals("buscarws")) {
+            try (PrintWriter out = response.getWriter()) {
+                String idtipodocumento = request.getParameter("idtipodocumento");
+                String numerodocumento = request.getParameter("numerodocumento");
+                String url = "";
+                if (idtipodocumento.equals("1")) {
+                    url = "http://localhost:8084/WSRUC/webresources/generic/consultadni?dni=" + numerodocumento;
+                } else {
+                    url = "http://localhost:8084/WSRUC/webresources/generic/consultaruc?ruc=" + numerodocumento;
+                }
+
+                String aux = null;
+                try {
+                    DefaultHttpClient httpClient = new DefaultHttpClient();
+                    HttpGet getRequest = new HttpGet(url);
+                    HttpResponse httpResponse = httpClient.execute(getRequest);
+
+                    if (httpResponse.getStatusLine().getStatusCode() != 200) {
+                        throw new RuntimeException("Failed : HTTP error code : "
+                                + httpResponse.getStatusLine().getStatusCode());
+                    }
+                    BufferedReader br = new BufferedReader(new InputStreamReader(
+                            (httpResponse.getEntity().getContent())));
+
+                    String output;
+                    while ((output = br.readLine()) != null) {
+                        aux = output;
+                    }
+                } catch (IOException ex) {
+                }
+
+                out.print(aux);
+                System.out.println("buscarws -- " + aux);
             }
         } else if (opcion.equals("eliminar")) {
             try (PrintWriter out = response.getWriter()) {

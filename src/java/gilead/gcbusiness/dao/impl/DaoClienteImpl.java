@@ -1,13 +1,13 @@
-/** 
-    Compañia            : Gilead Consulting S.A.C.
-    Sistema             : GC-Business
-    Módulo              : Seguridad
-    Nombre              : DaoClienteImpl.java
-    Versión             : 1.0
-    Fecha Creación      : 21-08-2018
-    Autor Creación      : Pablo Jimenez Aguado
-    Uso                 : Clase que accede a los datos de la tabla cliente
-*/
+/**
+ * Compañia            : Gilead Consulting S.A.C.
+ * Sistema             : GC-Business
+ * Módulo              : Seguridad
+ * Nombre              : DaoClienteImpl.java
+ * Versión             : 1.0
+ * Fecha Creación      : 21-08-2018
+ * Autor Creación      : Pablo Jimenez Aguado
+ * Uso                 : Clase que accede a los datos de la tabla cliente
+ */
 package gilead.gcbusiness.dao.impl;
 
 import gilead.gcbusiness.dao.DaoAccion;
@@ -21,7 +21,7 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DaoClienteImpl implements DaoAccion{
+public class DaoClienteImpl implements DaoAccion {
 
     @Override
     public String accionCrear(Object obj) {
@@ -36,14 +36,14 @@ public class DaoClienteImpl implements DaoAccion{
         if (cn != null) {
             try {
                 String qry = "INSERT INTO gcbusiness.cliente (id_tipodocumento,numero_documento,nombre,id_tipopersona,id_vendedor,direccion,telefono,correo,codigo_ubidistrito,estado,fecha_insercion,usuario_insercion,terminal_insercion,ip_insercion) "
-                        + "VALUES (" + cliente.getIdtipodocumento() + ",'" + cliente.getNumerodocumento().toUpperCase() + "','" + cliente.getNombre().toUpperCase() + "'," + cliente.getIdtipopersona() + "," + cliente.getIdvendedor() 
-                        + ",'" + cliente.getDireccion().toUpperCase() + "','" + cliente.getTelefono().toUpperCase() + "','" + cliente.getCorreo().toUpperCase() + "','" + cliente.getCodigoubidistrito().toUpperCase() + "','" + cliente.getEstado().toUpperCase() + "','" +cliente.getFechaInsercion()
-                        + "', '" + cliente.getUsuarioInsercion()+"', '"+cliente.getTerminalInsercion()+"', '"+cliente.getIpInsercion()+"')";
-                
+                        + "VALUES (" + cliente.getIdtipodocumento() + ",'" + cliente.getNumerodocumento().toUpperCase() + "','" + cliente.getNombre().toUpperCase() + "'," + cliente.getIdtipopersona() + "," + cliente.getIdvendedor()
+                        + ",'" + cliente.getDireccion().toUpperCase() + "','" + cliente.getTelefono().toUpperCase() + "','" + cliente.getCorreo().toUpperCase() + "','" + cliente.getCodigoubidistrito().toUpperCase() + "','" + cliente.getEstado().toUpperCase() + "','" + cliente.getFechaInsercion()
+                        + "', '" + cliente.getUsuarioInsercion() + "', '" + cliente.getTerminalInsercion() + "', '" + cliente.getIpInsercion() + "')";
+
                 st = cn.createStatement();
 
                 int n = st.executeUpdate(qry);
-                
+
                 if (n <= 0) {
                     msg = "0 filas afectadas";
                 }
@@ -94,11 +94,65 @@ public class DaoClienteImpl implements DaoAccion{
                     cliente.setNombre(rs.getString(4));
                     cliente.setIdtipopersona(rs.getInt(5));
                     cliente.setIdvendedor(rs.getInt(6));
-                    cliente.setDireccion(rs.getString(7));  
-                    cliente.setTelefono(rs.getString(8));  
-                    cliente.setCorreo(rs.getString(9)); 
-                    cliente.setCodigoubidistrito(rs.getString(10));  
-                    cliente.setEstado(rs.getString(11));          
+                    cliente.setDireccion(rs.getString(7));
+                    cliente.setTelefono(rs.getString(8));
+                    cliente.setCorreo(rs.getString(9));
+                    cliente.setCodigoubidistrito(rs.getString(10));
+                    cliente.setEstado(rs.getString(11));
+                    cliente.setFechaInsercion(rs.getTimestamp(12));
+                    cliente.setUsuarioInsercion(rs.getString(13));
+                    cliente.setTerminalInsercion(rs.getString(14));
+                    cliente.setIpInsercion(rs.getString(15));
+                    cliente.setFechaModificacion(rs.getTimestamp(16));
+                    cliente.setUsuarioModificacion(rs.getString(17));
+                    cliente.setTerminalModificacion(rs.getString(18));
+                    cliente.setIpModificacion(rs.getString(19));
+                }
+
+                cn.close();
+
+            } catch (SQLException e1) {
+                System.out.println(e1.getMessage());
+                cliente = null;
+            }
+        }
+
+        return cliente;
+    }
+
+    public BeanCliente accionObtenerExistencia(Integer idtipodocumento, String numerodocumento) {
+        BeanCliente cliente = null;
+
+        ConectaDb db = new ConectaDb();
+        Connection cn = db.getConnection();
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        if (cn != null) {
+            try {
+                String qry = "SELECT *\n"
+                        + "	FROM gcbusiness.cliente\n"
+                        + "    WHERE id_tipodocumento = ? AND numero_documento = ?";
+
+                st = cn.prepareStatement(qry);
+                st.setInt(1, idtipodocumento);
+                st.setString(2, numerodocumento);
+
+                rs = st.executeQuery();
+
+                while (rs.next()) {
+                    cliente = new BeanCliente();
+                    cliente.setIdcliente(rs.getInt(1));
+                    cliente.setIdtipodocumento(rs.getInt(2));
+                    cliente.setNumerodocumento(rs.getString(3));
+                    cliente.setNombre(rs.getString(4));
+                    cliente.setIdtipopersona(rs.getInt(5));
+                    cliente.setIdvendedor(rs.getInt(6));
+                    cliente.setDireccion(rs.getString(7));
+                    cliente.setTelefono(rs.getString(8));
+                    cliente.setCorreo(rs.getString(9));
+                    cliente.setCodigoubidistrito(rs.getString(10));
+                    cliente.setEstado(rs.getString(11));
                     cliente.setFechaInsercion(rs.getTimestamp(12));
                     cliente.setUsuarioInsercion(rs.getString(13));
                     cliente.setTerminalInsercion(rs.getString(14));
@@ -197,7 +251,7 @@ public class DaoClienteImpl implements DaoAccion{
                 cn.close();
 
             } catch (SQLException e1) {
-                System.out.println(e1.getMessage());                        
+                System.out.println(e1.getMessage());
                 msg = e1.getMessage();
             } finally {
                 try {
@@ -221,7 +275,7 @@ public class DaoClienteImpl implements DaoAccion{
         PreparedStatement st = null;
         ResultSet rs = null;
 
-            List<BeanCliente> listCliente = null;
+        List<BeanCliente> listCliente = null;
 
         if (cn != null) {
             try {
@@ -242,11 +296,11 @@ public class DaoClienteImpl implements DaoAccion{
                     cliente.setNombre(rs.getString(4));
                     cliente.setIdtipopersona(rs.getInt(5));
                     cliente.setIdvendedor(rs.getInt(6));
-                    cliente.setDireccion(rs.getString(7));  
-                    cliente.setTelefono(rs.getString(8));  
-                    cliente.setCorreo(rs.getString(9)); 
-                    cliente.setCodigoubidistrito(rs.getString(10));  
-                    cliente.setEstado(rs.getString(11));          
+                    cliente.setDireccion(rs.getString(7));
+                    cliente.setTelefono(rs.getString(8));
+                    cliente.setCorreo(rs.getString(9));
+                    cliente.setCodigoubidistrito(rs.getString(10));
+                    cliente.setEstado(rs.getString(11));
                     cliente.setFechaInsercion(rs.getTimestamp(12));
                     cliente.setUsuarioInsercion(rs.getString(13));
                     cliente.setTerminalInsercion(rs.getString(14));
@@ -307,5 +361,5 @@ public class DaoClienteImpl implements DaoAccion{
 
         return msg;
     }
-    
+
 }

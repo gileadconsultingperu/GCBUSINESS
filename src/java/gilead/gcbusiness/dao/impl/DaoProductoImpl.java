@@ -311,6 +311,73 @@ public class DaoProductoImpl implements DaoAccion{
 
         return listProducto;
     }
+    
+    public List<BeanProducto> accionListarActivo() {
+        BeanProducto producto = null;
+
+        ConectaDb db = new ConectaDb();
+        Connection cn = db.getConnection();
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+            List<BeanProducto> listProducto = null;
+
+        if (cn != null) {
+            try {
+                String qry = "SELECT *\n"
+                        + "	FROM gcbusiness.producto"
+                        + "	WHERE estado = 'A' ORDER BY id_producto";
+
+                st = cn.prepareStatement(qry);
+
+                rs = st.executeQuery();
+
+                listProducto = new LinkedList<BeanProducto>();
+
+                while (rs.next()) {
+                    producto = new BeanProducto();
+                    producto.setIdproducto(rs.getInt("id_producto"));
+                    producto.setIdmarca(rs.getInt("id_marca"));
+                    producto.setIdcategoriaproducto(rs.getInt("id_categoriaproducto"));
+                    producto.setIdmoneda(rs.getInt("id_moneda"));
+                    producto.setIdtipoproducto(rs.getInt("id_tipoproducto"));
+                    producto.setIdunidadmedida(rs.getInt("id_unidadmedida"));
+                    producto.setCodigo(rs.getString("codigo_interno"));  
+                    producto.setCodigoEAN(rs.getString("codigo_ean"));  
+                    producto.setDescripcion(rs.getString("descripcion")); 
+                    producto.setAfectoIGV(rs.getString("afecto_igv"));  
+                    producto.setAfectoISC(rs.getString("afecto_isc"));
+                    producto.setIdtipoISC(rs.getInt("id_tipoisc"));
+                    producto.setBaseISC(rs.getDouble("base_isc"));
+                    producto.setFactorISC(rs.getDouble("factor_isc"));
+                    producto.setValorcompra(rs.getDouble("valor_compra"));
+                    producto.setPreciocompra(rs.getDouble("precio_compra"));
+                    producto.setFlaglote(rs.getString("flag_lote"));
+                    producto.setImagen(rs.getBytes("imagen"));
+                    producto.setCodigoproveedor(rs.getString("codigo_proveedor"));
+                    producto.setPesoproveedor(rs.getDouble("peso_proveedor"));
+                    producto.setEstado(rs.getString("estado"));          
+                    producto.setFechaInsercion(rs.getTimestamp("fecha_insercion"));
+                    producto.setUsuarioInsercion(rs.getString("usuario_insercion"));
+                    producto.setTerminalInsercion(rs.getString("terminal_insercion"));
+                    producto.setIpInsercion(rs.getString("ip_insercion"));
+                    producto.setFechaModificacion(rs.getTimestamp("fecha_modificacion"));
+                    producto.setUsuarioModificacion(rs.getString("usuario_modificacion"));
+                    producto.setTerminalModificacion(rs.getString("terminal_modificacion"));
+                    producto.setIpModificacion(rs.getString("ip_modificacion"));
+                    listProducto.add(producto);
+                }
+
+                cn.close();
+
+            } catch (SQLException e1) {
+                System.out.println(e1.getMessage());
+                producto = null;
+            }
+        }
+
+        return listProducto;
+    }
 
     @Override
     public String accionActivar(Integer id) {

@@ -117,7 +117,7 @@
                                 <li class="divider"></li>
 
                                 <li>
-                                    <a href="GC-Business../Logout">
+                                    <a href="GC-Business/../Logout">
                                         <i class="ace-icon fa fa-power-off"></i>
                                         Cerrar Sesión
                                     </a>

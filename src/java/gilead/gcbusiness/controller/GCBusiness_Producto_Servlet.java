@@ -41,7 +41,6 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
             DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.DATE_FIELD, Locale.UK);
             try {
                 cn = db.getConnection();
-                //cn.setAutoCommit(false);
                 st = cn.createStatement();
 
                 Integer idproducto = Integer.parseInt(request.getParameter("idproducto"));
@@ -53,7 +52,7 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
 
                 if (rsProducto.next()) {
                     Integer orden = Integer.parseInt(request.getParameter("numeroproductos"));
-                    orden++;
+                    //orden++;
                     respuesta += "<td style='display: none'>" + rsProducto.getInt("id_producto") + "</td>" //COLUMNA 00:  IdProducto
                             + "<td style='display: none'>" + orden + "</td>" //COLUMNA 01:  #
                             + "<td>" + rsProducto.getString("codigo_interno") + "</td>" //COLUMNA 02:  Código
@@ -80,15 +79,15 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                     //FIN TARIFAS
 
                     Double igvDecimal = 0.00;
-                      
+
                     //CALCULO VALOR UNITARIO  E  IGV
                     Double valor_unitario = 0.00;
                     Double igv = 0.00;
                     if (afecto_igv.equals("G")) {
-                        igvDecimal = 0.18;                       
+                        igvDecimal = 0.18;
                     }
-                    valor_unitario = precio_unitario/(1+igvDecimal);
-                    igv = valor_unitario*igvDecimal; 
+                    valor_unitario = precio_unitario / (1 + igvDecimal);
+                    igv = valor_unitario * igvDecimal;
 
                     //COLUMNA 06:  Precio Unitario
                     respuesta += comboTarifas;
@@ -96,25 +95,49 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                     //COLUMNA 07:  Valor Unitario
                     respuesta += "<td style='display: none' class='valor_unitario' id='valor_uni_" + orden + "'>" + Math.round(valor_unitario * Math.pow(10, 2)) / Math.pow(10, 2) + "</td>";
 
-                    //COLUMNA 08:  Afecto IGV
-                    respuesta += "<td id='afecto_igv_" + orden + "' style='display: none'>" + afecto_igv + "</td>";
+                    //COLUMNA 08:  Precio Total
+                    respuesta += "<td style='display: none' id='precio_tot_" + orden + "'>" + Math.round(precio_unitario * Math.pow(10, 2)) / Math.pow(10, 2) + "</td>";
 
-                    //COLUMNA 09:  IGV
-                    respuesta += "<td id='igv_" + orden + "'>" + igv + "</td>";
+                    //COLUMNA 09:  Valor Total
+                    respuesta += "<td style='display: none' id='valor_tot_" + orden + "'>" + Math.round(valor_unitario * Math.pow(10, 2)) / Math.pow(10, 2) + "</td>";
 
-                    //COLUMNA 10:  ISC 
-                    respuesta += "<td id='isc_" + orden + "' style='display: none'>" + 0.00 + "</td>";
+                    //COLUMNA 10:  Afecto IGV
+                    respuesta += "<td style='display: none' id='afecto_igv_" + orden + "' style='display: '>" + afecto_igv + "</td>";
 
-                    //COLUMNA 11:  Importe
-                    respuesta += "<td id='importe_" + orden + "'>" + precio_unitario + "</td>";
+                    //COLUMNA 11:  IGV
+                    respuesta += "<td style='display: none' id='igv_" + orden + "'>" + Math.round(igv * Math.pow(10, 2)) / Math.pow(10, 2) + "</td>";
 
-                    //COLUMNA 12:  Descuento
+                    //COLUMNA 12:  ISC 
+                    respuesta += "<td style='display: none' id='isc_" + orden + "' style='display: '>" + 0.00 + "</td>";
+
+                    //COLUMNA 13:  Precio Unitario con Descuento
+                    respuesta += "<td style='display: none' style='display: ' id='precio_uni_dscto_" + orden + "'>" + Math.round(precio_unitario * Math.pow(10, 2)) / Math.pow(10, 2) + "</td>";
+
+                    //COLUMNA 14:  Valor Unitario con Descuento
+                    respuesta += "<td style='display: none' style='display: ' id='valor_uni_dscto_" + orden + "'>" + Math.round(valor_unitario * Math.pow(10, 2)) / Math.pow(10, 2) + "</td>";
+
+                    //COLUMNA 15:  Precio Total con Descuento
+                    respuesta += "<td id='precio_tot_dscto_" + orden + "'>" + Math.round(precio_unitario * Math.pow(10, 2)) / Math.pow(10, 2) + "</td>";
+
+                    //COLUMNA 16:  IGV con Descuento
+                    respuesta += "<td id='igv_dscto_" + orden + "'>" + Math.round(igv * Math.pow(10, 2)) / Math.pow(10, 2) + "</td>";
+
+                    //COLUMNA 17:  Valor Total con Descuento
+                    respuesta += "<td style='display: none' id='valor_tot_dscto_" + orden + "'>" + Math.round(valor_unitario * Math.pow(10, 2)) / Math.pow(10, 2) + "</td>";
+
+                    //COLUMNA 18:  Descuento
                     respuesta += "<td> <input class='monto_descuento' id='descuento_" + orden + "' placeholder='0.00' size='5' type='text' style='font-size:10px'>"
                             + "<select class='select_tipo_dcto' id='dcto_prod_" + orden + "'>"
                             + "<option value='P'>%</option>"
                             + "<option value='M'>MONTO</option>"
                             + "</select>\n"
                             + "</td>";
+
+                    //COLUMNA 19:  Descuento Porcentaje
+                    respuesta += "<td style='display: none' id='dscto_porc_" + orden + "'>" + 0.00 + "</td>";
+
+                    //COLUMNA 20:  Descuento Monto
+                    respuesta += "<td style='display: none' id='dscto_mont_" + orden + "'>" + 0.00 + "</td>";
 
                     if (flag_lote.equals("S")) {
                         query = "SELECT l.id_lote, l.numero_lote, l.fecha_vencimiento, a.stock_actual from gcbusiness.lote l, gcbusiness.almacenproductolote a "
@@ -130,10 +153,10 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                         }
                         comboLotes += "</select>";
 
-                        //COLUMNA 13:  Lote|F.V.
+                        //COLUMNA 21:  Lote|F.V.
                         respuesta += comboLotes;
 
-                        //COLUMNA 14:  Stock Actual
+                        //COLUMNA 22:  Stock Actual
                         respuesta += "<td id='stock_" + orden + "'>" + listaStock.get(0) + "</td>";
 
                     } else {
@@ -147,20 +170,20 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                         if (rsLotes.next()) {
                             stockActual = rsLotes.getDouble("stock_actual");
                         }
-                        //COLUMNA 13:  Lote|F.V.
+                        //COLUMNA 21:  Lote|F.V.
                         respuesta += comboLotes;
 
-                        //COLUMNA 14:  Stock Actual
+                        //COLUMNA 22:  Stock Actual
                         respuesta += "<td id='stock_" + orden + "'>" + stockActual + "</td>";
                     }
 
-                    //COLUMNA 15:  Bonificación
+                    //COLUMNA 23:  Bonificación
                     respuesta += "<td> "
                             + "<input id='bonificacion_" + orden + "' class='ace ace-switch bonificacion' type='checkbox'/>"
                             + "<span class='lbl' data-lbl=\"SI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NO\"></span>"
                             + "</td>";
 
-                    //COLUMNA 16:  Acciones
+                    //COLUMNA 24:  Acciones
                     respuesta += "<td> "
                             + "<button type='button' name='eliminarDetalleVenta' id='" + orden + "' class='btn btn-danger btn-xs eliminarDetalleVenta' title='Eliminar'  ><span class='glyphicon glyphicon-trash'></span></button>"
                             + "</td>";
@@ -188,9 +211,132 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                     Logger.getLogger(GCBusiness_Producto_Servlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        }
+        } else if (opcion.equals("agregarCompra")) {
+            PrintWriter out = response.getWriter();
+            ConectaDb db = new ConectaDb();
+            Connection cn = null;
+            Statement st = null;
+            ResultSet rsProducto, rsTarifas, rsLotes;
+            String respuesta = "<tr class='detalleCompra'>";
+            DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.DATE_FIELD, Locale.UK);
+            try {
+                cn = db.getConnection();
+                //cn.setAutoCommit(false);
+                st = cn.createStatement();
 
-        if (opcion.equals("listar")) {
+                Integer idproducto = Integer.parseInt(request.getParameter("idproducto"));
+
+                String query = "SELECT p.id_producto, p.codigo_interno, p.descripcion, u.abreviatura as medida, p.afecto_igv, p.afecto_isc, p.id_tipoisc, p.base_isc, p.factor_isc,"
+                        + "p.flag_lote, p.estado FROM gcbusiness.producto p, gcbusiness.unidadmedida u WHERE p.id_unidadmedida = u.id_unidadmedida AND P.id_producto = " + idproducto;
+
+                rsProducto = st.executeQuery(query);
+
+                if (rsProducto.next()) {
+                    Integer orden = Integer.parseInt(request.getParameter("numeroproductos"));
+                    orden++;
+                    respuesta += "<td style='display: none' id='idproducto_" + orden + "'>" + rsProducto.getInt("id_producto") + "</td>" //COLUMNA 00:  IdProducto
+                            + "<td style='display: none'>" + orden + "</td>" //COLUMNA 01:  #
+                            + "<td id='codigoproducto_" + orden + "'>" + rsProducto.getString("codigo_interno") + "</td>" //COLUMNA 02:  Código
+                            + "<td id='descriproducto_" + orden + "'>" + rsProducto.getString("descripcion") + "</td>" //COLUMNA 03:  Descripción
+                            + "<td> <input class='input_cantidad' id='cantidad_" + orden + "' type='number' value='1' min='1' max='100' style='font-size:10px'></td>" //COLUMNA 04:  Cantidad
+                            + "<td>" + rsProducto.getString("medida") + "</td>";     //COLUMNA 05:  Medida
+
+                    String flag_lote = rsProducto.getString("flag_lote");
+
+                    //COLUMNA 06:  Tipo Afectacion
+                    respuesta += "<td> <select class='select_afectacion' id='afectacion_" + orden + "'>"
+                            + "<option value='G' >GRAVADA</option>"
+                            + "<option value='E' >EXONERADA</option>"
+                            + "<option value='I' >INAFECTA</option>"
+                            + "</select>";
+
+                    //COLUMNA 07:  Precio Unitario
+                    respuesta += "<td style='display: none' class='precio_unitario' id='precio_uni_" + orden + "'>0</td>";
+
+                    //COLUMNA 08:  Valor Unitario
+                    respuesta += "<td class='valor_unitario' id='valor_uni_" + orden + "'>0</td>";
+
+                    //COLUMNA 09:  Precio Unitario Dcto
+                    respuesta += "<td style='display: none' class='precio_unitario_dcto' id='precio_uni_dcto_" + orden + "'>0</td>";
+
+                    //COLUMNA 10:  Valor Unitario Dcto
+                    respuesta += "<td style='display: none' class='valor_unitario_dcto' id='valor_uni_dcto_" + orden + "'>0</td>";
+
+                    //COLUMNA 11: IGV
+                    respuesta += "<td id='igv_" + orden + "' style='display: none'>" + 0.00 + "</td>";
+
+                    //COLUMNA 12:  ISC 
+                    respuesta += "<td id='isc_" + orden + "' style='display: none'>" + 0.00 + "</td>";
+
+                    //COLUMNA 13:  Descuento
+                    respuesta += "<td> <input class='monto_descuento' id='descuento_" + orden + "' placeholder='0.00' size='5' type='text' style='font-size:10px'>"
+                            + "<select class='select_tipo_dcto' id='dcto_prod_" + orden + "'>"
+                            + "<option value='P'>%</option>"
+                            + "<option value='M'>MONTO</option>"
+                            + "</select>\n"
+                            + "</td>";
+
+                    //COLUMNA 14:  Precio Compra
+                    respuesta += "<td> <input class='input_preciocompra' id='precio_compra_" + orden + "' type='text' style='font-size:10px; width:65px;'> </td>";
+
+                    //COLUMNA 15:  Valor Compra
+                    respuesta += "<td> <input class='input_valorcompra' id='valor_compra_" + orden + "' type='text' style='font-size:10px; width:65px;'> </td>";
+
+                    if (flag_lote.equals("S")) {
+                        query = "SELECT l.id_lote, l.numero_lote, l.fecha_vencimiento from gcbusiness.lote l, gcbusiness.almacenproductolote a "
+                                + "WHERE l.id_lote = a.id_lote AND a.id_producto = l.id_producto AND a.id_producto = " + idproducto + " AND l.estado='A'"
+                                + " AND a.id_almacen = " + Integer.parseInt((String) session.getAttribute("idAlmacen"));
+
+                        rsLotes = st.executeQuery(query);
+                        String comboLotes = "<td> <select class='select_lote' id='lote_" + orden + "'>";
+                        while (rsLotes.next()) {
+                            comboLotes += "<option value='" + rsLotes.getInt("id_lote") + "' >" + rsLotes.getString("numero_lote") + "|" + dateFormat.format(rsLotes.getDate("fecha_vencimiento")) + "</option>";
+                        }
+                        comboLotes += "</select>"
+                                + "<button type='button' name='adminLote' id='boton_lote_" + orden + "' class='btn btn-primary btn-xs adminLote' title='Lote'  ><span class='glyphicon glyphicon-book'></span></button>"
+                                + "</td>";
+                        //COLUMNA 16:  Lote|F.V.
+                        respuesta += comboLotes;
+                    } else {
+                        //COLUMNA 16:  Lote|F.V.
+                        respuesta += "<td>No aplica</td>";
+                    }
+
+                    //COLUMNA 17:  Bonificación
+                    respuesta += "<td> "
+                            + "<input id='bonificacion_" + orden + "' class='ace ace-switch bonificacion' type='checkbox'/>"
+                            + "<span class='lbl' data-lbl=\"SI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NO\"></span>"
+                            + "</td>";
+
+                    //COLUMNA 18:  Acciones
+                    respuesta += "<td> "
+                            + "<button type='button' name='eliminarDetalleCompra' id='" + orden + "' class='btn btn-danger btn-xs eliminarDetalleCompra' title='Eliminar'  ><span class='glyphicon glyphicon-trash'></span></button>"
+                            + "</td>";
+
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(GCBusiness_Producto_Servlet.class.getName()).log(Level.SEVERE, null, ex);
+                respuesta = "ERROR";
+            } finally {
+                out.println(respuesta);
+                out.close();
+                try {
+                    cn.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(GCBusiness_Producto_Servlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                try {
+                    if (cn != null) {
+                        cn.close();
+                    }
+                    if (st != null) {
+                        st.close();
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(GCBusiness_Producto_Servlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } else if (opcion.equals("listar")) {
             try (PrintWriter out = response.getWriter()) {
                 DaoProductoImpl daoProductoImpl = new DaoProductoImpl();
                 List<DTOProducto> listProductos = daoProductoImpl.accionListarDTOProducto();
@@ -278,8 +424,8 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                 query = "INSERT INTO gcbusiness.producto (id_producto, id_marca, id_categoriaproducto, id_moneda, id_tipoproducto, id_unidadmedida, codigo_interno,"
                         + " codigo_ean, codigo_sunat, descripcion, afecto_igv, afecto_isc, id_tipoisc, base_isc, factor_isc, valor_compra, precio_compra, flag_lote, imagen,"
                         + " codigo_proveedor, peso_proveedor, estado, fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion)"
-                        + " VALUES (" + idProducto + ", " + idmarca + ", " + idcategoriaproducto + ", " + idmoneda + ", " + idtipoproducto + ", " + idunidadmedida + ", '" + codigo
-                        + "', '" + codigo + "', '" + codigosunat + "', '" + descripcion + "', '" + afectoigv + "', '" + afectoisc + "', " + idtipoisc + ", " + baseisc + ", " + factorisc + ", " + Math.round(valorcompra * Math.pow(10, 2)) / Math.pow(10, 2) + ", " + preciocompra + ", '" + flaglote + "', null"
+                        + " VALUES (" + idProducto + ", " + idmarca + ", " + idcategoriaproducto + ", " + idmoneda + ", " + idtipoproducto + ", " + idunidadmedida + ", '" + codigo.toUpperCase()
+                        + "', '" + codigo.toUpperCase() + "', '" + codigosunat + "', '" + descripcion.toUpperCase() + "', '" + afectoigv + "', '" + afectoisc + "', " + idtipoisc + ", " + baseisc + ", " + factorisc + ", " + Math.round(valorcompra * Math.pow(10, 2)) / Math.pow(10, 2) + ", " + preciocompra + ", '" + flaglote + "', null"
                         + ", '" + codigoproveedor + "', " + pesoproveedor + ", 'A','" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
 
                 sqlEjecucion = query;
@@ -291,9 +437,8 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                     while (rs3.next()) {
                         query = "INSERT INTO gcbusiness.almacenproductolote (id_almacen, id_producto, stock_actual, fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion)"
                                 + " VALUES (" + rs3.getInt("id_almacen") + ", " + idProducto + ", 0, '" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
-
                         sqlEjecucion = query;
-                        st.executeUpdate(query);
+                        st1.executeUpdate(query);
                     }
                 }
 
@@ -363,6 +508,9 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                     }
                     if (st != null) {
                         st.close();
+                    }
+                    if (st1 != null) {
+                        st1.close();
                     }
                 } catch (SQLException ex) {
                     Logger.getLogger(GCBusiness_Producto_Servlet.class.getName()).log(Level.SEVERE, null, ex);

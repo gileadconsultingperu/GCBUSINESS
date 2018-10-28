@@ -92,6 +92,14 @@
         <servlet-name>TrasladoAlmacenes</servlet-name>
         <servlet-class>gilead.gcbusiness.controller.GCBusiness_TrasladoAlmacenes_Servlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Cotizacion</servlet-name>
+        <servlet-class>gilead.gcbusiness.controller.GCBusiness_Cotizacion_Servlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Compra</servlet-name>
+        <servlet-class>gilead.gcbusiness.controller.GCBusiness_Compra_Servlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>GCBusiness_Login_Servlet</servlet-name>
         <url-pattern>/Login</url-pattern>
@@ -183,6 +191,14 @@
     <servlet-mapping>
         <servlet-name>TrasladoAlmacenes</servlet-name>
         <url-pattern>/TrasladoAlmacenes</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Cotizacion</servlet-name>
+        <url-pattern>/Cotizacion</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Compra</servlet-name>
+        <url-pattern>/Compra</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

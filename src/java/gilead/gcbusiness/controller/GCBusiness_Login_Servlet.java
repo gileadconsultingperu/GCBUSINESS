@@ -55,6 +55,7 @@ public class GCBusiness_Login_Servlet extends HttpServlet {
                                     sesion.setAttribute("login_usuario", beanUsuario.getUsuario());
                                     sesion.setAttribute("idSucursal", sucursal);
                                     sesion.setAttribute("idAlmacen", almacen);
+                                    sesion.setAttribute("descripcionAlmacen", request.getParameter("descripcionalmacen"));
                                     request.getRequestDispatcher("views/GC-Business-Home.jsp").forward(request, response);
                                 }else{
                                     request.setAttribute("errorSesion", "<div class='alert alert-danger'>El usuario no tiene acceso a ninguna opcion en el sistema. Consulte al Administrador.\n</div>");

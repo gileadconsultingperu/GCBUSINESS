@@ -666,6 +666,7 @@
                                     <h2>COMPROBANTES</h2>
                                     <a href="GC-Business-Factura.jsp?" class="btn btn-info btn-lg" role="button">FACTURA</a>
                                     <a href="GC-Business-Boleta.jsp?" class="btn btn-info btn-lg" role="button">BOLETA</a>
+                                    <a href="GC-Business-NotaPedido.jsp?" class="btn btn-info btn-lg" role="button">NOTA PEDIDO</a>
                                 </div>
                                 </div>
                                 <!-- PAGE CONTENT ENDS -->
