@@ -828,6 +828,68 @@
                 </div>
             </div>
             
+            <div class="modal" id="modalGestionarAccesos" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="blue bigger">Gestionar Accesos</h4>
+                        </div>
+
+                        <div class="modal-body">                         
+                            <input type="hidden" id="idusuarioopcion" name="idusuarioopcion" value="0">
+
+                            <div class="row">                
+                                <div class="col-xs-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label for="usuarioopcion" class="col-sm-2 control-label">Usuario:</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" id="usuarioopcion" class="form-control"  style="text-transform:uppercase" tabindex="-1" disabled/>
+                                        </div>
+                                    </div> 
+
+                                    &nbsp;&nbsp;
+
+                                    <div class="form-group">
+                                        <div id="divtablaAccesosUsuario" class="col-md-12">        			
+                                            <div class="table-responsive">
+                                                <table id="tablaAccesosUsuario" class="table table-bordered table-striped table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Nº</th>
+                                                            <th>NOMBRE OPCIÓN</th>
+                                                            <th>ACCESO</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="accesoUsuario_data">
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                </div>        		
+                            </div>          
+                        </div>
+
+                        <div class="modal-footer">
+                            <button class="btn btn-sm" data-dismiss="modal">
+                                <i class="ace-icon fa fa-times"></i>
+                                Salir
+                            </button>
+
+                            <button class="btn btn-sm btn-primary" id="btnGuardarAccesos">
+                                <i class="ace-icon fa fa-check"></i>
+                                Grabar
+                            </button>
+                            
+                            <hr style="margin-top: 15px;margin-bottom: 15px;">
+                            <div class="divErrorAccesos"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            
             <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
                 <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
             </a>
@@ -896,7 +958,7 @@
                 $('body').on('shown.bs.modal', '#modalModificarPassword', function () {
                     $('input:visible:enabled:first', this).focus();
                 });               
-            
+                
                 var tablaUsuarios = $('#tablaUsuarios').DataTable({
                     bAutoWidth: false,
                     "processing": true,
@@ -1086,7 +1148,129 @@
                         alertify.error("NO COINCIDE LOS VALORES DE LA CONTRASEÑA");
                     }
                 });
-
+                
+                
+                //Gestionar accesos
+                $(document).on('click', '.accesos', function () {
+                    var idusuario = $(this).attr('id');
+                    var row = $(this).parent().parent().parent();
+                    $('#usuarioopcion').val(row.find('td:eq(1)').html()+" | "+ row.find('td:eq(2)').html() + ", " + row.find('td:eq(3)').html());
+                    cargarAccesosUsuario(idusuario);
+                    $('#idusuarioopcion').val(idusuario);
+                    $('#modalGestionarAccesos').modal('show');
+                });
+                
+                function cargarAccesosUsuario(id) {
+                    var dataTableAccesos = $('#tablaAccesosUsuario').DataTable({
+                        "processing": true,
+                        "bLengthChange": false,
+                        "bInfo": false,
+                        "searching": false,
+                        //"bAutoWidth": true, 
+                        "scrollY":        "200px",
+                        //"scrollX":        "240px",
+                        //"scrollCollapse": true,
+                        "paging":         false,
+                        destroy: true,
+                        responsive: true,
+                        "order": [[1, 'asc']],
+                        ajax: {
+                            method: "POST",
+                            url: "../Usuario?opcion=listarAccesos&idusuario="+id,
+                            dataSrc: "dataAccesos"
+                        },
+                        columns: [
+                            {"data": "numeroOrden"},
+                            {"data": "nombreOpcion"},
+                            {"data": "acceso"}
+                        ],
+                        dom: '<"row"<"col-xs-10 col-sm-2 col-md-2"l><"col-xs-12 col-sm-4 col-md-4"B><"col-xs-12 col-sm-4 col-md-4"f>>' +
+                                'tr<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>> ',
+                        'columnDefs': [
+                            {
+                                'targets': [0, 1],
+                                'createdCell': function (td, cellData, rowData, row, col) {
+                                    $(td).attr('contenteditable', 'false');
+                                }
+                            },
+                            {
+                                "targets": [0],
+                                "visible": false,
+                                "searchable": false
+                            }
+                        ],
+                        buttons: [                      
+                            {
+                                "text": "<span class='glyphicon glyphicon-ok'></span>",
+                                "titleAttr": "Marcar Todos",
+                                className: 'btn btn-default btn-sm',
+                                "action": function () {
+                                    $('input.seleccionar').prop('checked', true);
+                                    $('input.seleccionar').parents("tr").find("td").find('label.lblCheck').html("Si");
+                                }
+                            },{
+                                "text": "<span class='glyphicon glyphicon-remove'></span>",
+                                "titleAttr": "Desmarcar Todos",
+                                className: 'btn btn-default btn-sm',
+                                "action": function () {
+                                    $('input.seleccionar').prop('checked', false);
+                                    $('input.seleccionar').parents("tr").find("td").find('label.lblCheck').html("No");
+                                }
+                            },
+                            {
+                                "text": "<span class='glyphicon glyphicon-refresh'></span>",
+                                "titleAttr": "Reiniciar",
+                                className: 'btn btn-default btn-sm',
+                                "action": function () {
+                                    dataTableAccesos.ajax.reload();
+                                }
+                            }
+                        ],
+                        language: {
+                            "url": "../assets/util/espanol.txt"
+                        }
+                    });
+                };
+                
+                $('#btnGuardarAccesos').click(function (event) {
+                    var table = $('#tablaAccesosUsuario').DataTable();
+                    var detalle = "";
+                    var idProducto = "";
+                    var chk;
+                    table.rows().iterator('row', function (context, index) {
+                        let node = $(this.row(index).node());
+                        chk = node.find('input.seleccionar');
+                        if (chk.prop('checked') ) {
+                            idProducto = chk.attr('id');
+                            detalle += idProducto+",";
+                        }
+                    });
+                    detalle = detalle.substring(0,detalle.length-1);
+                    //alert(detalle);
+                    //return;
+                    $.ajax({
+                        method: "POST",
+                        url: "../Usuario",
+                        data: {"detalle": detalle, "idusuario": $('#idusuarioopcion').val(),"opcion": "grabarAccesos"}
+                    }).done(function (data) {
+                        var obj = jQuery.parseJSON(data);
+                        if (obj.mensaje.indexOf('ERROR') !== -1) {
+                            $('#modalGestionarAccesos .modal-footer .divErrorAccesos').html(obj.html);
+                            $('#modalGestionarAccesos .modal-footer .divErrorAccesos').addClass('tada animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+                                $('#modalGestionarAccesos .modal-footer .divErrorAccesos').removeClass('tada animated');
+                                //alertify.dialog('alert').set({transition:'flipy', title: obj.mensaje, message: obj.html}).show();
+                            });
+                        } else {
+                            alertify.success(obj.mensaje);
+                            var idUsuario = $('#idusuarioopcion').val();
+                            if(idUsuario!==null && idUsuario!==""){
+                                cargarAccesosUsuario(idUsuario);                      
+                            }
+                        }
+                    });
+                    
+                });
+                
                 //Eliminar registro
                 $(document).on('click', '.eliminar', function () {
                     var idusuario = $(this).attr('id');

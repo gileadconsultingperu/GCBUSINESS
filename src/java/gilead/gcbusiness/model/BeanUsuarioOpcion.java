@@ -3,11 +3,10 @@ package gilead.gcbusiness.model;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-
-public class BeanOpcionMenu implements Serializable{
+public class BeanUsuarioOpcion implements Serializable{
     
-    private Integer idopcionmenu;
-    private String descripcion;
+    private Integer idusuario;
+    private Integer idopcionmenu; 
     private String estado;
     private Timestamp fechaInsercion; 
     private String usuarioInsercion; 
@@ -18,12 +17,12 @@ public class BeanOpcionMenu implements Serializable{
     private String terminalModificacion;
     private String ipModificacion;
 
-    public BeanOpcionMenu() {
+    public BeanUsuarioOpcion() {
     }
 
-    public BeanOpcionMenu(Integer idopcionmenu, String descripcion, String estado, Timestamp fechaInsercion, String usuarioInsercion, String terminalInsercion, String ipInsercion, Timestamp fechaModificacion, String usuarioModificacion, String terminalModificacion, String ipModificacion) {
+    public BeanUsuarioOpcion(Integer idusuario, Integer idopcionmenu, String estado, Timestamp fechaInsercion, String usuarioInsercion, String terminalInsercion, String ipInsercion, Timestamp fechaModificacion, String usuarioModificacion, String terminalModificacion, String ipModificacion) {
+        this.idusuario = idusuario;
         this.idopcionmenu = idopcionmenu;
-        this.descripcion = descripcion;
         this.estado = estado;
         this.fechaInsercion = fechaInsercion;
         this.usuarioInsercion = usuarioInsercion;
@@ -33,6 +32,20 @@ public class BeanOpcionMenu implements Serializable{
         this.usuarioModificacion = usuarioModificacion;
         this.terminalModificacion = terminalModificacion;
         this.ipModificacion = ipModificacion;
+    }
+
+    /**
+     * @return the idusuario
+     */
+    public Integer getIdusuario() {
+        return idusuario;
+    }
+
+    /**
+     * @param idusuario the idusuario to set
+     */
+    public void setIdusuario(Integer idusuario) {
+        this.idusuario = idusuario;
     }
 
     /**
@@ -47,20 +60,6 @@ public class BeanOpcionMenu implements Serializable{
      */
     public void setIdopcionmenu(Integer idopcionmenu) {
         this.idopcionmenu = idopcionmenu;
-    }
-
-    /**
-     * @return the descripcion
-     */
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    /**
-     * @param descripcion the descripcion to set
-     */
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
     }
 
     /**
