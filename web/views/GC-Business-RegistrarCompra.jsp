@@ -170,12 +170,12 @@
 
                 <ul class="nav nav-list">
                     <%
-                        if (opciones.contains(11)) {
+                        if (opciones.contains(1)) {
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-newspaper-o"></i>
-                            <span class="menu-text">Compras </span>
+                            <i class="menu-icon fa fa-bar-chart-o"></i>
+                            <span class="menu-text">Ventas </span>
 
                             <b class="arrow fa fa-angle-down"></b>
                         </a>
@@ -184,7 +184,7 @@
 
                         <ul class="submenu">
                             <%
-                                if (opciones.contains(12)) {
+                                if (opciones.contains(2)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-RegistrarVenta.jsp">
@@ -196,7 +196,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(13)) {
+                                if (opciones.contains(3)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionNota.jsp">
@@ -208,19 +208,55 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(14)) {
+                                if (opciones.contains(4)) {
                             %>
                             <li class="">
-                                <a href="GC-Business-GestionCotizacion.jsp">
+                                <a href="GC-Business-Comprobante.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
-                                    Cotización
+                                    Comprobantes
                                 </a>
 
                                 <b class="arrow"></b>
                             </li>
                             <%
                                 }
-                                if (opciones.contains(15)) {
+                                if (opciones.contains(5)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-Comprobante.jsp?accion=anular">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Anulaciones
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if (opciones.contains(6)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-Cotizacion.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Registrar Cotización
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if (opciones.contains(7)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-GestionCotizacion.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Cotizaciones
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if (opciones.contains(8)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionOrdenVenta.jsp">
@@ -237,11 +273,11 @@
                     </li>
                     <%
                         }
-                        if (opciones.contains(31)) {
-                    %>
+                        if (opciones.contains(11)) {
+                    %>                
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-ban"></i>
+                            <i class="menu-icon fa fa-users"></i>
                             <span class="menu-text"> Clientes </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -251,7 +287,7 @@
 
                         <ul class="submenu">
                             <%
-                                if (opciones.contains(32)) {
+                                if (opciones.contains(12)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionCliente.jsp">
@@ -263,7 +299,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(33)) {
+                                if (opciones.contains(13)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionContacto.jsp">
@@ -275,7 +311,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(34)) {
+                                if (opciones.contains(14)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionCuentaCobrar.jsp">
@@ -284,19 +320,19 @@
                                 </a>
 
                                 <b class="arrow"></b>
-                            </li>
+                            </li>                                                    
                             <%
                                 }
                             %>
                         </ul>
-                    </li>
+                    </li>    
                     <%
                         }
                         if (opciones.contains(21)) {
-                    %>
+                    %> 
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-ban"></i>
+                            <i class="menu-icon fa fa-truck"></i>
                             <span class="menu-text"> Compras </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -330,16 +366,28 @@
                             </li>
                             <%
                                 }
+                                if (opciones.contains(24)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ListaCompras.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Lista de Compras 
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
                             %>
                         </ul>
                     </li>
                     <%
                         }
-                        if (opciones.contains(41)) {
-                    %>
+                        if (opciones.contains(31)) {
+                    %>                                       
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-ban"></i>
+                            <i class="menu-icon fa fa-briefcase"></i>
                             <span class="menu-text"> Proveedores </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -349,7 +397,7 @@
 
                         <ul class="submenu">
                             <%
-                                if (opciones.contains(42)) {
+                                if (opciones.contains(32)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionProveedor.jsp">
@@ -361,7 +409,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(43)) {
+                                if (opciones.contains(33)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionCuentaPagar.jsp">
@@ -378,11 +426,11 @@
                     </li>
                     <%
                         }
-                        if (opciones.contains(51)) {
-                    %>
+                        if (opciones.contains(41)) {
+                    %>                                    
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-list"></i>
+                            <i class="menu-icon fa fa-industry"></i>
                             <span class="menu-text"> Inventario </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -392,7 +440,7 @@
 
                         <ul class="submenu">
                             <%
-                                if (opciones.contains(52)) {
+                                if (opciones.contains(42)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionIngresoSalida.jsp">
@@ -401,10 +449,10 @@
                                 </a>
 
                                 <b class="arrow"></b>
-                            </li>
+                            </li>                           
                             <%
                                 }
-                                if (opciones.contains(53)) {
+                                if (opciones.contains(43)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-TrasladoAlmacen.jsp">
@@ -421,11 +469,11 @@
                     </li>
                     <%
                         }
-                        if (opciones.contains(1)) {
-                    %>
+                        if (opciones.contains(51)) {
+                    %>                    
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-tachometer"></i>
+                            <i class="menu-icon fa fa-list"></i>
                             <span class="menu-text"> Productos </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -434,7 +482,7 @@
 
                         <ul class="submenu">
                             <%
-                                if (opciones.contains(10)) {
+                                if (opciones.contains(52)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionProducto.jsp">
@@ -446,7 +494,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(2)) {
+                                if (opciones.contains(53)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionFamiliaProducto.jsp">
@@ -458,7 +506,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(3)) {
+                                if (opciones.contains(54)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionClaseProducto.jsp">
@@ -470,7 +518,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(4)) {
+                                if (opciones.contains(55)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionLineaProducto.jsp">
@@ -482,7 +530,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(5)) {
+                                if (opciones.contains(56)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionCategoriaProducto.jsp">
@@ -494,7 +542,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(6)) {
+                                if (opciones.contains(57)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionMarca.jsp">
@@ -506,7 +554,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(7)) {
+                                if (opciones.contains(58)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionTarifa.jsp">
@@ -597,18 +645,6 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(67)) {
-                            %>
-                            <li class="">
-                                <a href="GC-Business-GestionAcceso.jsp">
-                                    <i class="menu-icon fa fa-caret-right"></i>
-                                    Accesos
-                                </a>
-
-                                <b class="arrow"></b>
-                            </li>
-                            <%
-                                }
                             %>
                         </ul>
                     </li>
@@ -633,7 +669,7 @@
                             <li class="">
                                 <a href="#">
                                     <i class="menu-icon fa fa-caret-right"></i>
-                                    Cambiar Contraseña
+                                    Reporte 1
                                 </a>
 
                                 <b class="arrow"></b>
@@ -642,6 +678,18 @@
                                 }
                             %>
                         </ul>
+                    </li>
+                    <%
+                        }
+                        if (opciones.contains(99)) {
+                    %>
+                    <li class="">
+                        <a href="#" class="dropdown-toggle">
+                            <i class="menu-icon fa fa-cogs"></i>
+                            <span class="menu-text"> Cambiar Contraseña </span>
+
+                            <b class="arrow fa fa-angle-down"></b>
+                        </a>
                     </li>
                     <%
                         }
@@ -694,10 +742,10 @@
                                                 </select>
                                                 &nbsp;&nbsp;&nbsp;
                                                 <label for="serie" class="control-label" style="width: 40px;">Serie:</label>
-                                                <input type="text" name="serie" id="serie" tabindex="2" style="width: 70px;" class="styled-select tipo_comprobante">
+                                                <input type="text" name="serie" id="serie" tabindex="2" style="width: 70px; text-transform:uppercase;" class="styled-select tipo_comprobante">
                                                 &nbsp;&nbsp;&nbsp;
                                                 <label for="correlativo" class="control-label" style="width: 80px;">Correlativo:</label>
-                                                <input type="text" name="correlativo" id="correlativo" tabindex="3" style="width: 80px;" class="styled-select tipo_comprobante">
+                                                <input type="text" name="correlativo" id="correlativo" tabindex="3" style="width: 80px; text-transform:uppercase;" class="styled-select tipo_comprobante">
                                                 &nbsp;&nbsp;&nbsp;
                                                 <label for="moneda" class="control-label" style="width: 55px;">Moneda:</label>
                                                 <select id="moneda" name="moneda" class="styled-select tipo_comprobante" style="width: 175px;" tabindex="4" >
@@ -772,7 +820,7 @@
                                         <div class="row col-md-12">
                                             <div class="form-group">
                                                 <label for="proveedor" class="control-label" style="width: 80px;">Proveedor:</label>
-                                                <select class="chosen-select" id="proveedor" tabindex="14" style="width: 540px;" data-placeholder="Seleccione proveedor...">
+                                                <select class="chosen-select" id="proveedor" tabindex="14" style="width: 550px;" data-placeholder="Seleccione proveedor...">
                                                     <option value="" selected="selected"></option>
                                                     <%
                                                         DaoProveedorImpl daoProveedor = new DaoProveedorImpl();
@@ -789,11 +837,11 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="ruc" class="control-label" style="width: 80px;">RUC:</label>
-                                                <input type="text" name="ruc" id="ruc" tabindex="15" style="width: 540px;">               
+                                                <input type="text" name="ruc" id="ruc" tabindex="15" style="width: 550px;">               
                                             </div>
                                             <div class="form-group">
                                                 <label for="direccion" class="control-label" style="width: 80px;">Dirección:</label>
-                                                <input type="text" name="direccion" id="direccion" tabindex="16" style="width: 540px;" disabled>
+                                                <input type="text" name="direccion" id="direccion" tabindex="16" style="width: 550px;" disabled>
                                             </div>
                                         </div>
                                     </div>
@@ -810,7 +858,7 @@
                                         <div class="row col-md-12">
                                             <div class="form-group">
                                                 <label for="producto" class="control-label" style="width: 80px;">Producto:</label>
-                                                <select class="chosen-select" id="producto" tabindex="18" style="width: 400px;" data-placeholder="Seleccione producto...">
+                                                <select class="chosen-select" id="producto" tabindex="18" style="width: 550px;" data-placeholder="Seleccione producto...">
                                                     <option value="" selected="selected"></option>
                                                     <%
                                                         DaoProductoImpl daoProducto = new DaoProductoImpl();
@@ -847,7 +895,8 @@
                                                             <th style="display: none">Valor Unitario Dcto</th>
                                                             <th style="display: none">IGV</th>
                                                             <th style="display: none">ISC</th>
-                                                            <th>Descuento</th>                                                        
+                                                            <th>Descuento</th>
+                                                            <th style="display: none">Monto Descuento</th>
                                                             <th>Precio Compra</th>
                                                             <th>Valor Compra</th>
                                                             <th>Lote|F.V.</th>
@@ -878,21 +927,21 @@
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_igv" id="total_igv" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_igv" id="total_igv" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label for="total_isc" class="control-label" style="width: 80px;">Total ISC:</label>
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_isc" id="total_isc" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_isc" id="total_isc" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label for="total_otros_impuestos" class="control-label" style="width: 80px;">Total otros impuestos:</label>
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_otros_impuestos" id="total_otros_impuestos" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_otros_impuestos" id="total_otros_impuestos" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
                                     </div>
                                     <div class="panel-footer">
@@ -901,7 +950,7 @@
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_impuestos" id="total_impuestos" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_impuestos" id="total_impuestos" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -912,10 +961,10 @@
                                 <div class="panel panel-primary">
                                     <div class="panel-heading">Totales factura</div>
                                     <div class="panel-body">
-                                        <div class="form-group">
+                                        <div class="form-group hide">
                                             <label for="input_dcto_global" class="control-label" style="width: 180px;">Descuento global:</label>
-                                            <input id="input_dcto_global" size="17" type="text">
-                                            <select id="select_dcto_total">
+                                            <input type="text" name="input_dcto_global" id="input_dcto_global" tabindex="-1" style="width: 115px;">
+                                            <select id="select_dcto_total" style="width: 72px;">
                                                 <option value="P">%</option>
                                                 <option value="M">Monto</option>
                                             </select>
@@ -925,42 +974,42 @@
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_gravadas" id="total_gravadas" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_gravadas" id="total_gravadas" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label for="total_inafectas" class="control-label" style="width: 180px;">Total inafectas:</label>
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_inafectas" id="total_inafectas" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_inafectas" id="total_inafectas" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label for="total_exoneradas" class="control-label" style="width: 180px;">Total exoneradas:</label>
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_exoneradas" id="total_exoneradas" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_exoneradas" id="total_exoneradas" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label for="total_gratuitas" class="control-label" style="width: 180px;">Total gratuitas:</label>
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_gratuitas" id="total_gratuitas" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_gratuitas" id="total_gratuitas" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label for="total_otros_cargos" class="control-label" style="width: 180px;">Total otros cargos:</label>
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_otros_cargos" id="total_otros_cargos" tabindex="-1" placeholder="0.00" style="width: 200px;">
+                                            <input type="text" name="total_otros_cargos" id="total_otros_cargos" tabindex="-1" placeholder="0.00" style="width: 160px;">
                                         </div>
                                         <div class="form-group">
                                             <label for="total_descuentos" class="control-label" style="width: 180px;">Total descuentos:</label>
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_descuentos" id="total_descuentos" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_descuentos" id="total_descuentos" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
 
                                         <div class="form-group" style="display:none;">
@@ -968,14 +1017,14 @@
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_anticipos" id="total_anticipos" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_anticipos" id="total_anticipos" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
                                         <div class="form-group" style="display:none;">
                                             <label for="total_percepciones" class="control-label" style="width: 180px;">Total percepciones:</label>
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_percepciones" id="total_percepciones" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_percepciones" id="total_percepciones" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
 
                                     </div>
@@ -985,14 +1034,14 @@
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_compra" id="total_compra" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_compra" id="total_compra" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
                                         <div class="form-group mostrar_tipo_cambio" style="display:none;">
                                             <label for="total_compra_soles" class="control-label" style="width: 180px;">Importe total compra en soles:</label>
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_compra_soles" id="total_compra_soles" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_compra_soles" id="total_compra_soles" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -1244,7 +1293,7 @@
                         });
 
                         $("#detalleCompra").on('click', '.adminLote', function () {
-                            var orden = $(this).parents('tr').find('td:eq(18)').find('button.eliminarDetalleCompra').attr('id');
+                            var orden = $(this).parents('tr').find('td:eq(19)').find('button.eliminarDetalleCompra').attr('id');
                             var idproductolote = $('#idproducto_' + orden).html();
                             var codigoproductolote = $('#codigoproducto_' + orden).html();
                             var descriproductolote = $('#descriproducto_' + orden).html();
@@ -1347,9 +1396,13 @@
                                 if (tipoDcto === 'P') {
                                     valor_unitario = valor_unitario_dcto / (1 - dcto / 100);
                                     precio_unitario = precio_unitario_dcto / (1 - dcto / 100);
+                                    var valorTot = cantidad * parseFloat(valor_unitario).toFixed(2);
+                                    var montDscto =  valorTot * (dcto / 100);
+                                    $('#dscto_mont_' + orden).html(parseFloat(montDscto).toFixed(2));
                                 } else {
-                                    valor_unitario = valor_unitario_dcto - dcto;
-                                    precio_unitario = precio_unitario_dcto - dcto;
+                                    valor_unitario = valor_unitario_dcto + (dcto / cantidad);
+                                    precio_unitario = precio_unitario_dcto + (dcto / cantidad);
+                                    $('#dscto_mont_' + orden).html(parseFloat(dcto).toFixed(2));
                                 }
                                 $('#valor_uni_' + orden).html(parseFloat(valor_unitario).toFixed(2));
                                 $('#precio_uni_' + orden).html(parseFloat(precio_unitario).toFixed(2));
@@ -1380,13 +1433,14 @@
                                 var precio_unitario = precio_unitario_dcto;
                                 $('#valor_uni_' + orden).html(parseFloat(valor_unitario).toFixed(2));
                                 $('#precio_uni_' + orden).html(parseFloat(precio_unitario).toFixed(2));
+                                $('#dscto_mont_' + orden).html(parseFloat(0).toFixed(2));
                             }
                         }
                         ;
 
 
                         $('#detalleCompra').on('keyup', '.input_preciocompra', function () {
-                            var orden = $(this).parents('tr').find('td:eq(18)').find('button.eliminarDetalleCompra').attr('id');
+                            var orden = $(this).parents('tr').find('td:eq(19)').find('button.eliminarDetalleCompra').attr('id');
                             var bonificacion = $('#bonificacion_' + orden).is(':checked');
                             if (bonificacion) {
                                 calculo_con_bonificacion(orden, "precio");
@@ -1397,7 +1451,7 @@
                         });
 
                         $('#detalleCompra').on('keyup', '.input_valorcompra', function () {
-                            var orden = $(this).parents('tr').find('td:eq(18)').find('button.eliminarDetalleCompra').attr('id');
+                            var orden = $(this).parents('tr').find('td:eq(19)').find('button.eliminarDetalleCompra').attr('id');
                             var bonificacion = $('#bonificacion_' + orden).is(':checked');
                             if (bonificacion) {
                                 calculo_con_bonificacion(orden, "valor");
@@ -1408,7 +1462,7 @@
                         });
 
                         $('#detalleCompra').on('change', '.input_cantidad', function () {
-                            var orden = $(this).parents('tr').find('td:eq(18)').find('button.eliminarDetalleCompra').attr('id');
+                            var orden = $(this).parents('tr').find('td:eq(19)').find('button.eliminarDetalleCompra').attr('id');
                             var bonificacion = $('#bonificacion_' + orden).is(':checked');
                             if (bonificacion) {
                                 calculo_con_bonificacion(orden);
@@ -1419,7 +1473,7 @@
                         });
 
                         $('#detalleCompra').on('keyup', '.input_cantidad', function () {
-                            var orden = $(this).parents('tr').find('td:eq(18)').find('button.eliminarDetalleCompra').attr('id');
+                            var orden = $(this).parents('tr').find('td:eq(19)').find('button.eliminarDetalleCompra').attr('id');
                             var bonificacion = $('#bonificacion_' + orden).is(':checked');
                             if (bonificacion) {
                                 calculo_con_bonificacion(orden);
@@ -1430,7 +1484,7 @@
                         });
 
                         $('#detalleCompra').on('click', '.bonificacion', function () {
-                            var orden = $(this).parents('tr').find('td:eq(18)').find('button.eliminarDetalleCompra').attr('id');
+                            var orden = $(this).parents('tr').find('td:eq(19)').find('button.eliminarDetalleCompra').attr('id');
                             if ($(this).is(':checked')) {
                                 calculo_con_bonificacion(orden);
                                 $('#descuento_' + orden).val('');
@@ -1444,7 +1498,7 @@
                         });
 
                         $('#detalleCompra').on('change', '.select_afectacion', function () {
-                            var orden = $(this).parents('tr').find('td:eq(18)').find('button.eliminarDetalleCompra').attr('id');
+                            var orden = $(this).parents('tr').find('td:eq(19)').find('button.eliminarDetalleCompra').attr('id');
                             var bonificacion = $('#bonificacion_' + orden).is(':checked');
                             if (bonificacion) {
                                 calculo_con_bonificacion(orden);
@@ -1456,7 +1510,7 @@
 
 
                         $('#detalleCompra').on('keyup', '.monto_descuento', function () {
-                            var orden = $(this).parents('tr').find('td:eq(18)').find('button.eliminarDetalleCompra').attr('id');
+                            var orden = $(this).parents('tr').find('td:eq(19)').find('button.eliminarDetalleCompra').attr('id');
                             var bonificacion = $('#bonificacion_' + orden).is(':checked');
                             if (!bonificacion) {
                                 calculo_sin_bonificacion(orden);
@@ -1465,7 +1519,7 @@
                         });
 
                         $('#detalleCompra').on('blur', '.monto_descuento', function () {
-                            var orden = $(this).parents('tr').find('td:eq(18)').find('button.eliminarDetalleCompra').attr('id');
+                            var orden = $(this).parents('tr').find('td:eq(19)').find('button.eliminarDetalleCompra').attr('id');
                             var bonificacion = $('#bonificacion_' + orden).is(':checked');
                             if (!bonificacion) {
                                 calculo_sin_bonificacion(orden);
@@ -1474,7 +1528,7 @@
                         });
 
                         $('#detalleCompra').on('change', '.select_tipo_dcto', function () {
-                            var orden = $(this).parents('tr').find('td:eq(18)').find('button.eliminarDetalleCompra').attr('id');
+                            var orden = $(this).parents('tr').find('td:eq(19)').find('button.eliminarDetalleCompra').attr('id');
                             var bonificacion = $('#bonificacion_' + orden).is(':checked');
                             if (!bonificacion) {
                                 calculo_sin_bonificacion(orden);
@@ -1492,72 +1546,91 @@
                             var total_gratuitas = 0;
                             var total_descuentos = 0;
                             var total_valorcompra = 0;
-                            var total_preciocompra = 0;
-                            var valor_total = 0;
+                            var total_gravadas_sdscto = 0;
+                            var total_inafectas_sdscto = 0;
+                            var total_exoneradas_sdscto = 0;
                             var total_compra = 0;
                             $(".valor_unitario").each(function () {
-                                var orden = $(this).parents('tr').find('td:eq(18)').find('button.eliminarDetalleCompra').attr('id');
+                                var orden = $(this).parents('tr').find('td:eq(19)').find('button.eliminarDetalleCompra').attr('id');
                                 var bonificacion = $('#bonificacion_' + orden).is(':checked');
                                 var cantidad = parseFloat($('#cantidad_' + orden).val());
                                 if (bonificacion) {
                                     total_gratuitas += parseFloat($('#valor_compra_' + orden).val()) || 0;
                                 } else {
-                                    afecto_igv = $('#afectacion_' + orden).val();                                 
+                                    afecto_igv = $('#afectacion_' + orden).val();
                                     if (afecto_igv === 'G') {
                                         total_gravadas += parseFloat($('#valor_compra_' + orden).val()) || 0;
+                                        total_gravadas_sdscto += Number($('#valor_uni_' + orden).html()) * cantidad;
                                     }
                                     if (afecto_igv === 'E') {
                                         total_exoneradas += parseFloat($('#valor_compra_' + orden).val()) || 0;
+                                        total_exoneradas_sdscto += Number($('#valor_uni_' + orden).html()) * cantidad;
                                     }
                                     if (afecto_igv === 'I') {
                                         total_inafectas += parseFloat($('#valor_compra_' + orden).val()) || 0;
+                                        total_inafectas_sdscto += Number($('#valor_uni_' + orden).html()) * cantidad;
                                     }
                                     total_valorcompra += parseFloat($('#valor_compra_' + orden).val()) || 0;
                                     total_compra += parseFloat($('#precio_compra_' + orden).val()) || 0;
                                 }
-                                
-                                total_igv += parseFloat($('#igv_' + orden).html());  
-                                
-                                valor_total = parseFloat($('#valor_uni_' + orden).html())*cantidad;
-                                var descuento = valor_total - parseFloat($('#valor_compra_' + orden).val());   
-                                total_descuentos += descuento;
+
+                                total_igv += parseFloat($('#igv_' + orden).html());
+
+                                total_descuentos += Number($('#dscto_mont_' + orden).html());
                             });
+
+                            var totalValorCompra = total_gravadas_sdscto + total_exoneradas_sdscto + total_inafectas_sdscto;
+                            $('#total_valorcompra').val(parseFloat(totalValorCompra).toFixed(2));
+
                             var dctoGlobal = $('#input_dcto_global').val();
                             var tipoDctoGlobal = $('#select_dcto_total').val();
-                            if (tipoDctoGlobal === 'P') {
-                                valor_total -= valor_total*(dctoGlobal/100);
-                                total_descuentos += total_valorcompra*(dctoGlobal/100);
-                                total_compra -= total_compra*(dctoGlobal/100);
-                                total_igv = total_igv - total_igv*(dctoGlobal/100);
-                                total_gravadas -= total_gravadas*(dctoGlobal/100);
-                                total_exoneradas -= total_exoneradas*(dctoGlobal/100);
-                                total_inafectas -= total_inafectas*(dctoGlobal/100);
-                            } else {
-                                valor_total -= dctoGlobal;
-                                total_descuentos += dctoGlobal;
-                                total_compra -= dctoGlobal;
-                                total_igv -= dctoGlobal;
-                                total_gravadas -= dctoGlobal;
-                                total_exoneradas -= dctoGlobal;
-                                total_inafectas -= dctoGlobal;
-                            }
-                            var total_otros_cargos = $('#total_otros_cargos').val();
                             var dctoGlobalMonto = 0;
+                            var dctoGlobalPorcentaje = 0;
+                            if (dctoGlobal !== '') {
+                                if (total_gravadas + total_exoneradas + total_inafectas + total_igv + total_isc > 0) {
+                                    if (tipoDctoGlobal === 'P') {
+                                        dctoGlobalPorcentaje = dctoGlobal;
+                                        $('#dcto_global_pcto').val(dctoGlobalPorcentaje);
+                                        dctoGlobalMonto = (total_gravadas + total_exoneradas + total_inafectas + total_igv + total_isc) * dctoGlobalPorcentaje / 100;
+                                        $('#dcto_global_monto').val(dctoGlobalMonto);
+                                    } else {
+                                        dctoGlobalPorcentaje = (dctoGlobal / (total_gravadas + total_exoneradas + total_inafectas + total_igv + total_isc)) * 100;
+                                        $('#dcto_global_pcto').val(dctoGlobalPorcentaje);
+                                        dctoGlobalMonto = (total_gravadas + total_exoneradas + total_inafectas + total_igv + total_isc) * dctoGlobalPorcentaje / 100;
+                                        $('#dcto_global_monto').val(dctoGlobalMonto);
+                                    }
+                                } else {
+                                    $('#input_dcto_global').val('');
+                                    alertify.error("NO EXISTE MONTO PARA APLICAR DESCUENTO GLOBAL");
+                                    calcularTotales();
+                                }
+                            }
+                            total_gravadas = total_gravadas * (1 - dctoGlobalPorcentaje / 100);
+                            total_exoneradas = total_exoneradas * (1 - dctoGlobalPorcentaje / 100);
+                            total_inafectas = total_inafectas * (1 - dctoGlobalPorcentaje / 100);
+                            total_igv = total_igv * (1 - dctoGlobalPorcentaje / 100);
+                            total_isc = total_isc * (1 - dctoGlobalPorcentaje / 100);
+                            total_descuentos = total_descuentos + dctoGlobalMonto;
+                            var total_otros_cargos = $('#total_otros_cargos').val() * 1;
                             $('#total_igv').val(parseFloat(total_igv).toFixed(2));
                             //$('#total_isc').val(parseFloat(total_isc).toFixed(2));
                             $('#total_gravadas').val(parseFloat(total_gravadas).toFixed(2));
                             $('#total_exoneradas').val(parseFloat(total_exoneradas).toFixed(2));
                             $('#total_inafectas').val(parseFloat(total_inafectas).toFixed(2));
                             $('#total_gratuitas').val(parseFloat(total_gratuitas).toFixed(2));
-
-                            $('#total_valorcompra').val(parseFloat(total_valorcompra).toFixed(2));
-                            $('#total_preciocompra').val(parseFloat(total_preciocompra).toFixed(2));
                             $('#total_descuentos').val(parseFloat(total_descuentos).toFixed(2));
+
+                            //Precio total de venta incluye impuestos y descuentos, pero no cargos.
+                            var totalPrecioCompra = total_gravadas + total_exoneradas + total_inafectas + total_igv + total_isc;
+                            $('#total_preciocompra').val(parseFloat(totalPrecioCompra).toFixed(2));
+
+                            var total_compra = total_gravadas + total_exoneradas + total_inafectas + total_igv + total_isc + total_otros_cargos;
                             $('#total_compra').val(parseFloat(total_compra).toFixed(2));
 
                             var total_impuestos = total_igv + total_isc;
                             $('#total_impuestos').val(parseFloat(total_impuestos).toFixed(2));
-                        };
+                        }
+                        ;
 
 
                         $("#input_dcto_global").keyup(function () {
@@ -1589,7 +1662,7 @@
                                     .on('resize.chosen', function () {
                                         $('.chosen-select').each(function () {
                                             var $this = $(this);
-                                            $this.next().css({'width': 540});
+                                            $this.next().css({'width': 550});
                                         });
                                     }).trigger('resize.chosen');
                             //resize chosen on sidebar collapse/expand
@@ -1598,7 +1671,7 @@
                                     return;
                                 $('.chosen-select').each(function () {
                                     var $this = $(this);
-                                    $this.next().css({'width': $this.parent().width()});
+                                    $this.next().css({'width': 550});
                                 });
                             });
                         }
@@ -1636,7 +1709,7 @@
                                     } else {
                                         if (input.length === 2) {
                                             var attr = $('#detalleCompra thead tr th').eq(idxCell).text();
-                                            if(attr === "Descuento")
+                                            if (attr === "Descuento")
                                                 retVal[attr] = $(ele).find('.monto_descuento').val() + " | " + $(ele).find('.select_tipo_dcto').val();
                                             else
                                                 retVal[attr] = input.val();
@@ -1648,15 +1721,14 @@
                                 });
                                 return retVal;
                             }).get();
-                            //alert(JSON.stringify(table)+"");
-                            //return;
+
                             if ($('#estadopago').val() === "P") {
                                 if ($('#estadopago').val() >= $('#total_compra').val()) {
                                     alertify.error("PARA UN PAGO PARCIAL EL MONTO A PAGAR: " + $('#montopagado').val() + " DEBE SER MENOR AL MONTO TOTAL DE LA VENTA: " + $('#total_compra').val());
                                     $('#montopagado').focus();
                                 }
                             }
-                            //return;
+
                             var flag_negociable = $('#switch-negociable').is(':checked') ? "S" : "N";
 
                             var tipo_dctoglobal = $("#select_dcto_total").val();
@@ -1676,8 +1748,6 @@
                             var monto_otro = 0;
                             var referencia_otro = "";
                             var cambio_pago = 0;
-                            //alertify.error(pcto_dctoglobal +" , "+monto_descuentoglobal );
-                            //return;
 
                             $('.registrar_compra').prop('disabled', true);
                             $.ajax({
@@ -1708,8 +1778,9 @@
                         });
 
                         $('.limpiar').click(function () {
-                            $('#serie').prop('selectedIndex', 0);
-                            //cargarCorrelativo();
+                            $('#tipocomprobante').prop('selectedIndex', 0);
+                            $('#serie').val('');
+                            $('#correlativo').val('');
                             $('#moneda').prop('selectedIndex', 0);
 
                             $('#formapago').prop('selectedIndex', 0);
@@ -1772,6 +1843,7 @@
 
                             $('#detalleCompra tbody').remove();
                             $('.registrar_compra').prop('disabled', false);
+                            $('#serie').focus();
                         });
                     });
         </script>

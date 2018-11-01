@@ -71,7 +71,7 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                     ArrayList<Double> precios = new ArrayList<Double>();
                     while (rsTarifas.next()) {
                         precios.add(rsTarifas.getDouble("valor"));
-                        comboTarifas += "<option value='" + rsTarifas.getInt("id_tarifa") + "' >" + rsTarifas.getDouble("valor") + "</option>";
+                        comboTarifas += "<option value='" + rsTarifas.getDouble("valor") + "' >" + rsTarifas.getDouble("valor") + "</option>";
                     }
                     comboTarifas += "</select>";
 
@@ -275,11 +275,14 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                             + "<option value='M'>MONTO</option>"
                             + "</select>\n"
                             + "</td>";
-
-                    //COLUMNA 14:  Precio Compra
+                    
+                    //COLUMNA 14:  Descuento Monto
+                    respuesta += "<td style='display: none' id='dscto_mont_" + orden + "'>" + 0.00 + "</td>";
+                    
+                    //COLUMNA 15:  Precio Compra
                     respuesta += "<td> <input class='input_preciocompra' id='precio_compra_" + orden + "' type='text' style='font-size:10px; width:65px;'> </td>";
 
-                    //COLUMNA 15:  Valor Compra
+                    //COLUMNA 16:  Valor Compra
                     respuesta += "<td> <input class='input_valorcompra' id='valor_compra_" + orden + "' type='text' style='font-size:10px; width:65px;'> </td>";
 
                     if (flag_lote.equals("S")) {
@@ -295,20 +298,20 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                         comboLotes += "</select>"
                                 + "<button type='button' name='adminLote' id='boton_lote_" + orden + "' class='btn btn-primary btn-xs adminLote' title='Lote'  ><span class='glyphicon glyphicon-book'></span></button>"
                                 + "</td>";
-                        //COLUMNA 16:  Lote|F.V.
+                        //COLUMNA 17:  Lote|F.V.
                         respuesta += comboLotes;
                     } else {
-                        //COLUMNA 16:  Lote|F.V.
+                        //COLUMNA 17:  Lote|F.V.
                         respuesta += "<td>No aplica</td>";
                     }
 
-                    //COLUMNA 17:  Bonificación
+                    //COLUMNA 18:  Bonificación
                     respuesta += "<td> "
                             + "<input id='bonificacion_" + orden + "' class='ace ace-switch bonificacion' type='checkbox'/>"
                             + "<span class='lbl' data-lbl=\"SI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NO\"></span>"
                             + "</td>";
 
-                    //COLUMNA 18:  Acciones
+                    //COLUMNA 19:  Acciones
                     respuesta += "<td> "
                             + "<button type='button' name='eliminarDetalleCompra' id='" + orden + "' class='btn btn-danger btn-xs eliminarDetalleCompra' title='Eliminar'  ><span class='glyphicon glyphicon-trash'></span></button>"
                             + "</td>";

@@ -100,6 +100,22 @@
         <servlet-name>Compra</servlet-name>
         <servlet-class>gilead.gcbusiness.controller.GCBusiness_Compra_Servlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Comprobante</servlet-name>
+        <servlet-class>gilead.gcbusiness.controller.GCBusiness_Comprobante_Servlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Nota</servlet-name>
+        <servlet-class>gilead.gcbusiness.controller.GCBusiness_Nota_Servlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CuentaPagar</servlet-name>
+        <servlet-class>gilead.gcbusiness.controller.GCBusiness_CuentaPagar_Servlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CuentaCobrar</servlet-name>
+        <servlet-class>gilead.gcbusiness.controller.GCBusiness_CuentaCobrar_Servlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>GCBusiness_Login_Servlet</servlet-name>
         <url-pattern>/Login</url-pattern>
@@ -199,6 +215,22 @@
     <servlet-mapping>
         <servlet-name>Compra</servlet-name>
         <url-pattern>/Compra</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Comprobante</servlet-name>
+        <url-pattern>/Comprobante</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Nota</servlet-name>
+        <url-pattern>/Nota</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CuentaPagar</servlet-name>
+        <url-pattern>/CuentaPagar</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CuentaCobrar</servlet-name>
+        <url-pattern>/CuentaCobrar</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

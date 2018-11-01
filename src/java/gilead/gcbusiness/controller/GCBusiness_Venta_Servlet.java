@@ -190,6 +190,8 @@ public class GCBusiness_Venta_Servlet extends HttpServlet {
                 Integer idsucursal = Integer.parseInt((String) session.getAttribute("idSucursal"));
                 Integer idalmacen = Integer.parseInt((String) session.getAttribute("idAlmacen"));
 
+                String idcotizacion = request.getParameter("idcotizacion");
+
                 //REGISTRAR VENTA
                 query = "INSERT INTO gcbusiness.venta (id_venta, id_cliente, id_tipocomprobante, id_sucursal, id_almacen, id_vendedor, id_serie, correlativo_serie, fecha_emision, flag_negociable, "
                         + "fecha_vencimiento, id_moneda, id_formapago, id_estatuspago, tipo_descuentoglobal, monto_descuentoglobal, pcto_descuentoglobal, flag_gravada, total_gravada, total_inafecta, "
@@ -252,12 +254,14 @@ public class GCBusiness_Venta_Servlet extends HttpServlet {
                     //valor_venta = valor_unitario_venta * cantidad;
                     //valor_venta = Math.round(valor_venta * Math.pow(10, 2)) / Math.pow(10, 2);
 
-                    idTarifa = Integer.parseInt((String) fila1.get("Precio Unitario"));
-                    query = "SELECT valor FROM gcbusiness.tarifaproducto WHERE id_producto =" + idProducto + " AND id_tarifa = " + idTarifa;
-                    ResultSet rs3 = st.executeQuery(query);
-                    if (rs3.next()) {
-                        precio_unitario_venta = rs3.getDouble(1);
-                    }
+                    //idTarifa = Integer.parseInt((String) fila1.get("Precio Unitario"));
+                    //query = "SELECT valor FROM gcbusiness.tarifaproducto WHERE id_producto =" + idProducto + " AND id_tarifa = " + idTarifa;
+                    //ResultSet rs3 = st.executeQuery(query);
+                    //if (rs3.next()) {
+                    //    precio_unitario_venta = rs3.getDouble(1);
+                    //}
+                    precio_unitario_venta = Double.parseDouble((String) fila1.get("Precio Unitario"));
+
                     precio_venta = Double.parseDouble((String) fila1.get("Precio Total sDscto"));
                     //precio_venta = precio_unitario_venta * cantidad;
                     //precio_venta = Math.round(precio_venta * Math.pow(10, 2)) / Math.pow(10, 2);
@@ -338,23 +342,23 @@ public class GCBusiness_Venta_Servlet extends HttpServlet {
                     //precio_venta_descuento = valor_venta_descuento + monto_igv_descuento;
                     precio_venta_descuento = Double.parseDouble((String) fila1.get("Precio Total"));
 
-                    //Insertar detalle venta
-                    query = "INSERT INTO gcbusiness.detalle_venta (id_venta, id_producto, cantidad, tipo_igv, pcto_igv, valor_unitario_venta, precio_unitario_venta, valor_venta, precio_venta, "
-                            + "monto_igv, tipo_isc, monto_isc, flag_bonificacion, tipo_descuento, monto_descuento, pcto_descuento, valor_venta_descuento, precio_venta_descuento, monto_igv_descuento, "
-                            + "fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion) "
-                            + "VALUES (" + idVenta + ", " + idProducto + ", " + cantidad + ", '" + tipoIGV + "', " + pctoIGV + ", " + valor_unitario_venta + ", " + precio_unitario_venta + ", " + valor_venta + ", " + precio_venta + ", "
-                            + monto_igv + ", '" + tipoISC + "', " + monto_isc + ", '" + flag_bonificacion + "', '" + tipo_descuento + "', " + monto_descuento + ", " + pcto_descuento + ", " + valor_venta_descuento + ", " + precio_venta_descuento + ", " + monto_igv_descuento + ", '"
-                            + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
-
-                    sqlEjecucion = query;
-                    st.executeUpdate(query);
-
                     Integer idlote = null;
                     String columnaLote = (String) fila1.get("Lote|F.V.");
                     if (columnaLote.contains("|")) {
                         String[] detalleLote = columnaLote.split("|");
                         idlote = Integer.parseInt(detalleLote[0].trim());
                     }
+
+                    //Insertar detalle venta
+                    query = "INSERT INTO gcbusiness.detalle_venta (id_venta, id_producto, id_lote, cantidad, tipo_igv, pcto_igv, valor_unitario_venta, precio_unitario_venta, valor_venta, precio_venta, "
+                            + "monto_igv, tipo_isc, monto_isc, flag_bonificacion, tipo_descuento, monto_descuento, pcto_descuento, valor_venta_descuento, precio_venta_descuento, monto_igv_descuento, "
+                            + "fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion) "
+                            + "VALUES (" + idVenta + ", " + idProducto + ", " + idlote + ", " + cantidad + ", '" + tipoIGV + "', " + pctoIGV + ", " + valor_unitario_venta + ", " + precio_unitario_venta + ", " + valor_venta + ", " + precio_venta + ", "
+                            + monto_igv + ", '" + tipoISC + "', " + monto_isc + ", '" + flag_bonificacion + "', '" + tipo_descuento + "', " + monto_descuento + ", " + pcto_descuento + ", " + valor_venta_descuento + ", " + precio_venta_descuento + ", " + monto_igv_descuento + ", '"
+                            + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
+
+                    sqlEjecucion = query;
+                    st.executeUpdate(query);
 
                     Double nuevostock = stock_actual - cantidad;
 
@@ -403,14 +407,22 @@ public class GCBusiness_Venta_Servlet extends HttpServlet {
 
                         //INSERTAR EN MOVIMIENTO CUENTA COBRAR
                         if (montopagado > 0) {
-                            query = "INSERT INTO gcbusiness.movimiento_cuentapagar(id_cuentacobrar, fecha, monto, saldo_anterior, saldo_actual, documento_referencia, "
+                            query = "INSERT INTO gcbusiness.movimiento_cuentacobrar(id_cuentacobrar, fecha, monto, saldo_anterior, saldo_actual, documento_referencia, "
                                     + "estado, fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion) "
-                                    + "VALUES (" + id_cuentacobrar + ", '" + ts + "', " + montopagado + ", " + total_venta + ", " + saldo + ",'" + observacion + "', '" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
+                                    + "VALUES (" + id_cuentacobrar + ", '" + ts + "', " + montopagado + ", " + total_venta + ", " + saldo + ",'" + observacion + "', 'A', '" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
                             sqlEjecucion = query;
                             st.executeUpdate(query);
                         }
                     }
                 }
+
+                //ACTUALIZAR ESTADO COTIZACION
+                if (idcotizacion != null) {
+                    query = "update gcbusiness.cotizacion SET estado = 'P' WHERE id_cotizacion = " + idcotizacion;
+                    sqlEjecucion = query;
+                    st.executeUpdate(query);
+                }
+
                 json = "{ \"mensaje\":\"<em>SE GENERÓ CORRECTAMENTE LA VENTA</em>\" ";
 
                 cn.commit();

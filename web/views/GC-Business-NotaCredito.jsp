@@ -8,6 +8,8 @@
     Autor Creación      : Pablo Jimenez Aguado
     Uso                 : Vista Inicial al acceder al sistema
 --%>
+<%@page import="gilead.gcbusiness.model.BeanMotivoNota"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoMotivoNotaImpl"%>
 <%@page import="gilead.gcbusiness.model.BeanVendedor"%>
 <%@page import="gilead.gcbusiness.dao.impl.DaoVendedorImpl"%>
 <%@page import="gilead.gcbusiness.model.BeanCliente"%>
@@ -30,7 +32,7 @@
     BeanUsuario usuario = (BeanUsuario) session.getAttribute("usuario");
     String idalmacen = (String) session.getAttribute("idAlmacen");
     String descripcionalmacen = (String) session.getAttribute("descripcionAlmacen");
-    String idcotizacion = (String) request.getParameter("idcotizacion");
+    String idventa = request.getParameter("idventa");
 %>
 <html>
     <head>
@@ -717,13 +719,9 @@
                                 <a href="#">Ventas</a>
                             </li>
                             <li>
-                                <%if (idcotizacion == null) {%>
-                                <a href="GC-Business-RegistrarVenta.jsp">Registrar Venta</a>
-                                <%} else {%>
-                                <a href="GC-Business-GestionCotizacion.jsp">Cotizaciones</a>
-                                <%}%>
+                                <a href="GC-Business-GestionNota.jsp">Notas</a>
                             </li>
-                            <li class="active">Boleta Electrónica</li>
+                            <li class="active">Nota Crédito Electónica</li>
                         </ul><!-- /.breadcrumb -->
 
                     </div>
@@ -732,17 +730,18 @@
 
                         <div class="page-header">
                             <h1>
-                                <%if (idcotizacion == null) {%>
-                                Emitir boleta electrónica - Almacén: <%=descripcionalmacen%>
-                                <%} else {%>
-                                Emitir boleta electrónica - Almacén: <%=descripcionalmacen%> - Cotización: Nro. <%=idcotizacion%>
-                                <%}%>                                
+                                Emitir nota crédito
                             </h1>
                         </div><!-- /.page-header -->
 
                         <!-- PAGE CONTENT BEGINS -->
                         <div class="row datos_comprobante">
                             <div class="col-xs-12">
+                                <input type="hidden" id="idsucursalmodifica" value="">
+                                <input type="hidden" id="idalmacenmodifica" value="">
+                                <input type="hidden" id="idtipocomprobantemodifica" value="">
+                                <input type="hidden" id="idseriemodifica" value="">
+                                <input type="hidden" id="flaggravadamodifica" value="">
                                 <div class="panel panel-primary">
                                     <div class="panel-heading"> Datos Comprobante </div>
                                     <div class="panel-body">
@@ -752,7 +751,7 @@
                                                 <select id="serie" name="serie" class="styled-select tipo_comprobante" style="width: 70px;" tabindex="1" >
                                                     <%
                                                         DaoSerieImpl daoSerie = new DaoSerieImpl();
-                                                        List<BeanSerie> serie = daoSerie.listarSerieTipoComprobante("03");
+                                                        List<BeanSerie> serie = daoSerie.listarSerieTipoComprobante("07");
 
                                                         for (int i = 0; i < serie.size(); i++) {
                                                     %>
@@ -768,7 +767,7 @@
                                                 <input type="text" name="correlativo" id="correlativo" tabindex="2" style="width: 80px;" class="styled-select tipo_comprobante" disabled>
                                                 &nbsp;&nbsp;&nbsp;
                                                 <label for="moneda" class="control-label" style="width: 55px;">Moneda:</label>
-                                                <select id="moneda" name="moneda" class="styled-select tipo_comprobante" style="width: 175px;" tabindex="3" >
+                                                <select id="moneda" name="moneda" class="styled-select tipo_comprobante" style="width: 175px;" tabindex="3" disabled>
                                                     <%
                                                         DaoMonedaImpl daoMoneda = new DaoMonedaImpl();
                                                         List<BeanMoneda> moneda = daoMoneda.accionListar();
@@ -783,58 +782,33 @@
                                                         }
                                                     %>
                                                 </select>
-                                                &nbsp;&nbsp;&nbsp;
-                                                <label for="negociable" class="control-label" style="width: 75px;">Negociable:</label>
-                                                &nbsp;
-                                                <input id="switch-negociable" class="ace ace-switch" type="checkbox" />
-                                                <span class="lbl" data-lbl="SI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NO" tabindex="4" ></span>
-                                                &nbsp;
-                                                <label id="lblfechavencimiento" class="control-label hide" style="width: 130px;">Fecha Vencimiento:</label>
-                                                <input type="text" id="fechavencimiento" style="width: 120px;" class="hide" tabindex="5" readonly>
-                                                <i id="iconfechavencimiento" class="ace-icon fa fa-calendar hide" style="width: 10px;"></i>
                                             </div>
 
                                             <div class="form-group">
-                                                <label for="formapago" class="control-label" style="width: 110px;">Forma de Pago:</label>
-                                                <select id="formapago" name="formapago" class="styled-select tipo_comprobante" style="width: 160px;" tabindex="6">
-                                                    <option value="E">EFECTIVO</option>
-                                                    <option value="T">TARJETA</option>
-                                                    <option value="C">CHEQUE</option>
-                                                    <option value="L">LETRA DE CAMBIO</option>
-                                                    <option value="D">DEPÓSITO EN CUENTA</option>
-                                                    <option value="O">OTROS</option>
+                                                <label for="motivonota" class="control-label" style="width: 110px;">Tipo de Nota:</label>
+                                                <select id="motivonota" name="motivonota" class="styled-select tipo_comprobante" style="width: 320px;" tabindex="6">
+                                                    <%
+                                                        DaoMotivoNotaImpl daoMotivoNota = new DaoMotivoNotaImpl();
+                                                        List<BeanMotivoNota> motivoNota = daoMotivoNota.listarMotivoNotaTipoComprobante("07");
+
+                                                        for (int i = 0; i < motivoNota.size(); i++) {
+                                                    %>
+                                                    <option value="<%= motivoNota.get(i).getIdmotivonota()%>">
+                                                        <%= motivoNota.get(i).getDescripcion()%>
+                                                    </option>
+                                                    <%
+
+                                                        }
+                                                    %>
                                                 </select>
-                                                &nbsp;
-                                                <label id="lblnumeroletra" class="control-label hide" style="width: 100px;">Número Letra:</label>
-                                                <input type="text" name="numeroletra" id="numeroletra" tabindex="7" style="width: 100px;" class="styled-select tipo_comprobante hide">
-                                                &nbsp;
-                                                <label id="lblmontoletra" class="control-label hide" style="width: 100px;">Monto Letra:</label>
-                                                <input type="text" name="montoletra" id="montoletra" tabindex="8" style="width: 100px;" placeholder="0.00" class="styled-select tipo_comprobante hide">
-                                                &nbsp;
-                                                <label id="lblfechavencimientoletra" class="control-label hide" style="width: 130px;">Fecha Vencimiento:</label>
-                                                <input type="text" id="fechavencimientoletra" style="width: 120px;" class="hide" tabindex="9" readonly>
-                                                <i id="iconfechavencimientoletra" class="ace-icon fa fa-calendar hide" style="width: 10px;"></i>
                                             </div>
                                             <div class="form-group">
-                                                <label for="estadopago" class="control-label" style="width: 110px;">Estatus Pago:</label>
-                                                <select id="estadopago" name="estadopago" class="styled-select tipo_comprobante" style="width: 160px;" tabindex="10">
-                                                    <option value="S">SIN PAGAR</option>
-                                                    <option value="P">PAGADO PARCIALMENTE</option>
-                                                    <option value="T">PAGADO TOTALMENTE</option>
-                                                </select>
-                                                &nbsp;
-                                                <label id="lblmontopagado" class="control-label hide" style="width: 100px;">Monto Pagado:</label>
-                                                <input type="text" name="montopagado" id="montopagado" tabindex="11" style="width: 100px;" placeholder="0.00" class="styled-select tipo_comprobante hide">
-                                            </div>
-                                            <div class="form-group" style="display:none;">
-                                                <label for="facturagravada" class="control-label" style="width: 115px;">Factura Gravada:</label>
-                                                <input id="switch-gravada" class="ace ace-switch" type="checkbox" />
-                                                <span class="lbl" data-lbl="SI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NO" tabindex="12" ></span>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="anticipo" class="control-label" style="width: 60px;">Anticipo:</label>
-                                                <input id="switch-anticipo" class="ace ace-switch" type="checkbox" />
-                                                <span class="lbl" data-lbl="SI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NO" tabindex="13" ></span>
+                                                <label for="comprobantemodifica" class="control-label" style="width: 110px;">Documento que modifica:</label>
+                                                <input type="text" name="tipocomprobantemodifica" id="tipocomprobantemodifica" tabindex="2" style="width: 120px;" class="styled-select tipo_comprobante" disabled>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <input type="text" name="seriemodifica" id="seriemodifica" tabindex="2" style="width: 120px;" class="styled-select tipo_comprobante" disabled>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <input type="text" name="correlativomodifica" id="correlativomodifica" tabindex="2" style="width: 120px;" class="styled-select tipo_comprobante" disabled>
                                             </div>
                                         </div>
                                     </div>
@@ -844,72 +818,21 @@
                         <div class="row datos_cliente">
                             <div class="col-xs-12">
                                 <input type="hidden" id="idcliente" value="0">
-                                <input type="hidden" id="ubigeocliente" value="">
                                 <div class="panel panel-primary">
                                     <div class="panel-heading"> Datos Cliente </div>
                                     <div class="panel-body">
                                         <div class="row col-md-12">
                                             <div class="form-group">
-                                                <label id="lblnuevocliente" for="nuevocliente" class="control-label hide" style="width: 80px;">Nuevo Cliente:</label>
-                                                <input type="text" name="nuevocliente" id="nuevocliente" class="hide" tabindex="16" style="width: 540px;" disabled>
+                                                <label id="lblcliente" for="cliente" class="control-label" style="width: 80px;">Cliente:</label>
+                                                <input type="text" name="cliente" id="cliente" tabindex="16" style="width: 540px;" disabled>
                                             </div>
                                             <div class="form-group">
-                                                <label for="cliente" class="control-label" style="width: 80px;">Cliente:</label>
-                                                <select class="chosen-select" id="cliente" tabindex="14" style="width: 540px;" data-placeholder="Seleccione cliente...">
-                                                    <option value="0" selected="selected"></option>
-                                                    <%
-                                                        DaoClienteImpl daoCliente = new DaoClienteImpl();
-                                                        List<BeanCliente> cliente = daoCliente.accionListar();
-                                                        for (int i = 0; i < cliente.size(); i++) {
-                                                    %>
-                                                    <option value="<%= cliente.get(i).getIdcliente()%>"><%= cliente.get(i).getNumerodocumento() + " | " + cliente.get(i).getNombre()%>
-                                                    </option>
-                                                    <%
-                                                        }
-                                                    %>
-                                                </select>
-                                                &nbsp;&nbsp;
-                                                <label id="lbldepartamento" class="control-label hide" style="width: 110px;">Departamento:</label>
-                                                <select id="departamento" name="departamento" class="hide"  style="width: 220px;" tabindex="50">
-                                                    <%
-                                                        DaoUbigeoImpl daoUbigeo = new DaoUbigeoImpl();
-                                                        List<BeanUbigeo> departamento = daoUbigeo.accionListarDepartamentos();
-
-                                                        for (int i = 0; i < departamento.size(); i++) {
-                                                    %>
-                                                    <option value="<%= departamento.get(i).getCodigo_ubidepartamento()%>">
-                                                        <%= departamento.get(i).getDescripcionUbigeo()%>
-                                                    </option>
-                                                    <%
-
-                                                        }
-                                                    %>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <%--<label for="ruc" class="control-label" style="width: 80px;">RUC:</label>
-                                                <input id="switch-tipodocumento" class="ace ace-switch" type="checkbox" />
-                                                <span class="lbl" data-lbl="DNI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RUC" tabindex="12" ></span>--%>
-                                                <select id="tipodocumento" name="tipodocumento" style="width: 60px;" tabindex="51">
-                                                    <option value="1">DNI</option>
-                                                    <option value="2">RUC</option>
-                                                </select>
-                                                <label for="tipodocumento" class="control-label" style="width: 15px;">:</label>
-                                                <input type="text" name="ruc" id="ruc" tabindex="15" style="width: 433px;">
-                                                &nbsp;
-                                                <button type="button" class="btn btn-xs btn-primary" id="buscarws">Buscar WS</button>
-                                                &nbsp;&nbsp;
-                                                <label id="lblprovincia" class="control-label hide" style="width: 110px;">Provincia:</label>
-                                                <select id="provincia" name="provincia" class="hide"  style="width: 220px;" tabindex="51">
-                                                </select>
+                                                <label for="ruc" class="control-label" style="width: 80px;">RUC:</label>
+                                                <input type="text" name="ruc" id="ruc" tabindex="15" style="width: 433px;" disabled>
                                             </div>
                                             <div class="form-group">
                                                 <label for="direccion" class="control-label" style="width: 80px;">Dirección:</label>
                                                 <input type="text" name="direccion" id="direccion" tabindex="16" style="width: 540px;" disabled>
-                                                &nbsp;&nbsp;
-                                                <label id="lbldistrito" class="control-label hide" style="width: 110px;">Distrito:</label>
-                                                <select id="distrito" name="distrito" class="hide" style="width: 220px;" tabindex="52">
-                                                </select>
                                             </div>
                                             <div class="form-group">
                                                 <label for="vendedor" class="control-label" style="width: 80px;">Vendedor:</label>
@@ -1147,7 +1070,7 @@
                             <div class="col-md-3">
                             </div>
                             <div class="col-md-6" style="margin-top: 5px;">
-                                <button class="btn btn-xs btn-primary registrar_venta" style="font-size: 1.2em;"> <span><i class="fa fa-save"></i></span> Registrar Venta</button>
+                                <button class="btn btn-xs btn-primary registrar_venta" style="font-size: 1.2em;"> <span><i class="fa fa-save"></i></span> Registrar Nota</button>
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 <button type="button" class="btn btn-xs btn-primary imprimir" style="font-size: 1.2em;"> <span><i class="fa fa-print"></i></span> Imprimir</button>
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -1210,59 +1133,84 @@
         <script type="text/javascript">
                     $(document).ready(function () {
                         $(window).load(function () {
-                            cargarCorrelativo();
-
-                            var idcotizacion = '<%=idcotizacion%>';
-                            if (idcotizacion !== null) {
-                                $.ajax({
-                                    url: "../Cotizacion",
-                                    method: "GET",
-                                    data: {"opcion": "obtenercotizacion", "idcotizacion": idcotizacion},
-                                    success: function (data) {
-                                        var obj = jQuery.parseJSON(data);
-                                        $('#total_igv').val(obj.totaligv);
-                                        $('#total_isc').val(parseFloat(obj.totalisc).toFixed(2));
-                                        $('#total_otros_impuestos').val(parseFloat(obj.totalotrotributo).toFixed(2));
-                                        $('#total_impuestos').val(obj.totalimpuesto);
-                                        if (obj.tipodescuentoglobal === 'P') {
-                                            if (obj.pctodescuentoglobal !== 0) {
-                                                $('#input_dcto_global').val(obj.pctodescuentoglobal);
-                                            } else {
-                                                $('#input_dcto_global').val('');
-                                            }
+                            //alert('<%=idventa%>');
+                            var idventa = '<%=idventa%>';
+                            $.ajax({
+                                url: "../Comprobante",
+                                method: "GET",
+                                data: {"opcion": "obtenerventa", "idventa": idventa},
+                                success: function (data) {
+                                    var obj = jQuery.parseJSON(data);
+                                    $('#idsucursalmodifica').val(obj.idsucursal);
+                                    $('#idalmacenmodifica').val(obj.idalmacen);
+                                    $('#flaggravadamodifica').val(obj.flaggravada);
+                                    $('#idtipocomprobantemodifica').val(obj.idtipocomprobante);
+                                    $('#tipocomprobantemodifica').val(obj.tipocomprobante);
+                                    $('#idseriemodifica').val(obj.idserie);
+                                    $('#seriemodifica').val(obj.serie);
+                                    $('#correlativomodifica').val(obj.correlativoserie);
+                                    $('#total_igv').val(obj.totaligv);
+                                    $('#total_isc').val(parseFloat(obj.totalisc).toFixed(2));
+                                    $('#total_otros_impuestos').val(parseFloat(obj.totalotrotributo).toFixed(2));
+                                    $('#total_impuestos').val(obj.totalimpuesto);
+                                    if (obj.tipodescuentoglobal === 'P') {
+                                        if (obj.pctodescuentoglobal !== 0) {
+                                            $('#input_dcto_global').val(obj.pctodescuentoglobal);
                                         } else {
-                                            if (obj.montodescuentoglobal !== 0) {
-                                                $('#input_dcto_global').val(obj.montodescuentoglobal);
-                                            } else {
-                                                $('#input_dcto_global').val('');
-                                            }
+                                            $('#input_dcto_global').val('');
                                         }
-                                        $('#select_dcto_total').val(obj.tipodescuentoglobal);
-                                        $('#total_gravadas').val(obj.totalgravada);
-                                        $('#total_exoneradas').val(obj.totalexonerada);
-                                        $('#total_inafectas').val(obj.totalinafecta);
-                                        $('#total_gratuitas').val(obj.totalgratuita);
-                                        $('#total_descuentos').val(obj.totaldescuento);
-                                        $('#total_venta').val(obj.totalventa);
-
-                                        //Obtener detalle
-                                        $.get('../Cotizacion', {
-                                            "opcion": "obtenerdetallecotizacion",
-                                            "idcotizacion": idcotizacion,
-                                            "idalmacen": obj.idalmacen
-                                        }, function (response) {
-                                            $('#detalleVenta').append(response);
-                                            $('#producto')
-                                                    .find('option:first-child').prop('selected', true)
-                                                    .end().trigger('chosen:updated');
-                                            calcularTotales();
-                                        });
-                                    },
-                                    error: function (error) {
-                                        alertify.error("ERROR AL EJECUTAR AJAX DE OBTENER DATOS USUARIO");
+                                    } else {
+                                        if (obj.montodescuentoglobal !== 0) {
+                                            $('#input_dcto_global').val(obj.montodescuentoglobal);
+                                        } else {
+                                            $('#input_dcto_global').val('');
+                                        }
                                     }
-                                }).done();
-                            }
+                                    $('#select_dcto_total').val(obj.tipodescuentoglobal);
+                                    $('#total_gravadas').val(obj.totalgravada);
+                                    $('#total_exoneradas').val(obj.totalexonerada);
+                                    $('#total_inafectas').val(obj.totalinafecta);
+                                    $('#total_gratuitas').val(obj.totalgratuita);
+                                    $('#total_descuentos').val(obj.totaldescuento);
+                                    $('#total_venta').val(obj.totalventa);
+
+                                    var idcliente = obj.idcliente;
+                                    $.ajax({
+                                        url: "../Cliente",
+                                        method: "POST",
+                                        data: {"opcion": "buscar", "idcliente": idcliente},
+                                        success: function (data) {
+                                            var obj = jQuery.parseJSON(data);
+                                            $('#idcliente').val(obj.idcliente);
+                                            $('#cliente').val(obj.nombre);
+                                            $('#ruc').val(obj.numerodocumento);
+                                            $('#direccion').val(obj.direccion);
+                                            $('#vendedor').val(obj.vendedor);
+                                        },
+                                        error: function (error) {
+                                            alertify.error("ERROR AL EJECUTAR AJAX DE OBTENER DATOS USUARIO");
+                                        }
+                                    }).done();
+
+                                    //Obtener detalle
+                                    $.get('../Comprobante', {
+                                        "opcion": "obtenerdetalleventa",
+                                        "idventa": idventa,
+                                        "idalmacen": obj.idalmacen
+                                    }, function (response) {
+                                        $('#detalleVenta').append(response);
+                                        $('#producto')
+                                                .find('option:first-child').prop('selected', true)
+                                                .end().trigger('chosen:updated');
+                                        calcularTotales();
+                                    });
+                                },
+                                error: function (error) {
+                                    alertify.error("ERROR AL EJECUTAR AJAX DE OBTENER DATOS USUARIO");
+                                }
+                            }).done();
+
+                            cargarCorrelativo();
                         });
 
                         var cargarCorrelativo = function () {
@@ -1272,23 +1220,6 @@
                             }, function (response) {
                                 $('#correlativo').val(response);
                             });
-
-                            var departamentoActual = $("#departamento").val();
-
-                            $.get('../Ubigeo', {
-                                "codigo_ubidepartamento": departamentoActual
-                            }, function (response) {
-                                $('#provincia').html(response);
-
-                                var provinciaActual = $("#provincia").val();
-
-                                $.get('../Ubigeo', {
-                                    "codigo_ubiprovincia": provinciaActual
-                                }, function (response) {
-                                    $('#distrito').html(response);
-                                });
-                            });
-
                         };
 
                         $('#serie').change(function () {
@@ -1299,158 +1230,6 @@
                                 $('#correlativo').val(response);
                             });
                         });
-
-
-                        $('#switch-negociable').removeAttr('checked').on('click', function () {
-                            //$validation = this.checked;
-                            if (this.checked) {
-                                $('#fechavencimiento').removeClass('hide');
-                                $('#lblfechavencimiento').removeClass('hide');
-                                $('#iconfechavencimiento').removeClass('hide');
-                                $('#lbldepartamento').removeClass('hide');
-                                $('#departamento').removeClass('hide');
-                                $('#lblprovincia').removeClass('hide');
-                                $('#provincia').removeClass('hide');
-                                $('#lbldistrito').removeClass('hide');
-                                $('#distrito').removeClass('hide');
-                            } else {
-                                $('#fechavencimiento').addClass('hide');
-                                $('#lblfechavencimiento').addClass('hide');
-                                $('#iconfechavencimiento').addClass('hide');
-                                $('#lbldepartamento').addClass('hide');
-                                $('#departamento').addClass('hide');
-                                $('#lblprovincia').addClass('hide');
-                                $('#provincia').addClass('hide');
-                                $('#lbldistrito').addClass('hide');
-                                $('#distrito').addClass('hide');
-                            }
-                        });
-
-                        $("#fechavencimiento").datepicker({
-                            dateFormat: 'dd/mm/yy',
-                            minDate: '+1d'
-                        }).datepicker("setDate", new Date());
-
-                        $.datepicker.regional['es'] = {
-                            closeText: 'Cerrar',
-                            prevText: '< Ant',
-                            nextText: 'Sig >',
-                            currentText: 'Hoy',
-                            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-                            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-                            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-                            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
-                            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
-                            weekHeader: 'Sm',
-                            dateFormat: 'dd/mm/yy',
-                            firstDay: 1,
-                            isRTL: false,
-                            showMonthAfterYear: false,
-                            yearSuffix: ''
-                        };
-                        $.datepicker.setDefaults($.datepicker.regional['es']);
-
-
-
-                        $('#formapago').change(function () {
-                            var formapago = $('#formapago').val();
-                            if (formapago === "L") {
-                                $('#lblnumeroletra').removeClass('hide');
-                                $('#numeroletra').removeClass('hide');
-                                $('#lblmontoletra').removeClass('hide');
-                                $('#montoletra').removeClass('hide');
-                                $('#fechavencimientoletra').removeClass('hide');
-                                $('#lblfechavencimientoletra').removeClass('hide');
-                                $('#iconfechavencimientoletra').removeClass('hide');
-                            } else {
-                                $('#lblnumeroletra').addClass('hide');
-                                $('#numeroletra').addClass('hide');
-                                $('#lblmontoletra').addClass('hide');
-                                $('#montoletra').addClass('hide');
-                                $('#fechavencimientoletra').addClass('hide');
-                                $('#lblfechavencimientoletra').addClass('hide');
-                                $('#iconfechavencimientoletra').addClass('hide');
-                            }
-                        });
-
-                        $("#fechavencimientoletra").datepicker({
-                            dateFormat: 'dd/mm/yy',
-                            minDate: '+1d'
-                        }).datepicker("setDate", new Date());
-
-
-
-                        $('#estadopago').change(function () {
-                            var formapago = $('#estadopago').val();
-                            if (formapago === "P") {
-                                $('#lblmontopagado').removeClass('hide');
-                                $('#montopagado').removeClass('hide');
-                                $('#montopagado').focus();
-                            } else {
-                                $('#lblmontopagado').addClass('hide');
-                                $('#montopagado').addClass('hide');
-                                $('#montopagado').val('');
-                            }
-                        });
-
-                        $('#departamento').change(function () {
-                            var codigoDpto = $('#departamento').val();
-                            $.get('../Ubigeo', {
-                                "codigo_ubidepartamento": codigoDpto
-                            }, function (response) {
-                                $('#provincia').html(response);
-
-                                var provinciaActual = $("#provincia").val();
-
-                                $.get('../Ubigeo', {
-                                    "codigo_ubiprovincia": provinciaActual
-                                }, function (response) {
-                                    $('#distrito').html(response);
-                                });
-                            });
-                        });
-
-                        $('#provincia').change(function () {
-                            var codigoProv = $('#provincia').val();
-                            $.get('../Ubigeo', {
-                                "codigo_ubiprovincia": codigoProv
-                            }, function (response) {
-                                $('#distrito').html(response);
-                            });
-                        });
-
-
-                        $('#cliente').change(function () {
-                            $('#idcliente').val('0');
-                            $('#ruc').val('');
-                            $('#direccion').val('');
-                            $('#vendedor').val('0');
-                            $('#vendedor').attr('disabled', true);
-                            $('#nuevocliente').val('');
-                            $('#nuevocliente').addClass('hide');
-                            $('#lblnuevocliente').addClass('hide');
-                            $('#ubigeocliente').val('');
-                            var idcliente = $(this).val();
-                            if (idcliente !== "0") {
-                                $.ajax({
-                                    url: "../Cliente",
-                                    method: "POST",
-                                    data: {"opcion": "buscar", "idcliente": idcliente},
-                                    success: function (data) {
-                                        var obj = jQuery.parseJSON(data);
-                                        $('#idcliente').val(obj.idcliente);
-                                        $('#tipodocumento').val(obj.tipodocumento);
-                                        $('#ruc').val(obj.numerodocumento);
-                                        $('#direccion').val(obj.direccion);
-                                        $('#vendedor').val(obj.vendedor);
-                                    },
-                                    error: function (error) {
-                                        alertify.error("ERROR AL EJECUTAR AJAX DE OBTENER DATOS USUARIO");
-                                    }
-                                }).done();
-                            }
-                        });
-
 
                         $("#btnAgregarDetalle").click(function () {
                             var rowCount = $('#detalleVenta >tbody >tr').length;
@@ -1785,7 +1564,7 @@
                                     return;
                                 $('.chosen-select').each(function () {
                                     var $this = $(this);
-                                    $this.next().css({'width': 540});
+                                    $this.next().css({'width': $this.parent().width()});
                                 });
                             });
                         }
@@ -1793,40 +1572,12 @@
 
                         $('.registrar_venta').click(function (event) {
                             event.preventDefault();
-                            if ($('#idcliente').val() === "0" && $('#nuevocliente').val() === "") {
-                                alertify.error("DEBE SELECCIONAR EL CLIENTE O INGRESAR NUEVO CLIENTE");
-                                return;
-                            }
-
-                            if ($('#idcliente').val() === "0" && $('#nuevocliente').val() !== "" && $('#vendedor').val() === "0") {
-                                alertify.error("DEBE SELECCIONAR UN VENDEDOR");
-                                return;
-                            }
 
                             var rowCount = $('#detalleVenta >tbody >tr').length;
                             if (rowCount === 0) {
                                 alertify.error("NO HA INGRESADO NINGÚN PRODUCTO");
                                 $('#producto').focus();
                                 return;
-                            }
-
-                            var boolean = false;
-                            $("#detalleVenta tbody tr").each(function () {
-                                var nombre = $(this).find("td:eq(3)").html();
-                                var disponible = $(this).find("td:eq(22)").html();
-                                var cantidad = $(this).find("td:eq(4)").find(':input').val();
-                                var unidad = $(this).find("td:eq(5)").html();
-                                if (cantidad !== undefined && disponible !== undefined) {
-                                    if (Number(cantidad) > Number(disponible)) {
-                                        alertify.error("ERROR! SÓLO HAY " + disponible + " " + unidad + "(S) DE " + nombre);
-                                        boolean = true;
-                                    }
-                                }
-                            });
-
-                            if (boolean) {
-                                alertify.error("ERROR! VALIDAR LAS CANTIDADES DEL DETALLE");
-                                return false;
                             }
 
                             var table = $('#detalleVenta tbody tr').map(function (idxRow, ele) {
@@ -1857,47 +1608,21 @@
                                 return retVal;
                             }).get();
 
-                            if ($('#estadopago').val() === "P") {
-                                if ($('#estadopago').val() >= $('#total_venta').val()) {
-                                    alertify.error("PARA UN PAGO PARCIAL EL MONTO A PAGAR: " + $('#montopagado').val() + " DEBE SER MENOR AL MONTO TOTAL DE LA VENTA: " + $('#total_venta').val());
-                                    $('#montopagado').focus();
-                                }
-                            }
-
-                            var flag_negociable = $('#switch-negociable').is(':checked') ? "S" : "N";
-
                             var tipo_dctoglobal = $("#select_dcto_total").val();
-                            /*var monto_dctoglobal = 0;
-                             var pcto_dctoglobal = 0;
-                             
-                             if (tipo_dctoglobal === "P")
-                             pcto_dctoglobal = $("#input_dcto_global").val() || 0;
-                             else
-                             monto_dctoglobal = $("#input_dcto_global").val() || 0;*/
 
-                            var flag_gravada = $('#switch-gravada').is(':checked') ? "S" : "N";
+                            var flag_gravada = $('#flaggravadamodifica').val();
 
-                            var total_anticipo = 0;
-
-                            //CALCULO IMPORTE PAGO
-                            var importe_pago = 0;
-                            var monto_efectivo = 0;
-                            var monto_otro = 0;
-                            var referencia_otro = "";
-                            var cambio_pago = 0;
                             $('.registrar_venta').prop('disabled', true);
                             $.ajax({
                                 method: "POST",
-                                url: "../Venta",
-                                data: {"opcion": "insertar", "detalleventa": JSON.stringify(table), "idcliente": $('#idcliente').val(), "idtipoComprobante": 2, "idvendedor": $('#vendedor').val(),
-                                    "idserie": $('#serie').val(), "flag_negociable": flag_negociable, "fecha_vencimiento": $("#fechavencimiento").val(), "idmoneda": $('#moneda').val(),
-                                    "formapago": $('#formapago').val(), "estatuspago": $('#estadopago').val(), "montopagado": $('#montopagado').val(), "tipo_dctoglobal": tipo_dctoglobal, "pcto_dctoglobal": $('#dcto_global_pcto').val(),
+                                url: "../Nota",
+                                data: {"opcion": "insertar", "idsucursalmodifica": $('#idsucursalmodifica').val(), "idalmacenmodifica": $('#idalmacenmodifica').val(), "detalleventa": JSON.stringify(table), "idcliente": $('#idcliente').val(), "idtipoComprobante": 3, "idvendedor": $('#vendedor').val(),
+                                    "idserie": $('#serie').val(), "idmoneda": $('#moneda').val(), "idtipocomprobantemodifica": $('#idtipocomprobantemodifica').val(), "idseriemodifica": $('#idseriemodifica').val(), "correlativoseriemodifica": $('#correlativomodifica').val(),
+                                    "idtiponota": $('#motivonota').val(), "motivo": $("#motivonota option:selected").text(), "tipo_dctoglobal": tipo_dctoglobal, "pcto_dctoglobal": $('#dcto_global_pcto').val(),
                                     "monto_dctoglobal": $('#dcto_global_monto').val(), "flag_gravada": flag_gravada, "total_gravada": $('#total_gravadas').val(), "total_inafecta": $('#total_inafectas').val(),
                                     "total_exonerada": $('#total_exoneradas').val(), "total_gratuita": $('#total_gratuitas').val(), "total_impuesto": $('#total_impuestos').val(), "total_igv": $('#total_igv').val(),
                                     "total_isc": $('#total_isc').val(), "total_otrotributo": $('#total_otros_impuestos').val(), "total_valorventa": $('#total_valorventa').val(), "total_precioventa": $('#total_precioventa').val(),
-                                    "total_descuento": $('#total_descuentos').val(), "total_otrocargo": $('#total_otros_cargos').val(), "total_anticipo": total_anticipo, "total_venta": $('#total_venta').val(),
-                                    "importe_pago": importe_pago, "monto_efectivo": monto_efectivo, "monto_otro": monto_otro, "referencia_otro": referencia_otro, "cambio_pago": cambio_pago,
-                                    "ruc": $('#ruc').val(), "nuevocliente": $('#nuevocliente').val(), "direccion": $('#direccion').val(), "ubigeocliente": $('#ubigeocliente').val(), "idcotizacion": '<%=idcotizacion%>'
+                                    "total_descuento": $('#total_descuentos').val(), "total_otrocargo": $('#total_otros_cargos').val(), "total_venta": $('#total_venta').val()
                                 }
                             }).done(function (data) {
                                 var obj = jQuery.parseJSON(data);
@@ -1923,7 +1648,6 @@
                                     .end().trigger('chosen:updated');
                             $('#ruc').val('');
                             $('#direccion').val('');
-                            $('#direccion').attr('disabled', true);
                             $('#vendedor').val('0');
                             $('#vendedor').attr('disabled', true);
                             $('#nuevocliente').val('');
@@ -1934,12 +1658,11 @@
                             $('#dcto_global_monto').val('0');
                             $('#total_valorventa').val('0');
                             $('#total_precioventa').val('0');
-                            $('#tipodocumento').prop('selectedIndex', 0);
 
                             $('#total_igv').val('0.00');
                             $('#total_impuestos').val('0.00');
                             $('#input_dcto_global').val('');
-                            $('#select_dcto_global').prop('selectedIndex', 0);
+                            $('#select_dcto_total').prop('selectedIndex', 0);
                             $('#total_gravadas').val('0.00');
                             $('#total_inafectas').val('0.00');
                             $('#total_exoneradas').val('0.00');
@@ -1988,8 +1711,8 @@
                             $('.registrar_venta').prop('disabled', false);
                         });
 
-                        $('#buscarws').click(function (event) {
-                            var idtipodocumento = $('#tipodocumento').val();
+                        $('#buscarsunat').click(function (event) {
+                            var idtipodocumento = '2';
                             var numerodocumento = $('#ruc').val();
                             $.ajax({
                                 method: "POST",
@@ -2001,10 +1724,8 @@
                                     $('#cliente').val(obj.idcliente);
                                     $('#cliente').trigger("chosen:updated");
                                     $('#idcliente').val(obj.idcliente);
-                                    $('#tipodocumento').val(obj.tipodocumento);
                                     $('#ruc').val(obj.numerodocumento);
                                     $('#direccion').val(obj.direccion);
-                                    $('#direccion').attr('disabled', true);
                                     $('#vendedor').val(obj.vendedor);
                                     $('#vendedor').attr('disabled', true);
                                     $('#nuevocliente').val('');
@@ -2023,20 +1744,12 @@
                                         url: "../Cliente",
                                         data: {"opcion": "buscarws", "idtipodocumento": idtipodocumento, "numerodocumento": numerodocumento}
                                     }).done(function (data) {
-                                        if (idtipodocumento === '1') {
-                                            $('#nuevocliente').val(data);
-                                            $('#nuevocliente').removeClass('hide');
-                                            $('#lblnuevocliente').removeClass('hide');
-                                            $('#direccion').attr('disabled', false);
-                                        } else {
-                                            var obj = jQuery.parseJSON(data);
-                                            $('#nuevocliente').val(obj.razon_social);
-                                            $('#nuevocliente').removeClass('hide');
-                                            $('#lblnuevocliente').removeClass('hide');
-                                            $('#direccion').val(obj.direccioncompleta);
-                                            $('#direccion').attr('disabled', true);
-                                            $('#ubigeocliente').val(obj.ubigeo);
-                                        }
+                                        var obj = jQuery.parseJSON(data);
+                                        $('#nuevocliente').val(obj.razon_social);
+                                        $('#nuevocliente').removeClass('hide');
+                                        $('#lblnuevocliente').removeClass('hide');
+                                        $('#direccion').val(obj.direccioncompleta);
+                                        $('#ubigeocliente').val(obj.ubigeo);
                                     });
                                 }
                             });

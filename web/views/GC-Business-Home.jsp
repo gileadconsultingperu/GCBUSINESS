@@ -147,11 +147,11 @@
 
                 <ul class="nav nav-list">
                     <%
-                        if(opciones.contains(11)){
+                        if(opciones.contains(1)){
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-newspaper-o"></i>
+                            <i class="menu-icon fa fa-bar-chart-o"></i>
                             <span class="menu-text">Ventas </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -161,7 +161,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(12)){
+                                if(opciones.contains(2)){
                             %>
                             <li class="">
                                 <a href="views/GC-Business-RegistrarVenta.jsp">
@@ -173,7 +173,7 @@
                             </li>
                             <%
                                 }    
-                                if(opciones.contains(13)){
+                                if(opciones.contains(3)){
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionNota.jsp">
@@ -185,19 +185,55 @@
                             </li>
                             <%
                                 }    
-                                if(opciones.contains(14)){
+                                if(opciones.contains(4)){
                             %>
                             <li class="">
-                                <a href="views/GC-Business-GestionCotizacion.jsp">
+                                <a href="views/GC-Business-Comprobante.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
-                                    Cotización
+                                    Comprobantes
                                 </a>
 
                                 <b class="arrow"></b>
                             </li>
                             <%
                                 }    
-                                if(opciones.contains(15)){
+                                if(opciones.contains(5)){
+                            %>
+                            <li class="">
+                                <a href="views/GC-Business-Comprobante.jsp?accion=anular">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Anulaciones
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }    
+                                if(opciones.contains(6)){
+                            %>
+                            <li class="">
+                                <a href="views/GC-Business-Cotizacion.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Registrar Cotización
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }    
+                                if(opciones.contains(7)){
+                            %>
+                            <li class="">
+                                <a href="views/GC-Business-GestionCotizacion.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Cotizaciones
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }    
+                                if(opciones.contains(8)){
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionOrdenVenta.jsp">
@@ -214,11 +250,11 @@
                     </li>
                     <%
                         }
-                        if(opciones.contains(31)){
+                        if(opciones.contains(11)){
                     %>                
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-ban"></i>
+                            <i class="menu-icon fa fa-users"></i>
                             <span class="menu-text"> Clientes </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -228,7 +264,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(32)){
+                                if(opciones.contains(12)){
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionCliente.jsp">
@@ -240,7 +276,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(33)){
+                                if(opciones.contains(13)){
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionContacto.jsp">
@@ -252,7 +288,7 @@
                             </li>
                             <%
                                 }    
-                                if(opciones.contains(34)){
+                                if(opciones.contains(14)){
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionCuentaCobrar.jsp">
@@ -273,7 +309,7 @@
                     %> 
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-ban"></i>
+                            <i class="menu-icon fa fa-truck"></i>
                             <span class="menu-text"> Compras </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -306,17 +342,29 @@
                                 <b class="arrow"></b>
                             </li>
                             <%
+                                }
+                                if (opciones.contains(24)) {
+                            %>
+                            <li class="">
+                                <a href="views/GC-Business-ListaCompras.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Lista de Compras 
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
                                 }    
                             %>
                         </ul>
                     </li>
                     <%
                         }
-                        if(opciones.contains(41)){
+                        if(opciones.contains(31)){
                     %>                                       
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-ban"></i>
+                            <i class="menu-icon fa fa-briefcase"></i>
                             <span class="menu-text"> Proveedores </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -326,7 +374,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(42)){
+                                if(opciones.contains(32)){
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionProveedor.jsp">
@@ -338,7 +386,7 @@
                             </li>
                             <%
                                 }    
-                                if(opciones.contains(43)){
+                                if(opciones.contains(33)){
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionCuentaPagar.jsp">
@@ -355,11 +403,11 @@
                     </li>
                     <%
                         }
-                        if(opciones.contains(51)){
+                        if(opciones.contains(41)){
                     %>                                    
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-list"></i>
+                            <i class="menu-icon fa fa-industry"></i>
                             <span class="menu-text"> Inventario </span>
                             
                             <b class="arrow fa fa-angle-down"></b>
@@ -369,7 +417,7 @@
                         
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(52)){
+                                if(opciones.contains(42)){
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionIngresoSalida.jsp">
@@ -381,7 +429,7 @@
                             </li>                           
                             <%
                                 }    
-                                if(opciones.contains(53)){
+                                if(opciones.contains(43)){
                             %>
                             <li class="">
                                 <a href="views/GC-Business-TrasladoAlmacen.jsp">
@@ -398,11 +446,11 @@
                     </li>
                     <%
                         }
-                        if(opciones.contains(1)){
+                        if(opciones.contains(51)){
                     %>                    
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-tachometer"></i>
+                            <i class="menu-icon fa fa-list"></i>
                             <span class="menu-text"> Productos </span>
                             
                             <b class="arrow fa fa-angle-down"></b>
@@ -411,7 +459,7 @@
                         
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(10)){
+                                if(opciones.contains(52)){
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionProducto.jsp">
@@ -423,7 +471,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(2)){
+                                if(opciones.contains(53)){
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionFamiliaProducto.jsp">
@@ -435,7 +483,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(3)){
+                                if(opciones.contains(54)){
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionClaseProducto.jsp">
@@ -447,7 +495,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(4)){
+                                if(opciones.contains(55)){
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionLineaProducto.jsp">
@@ -459,7 +507,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(5)){
+                                if(opciones.contains(56)){
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionCategoriaProducto.jsp">
@@ -471,7 +519,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(6)){
+                                if(opciones.contains(57)){
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionMarca.jsp">
@@ -483,7 +531,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(7)){
+                                if(opciones.contains(58)){
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionTarifa.jsp">
@@ -574,18 +622,6 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(67)){
-                            %>
-                            <li class="">
-                                <a href="views/GC-Business-GestionAcceso.jsp">
-                                    <i class="menu-icon fa fa-caret-right"></i>
-                                    Accesos
-                                </a>
-
-                                <b class="arrow"></b>
-                            </li>
-                            <%
-                                }
                             %>
                         </ul>
                     </li>
@@ -610,7 +646,7 @@
                             <li class="">
                                 <a href="#">
                                     <i class="menu-icon fa fa-caret-right"></i>
-                                    Cambiar Contraseña
+                                    Reporte 1
                                 </a>
 
                                 <b class="arrow"></b>
@@ -619,6 +655,18 @@
                                 }
                             %>
                         </ul>
+                    </li>
+                    <%
+                        }
+                        if(opciones.contains(99)){
+                    %>
+                    <li class="">
+                        <a href="#" class="dropdown-toggle">
+                            <i class="menu-icon fa fa-cogs"></i>
+                            <span class="menu-text"> Cambiar Contraseña </span>
+
+                            <b class="arrow fa fa-angle-down"></b>
+                        </a>
                     </li>
                     <%
                         }
@@ -633,13 +681,7 @@
             <div class="main-content">
                 <div class="main-content-inner">
                     <div class="breadcrumbs ace-save-state" id="breadcrumbs">
-                        <ul class="breadcrumb">
-                            <li>
-                                <i class="ace-icon fa fa-home home-icon"></i>
-                                <a href="#">Inicio</a>
-                            </li>
-                            <li class="active">Dashboard</li>
-                        </ul><!-- /.breadcrumb -->
+                        
 
                     </div>
 
@@ -647,11 +689,7 @@
                         
                         <div class="page-header">
                             <h1>
-                                Dashboard
-                                <small>
-                                    <i class="ace-icon fa fa-angle-double-right"></i>
-                                    overview &amp; stats
-                                </small>
+                                Inicio
                             </h1>
                         </div><!-- /.page-header -->
 
@@ -665,227 +703,15 @@
 
                                     <i class="ace-icon fa fa-check green"></i>
 
-                                    Welcome to
+                                    Bienvenido a
                                     <strong class="green">
-                                        Ace
-                                        <small>(v1.4)</small>
+                                        GC BUSINESS
+                                        <small>(v2.0)</small>
                                     </strong>,
-                                    лёгкий, многофункциональный и простой в использовании шаблон для админки на bootstrap 3.3.6. Загрузить исходники с <a href="https://github.com/bopoda/ace">github</a> (with minified ace js/css files).
+                                    sistema de gestión comercial. Todos los derechos reservados <a href="#">GILEAD CONSULTING</a>
                                 </div>
 
-                                <div class="row">
-                                    <div class="space-6"></div>
-
-                                    <div class="col-sm-7 infobox-container">
-                                        <div class="infobox infobox-green">
-                                            <div class="infobox-icon">
-                                                <i class="ace-icon fa fa-comments"></i>
-                                            </div>
-
-                                            <div class="infobox-data">
-                                                <span class="infobox-data-number">32</span>
-                                                <div class="infobox-content">comments + 2 reviews</div>
-                                            </div>
-
-                                            <div class="stat stat-success">8%</div>
-                                        </div>
-
-                                        <div class="infobox infobox-blue">
-                                            <div class="infobox-icon">
-                                                <i class="ace-icon fa fa-twitter"></i>
-                                            </div>
-
-                                            <div class="infobox-data">
-                                                <span class="infobox-data-number">11</span>
-                                                <div class="infobox-content">new followers</div>
-                                            </div>
-
-                                            <div class="badge badge-success">
-                                                +32%
-                                                <i class="ace-icon fa fa-arrow-up"></i>
-                                            </div>
-                                        </div>
-
-                                        <div class="infobox infobox-pink">
-                                            <div class="infobox-icon">
-                                                <i class="ace-icon fa fa-shopping-cart"></i>
-                                            </div>
-
-                                            <div class="infobox-data">
-                                                <span class="infobox-data-number">8</span>
-                                                <div class="infobox-content">new orders</div>
-                                            </div>
-                                            <div class="stat stat-important">4%</div>
-                                        </div>
-
-                                        <div class="infobox infobox-red">
-                                            <div class="infobox-icon">
-                                                <i class="ace-icon fa fa-flask"></i>
-                                            </div>
-
-                                            <div class="infobox-data">
-                                                <span class="infobox-data-number">7</span>
-                                                <div class="infobox-content">experiments</div>
-                                            </div>
-                                        </div>
-
-                                        <div class="infobox infobox-orange2">
-                                            <div class="infobox-chart">
-                                                <span class="sparkline" data-values="196,128,202,177,154,94,100,170,224"></span>
-                                            </div>
-
-                                            <div class="infobox-data">
-                                                <span class="infobox-data-number">6,251</span>
-                                                <div class="infobox-content">pageviews</div>
-                                            </div>
-
-                                            <div class="badge badge-success">
-                                                7.2%
-                                                <i class="ace-icon fa fa-arrow-up"></i>
-                                            </div>
-                                        </div>
-
-                                        <div class="infobox infobox-blue2">
-                                            <div class="infobox-progress">
-                                                <div class="easy-pie-chart percentage" data-percent="42" data-size="46">
-                                                    <span class="percent">42</span>%
-                                                </div>
-                                            </div>
-
-                                            <div class="infobox-data">
-                                                <span class="infobox-text">traffic used</span>
-
-                                                <div class="infobox-content">
-                                                    <span class="bigger-110">~</span>
-                                                    58GB remaining
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="space-6"></div>
-
-                                        <div class="infobox infobox-green infobox-small infobox-dark">
-                                            <div class="infobox-progress">
-                                                <div class="easy-pie-chart percentage" data-percent="61" data-size="39">
-                                                    <span class="percent">61</span>%
-                                                </div>
-                                            </div>
-
-                                            <div class="infobox-data">
-                                                <div class="infobox-content">Task</div>
-                                                <div class="infobox-content">Completion</div>
-                                            </div>
-                                        </div>
-
-                                        <div class="infobox infobox-blue infobox-small infobox-dark">
-                                            <div class="infobox-chart">
-                                                <span class="sparkline" data-values="3,4,2,3,4,4,2,2"></span>
-                                            </div>
-
-                                            <div class="infobox-data">
-                                                <div class="infobox-content">Earnings</div>
-                                                <div class="infobox-content">$32,000</div>
-                                            </div>
-                                        </div>
-
-                                        <div class="infobox infobox-grey infobox-small infobox-dark">
-                                            <div class="infobox-icon">
-                                                <i class="ace-icon fa fa-download"></i>
-                                            </div>
-
-                                            <div class="infobox-data">
-                                                <div class="infobox-content">Downloads</div>
-                                                <div class="infobox-content">1,205</div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="vspace-12-sm"></div>
-
-                                    <div class="col-sm-5">
-                                        <div class="widget-box">
-                                            <div class="widget-header widget-header-flat widget-header-small">
-                                                <h5 class="widget-title">
-                                                    <i class="ace-icon fa fa-signal"></i>
-                                                    Traffic Sources
-                                                </h5>
-
-                                                <div class="widget-toolbar no-border">
-                                                    <div class="inline dropdown-hover">
-                                                        <button class="btn btn-minier btn-primary">
-                                                            This Week
-                                                            <i class="ace-icon fa fa-angle-down icon-on-right bigger-110"></i>
-                                                        </button>
-
-                                                        <ul class="dropdown-menu dropdown-menu-right dropdown-125 dropdown-lighter dropdown-close dropdown-caret">
-                                                            <li class="active">
-                                                                <a href="#" class="blue">
-                                                                    <i class="ace-icon fa fa-caret-right bigger-110">&nbsp;</i>
-                                                                    This Week
-                                                                </a>
-                                                            </li>
-
-                                                            <li>
-                                                                <a href="#">
-                                                                    <i class="ace-icon fa fa-caret-right bigger-110 invisible">&nbsp;</i>
-                                                                    Last Week
-                                                                </a>
-                                                            </li>
-
-                                                            <li>
-                                                                <a href="#">
-                                                                    <i class="ace-icon fa fa-caret-right bigger-110 invisible">&nbsp;</i>
-                                                                    This Month
-                                                                </a>
-                                                            </li>
-
-                                                            <li>
-                                                                <a href="#">
-                                                                    <i class="ace-icon fa fa-caret-right bigger-110 invisible">&nbsp;</i>
-                                                                    Last Month
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="widget-body">
-                                                <div class="widget-main">
-                                                    <div id="piechart-placeholder"></div>
-
-                                                    <div class="hr hr8 hr-double"></div>
-
-                                                    <div class="clearfix">
-                                                        <div class="grid3">
-                                                            <span class="grey">
-                                                                <i class="ace-icon fa fa-facebook-square fa-2x blue"></i>
-                                                                &nbsp; likes
-                                                            </span>
-                                                            <h4 class="bigger pull-right">1,255</h4>
-                                                        </div>
-
-                                                        <div class="grid3">
-                                                            <span class="grey">
-                                                                <i class="ace-icon fa fa-twitter-square fa-2x purple"></i>
-                                                                &nbsp; tweets
-                                                            </span>
-                                                            <h4 class="bigger pull-right">941</h4>
-                                                        </div>
-
-                                                        <div class="grid3">
-                                                            <span class="grey">
-                                                                <i class="ace-icon fa fa-pinterest-square fa-2x red"></i>
-                                                                &nbsp; pins
-                                                            </span>
-                                                            <h4 class="bigger pull-right">1,050</h4>
-                                                        </div>
-                                                    </div>
-                                                </div><!-- /.widget-main -->
-                                            </div><!-- /.widget-body -->
-                                        </div><!-- /.widget-box -->
-                                    </div><!-- /.col -->
-                                </div><!-- /.row -->
+                                
 
                                 <!-- PAGE CONTENT ENDS -->
                             </div><!-- /.col -->

@@ -1,43 +1,38 @@
-<%--
+<%-- 
     Compañia            : Gilead Consulting S.A.C.
     Sistema             : GC-Business
-    Módulo              : Ventas
-    Nombre              : GC-Business-RegistrarVenta.jsp
+    Módulo              : Administracion
+    Nombre              : GC-Business-GestionCliente.jsp
     Versión             : 1.0
     Fecha Creación      : 21-08-2018
     Autor Creación      : Pablo Jimenez Aguado
-    Uso                 : Vista Inicial al acceder al sistema
+    Uso                 : Crear, Modificar, Consultar e Inactivar un cliente
 --%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="gilead.gcbusiness.model.BeanTipoDocumento"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoTipoDocumentoImpl"%>
+<%@page import="gilead.gcbusiness.model.BeanTipoPersona"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoTipoPersonaImpl"%>
 <%@page import="gilead.gcbusiness.model.BeanVendedor"%>
 <%@page import="gilead.gcbusiness.dao.impl.DaoVendedorImpl"%>
-<%@page import="gilead.gcbusiness.model.BeanCliente"%>
-<%@page import="gilead.gcbusiness.dao.impl.DaoClienteImpl"%>
-<%@page import="gilead.gcbusiness.model.BeanProducto"%>
-<%@page import="gilead.gcbusiness.dao.impl.DaoProductoImpl"%>
 <%@page import="gilead.gcbusiness.model.BeanUbigeo"%>
 <%@page import="gilead.gcbusiness.dao.impl.DaoUbigeoImpl"%>
-<%@page import="gilead.gcbusiness.model.BeanMoneda"%>
-<%@page import="gilead.gcbusiness.dao.impl.DaoMonedaImpl"%>
-<%@page import="gilead.gcbusiness.model.BeanSerie"%>
-<%@page import="gilead.gcbusiness.dao.impl.DaoSerieImpl"%>
 <%@page import="java.util.List"%>
 <%@page import="gilead.gcbusiness.model.BeanUsuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%
-    //String ID = (String) session.getAttribute("ID");
     List opciones = (List) session.getAttribute("accesos");
     BeanUsuario usuario = (BeanUsuario) session.getAttribute("usuario");
-    String idalmacen = (String) session.getAttribute("idAlmacen");
     String descripcionalmacen = (String) session.getAttribute("descripcionAlmacen");
 %>
 <html>
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <meta charset="utf-8" />
-        <title>GC BUSINESS - Cotización</title>
+        <title>GC BUSINESS - Gestión de Notas</title>
 
-        <meta name="description" content="Common form elements and layouts" />
+        <meta name="description" content="Dynamic tables and grids using jqGrid plugin" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
         <!-- bootstrap & fontawesome -->
@@ -61,20 +56,17 @@
         <link rel="stylesheet" href="../assets/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
 
         <!--[if lte IE 9]>
-                <link rel="stylesheet" href="../assets/css/ace-part2.min.css" class="ace-main-stylesheet" />
+                <link rel="stylesheet" href="assets/css/ace-part2.min.css" class="ace-main-stylesheet" />
         <![endif]-->
 
         <!-- Alertify Version Nueva-->
-        <link rel="stylesheet" href="../assets/css/alertify/alertify.css">
+        <link rel="stylesheet" href="../assets/css/alertify/alertify.css">  
 
         <link rel="stylesheet" href="../assets/css/ace-skins.min.css" />
         <link rel="stylesheet" href="../assets/css/ace-rtl.min.css" />
 
-        <!-- page specific plugin styles -->
-        <link rel="stylesheet" href="../assets/css/jquery-ui.min.css" />
-
         <!--[if lte IE 9]>
-          <link rel="stylesheet" href="../assets/css/ace-ie.min.css" />
+          <link rel="stylesheet" href="assets/css/ace-ie.min.css" />
         <![endif]-->
 
         <!-- inline styles related to this page -->
@@ -85,13 +77,12 @@
         <!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
 
         <!--[if lte IE 8]>
-        <script src="../assets/js/html5shiv.min.js"></script>
-        <script src="../assets/js/respond.min.js"></script>
+        <script src="assets/js/html5shiv.min.js"></script>
+        <script src="assets/js/respond.min.js"></script>
         <![endif]-->
 
         <!-- Alertas Version Nueva -->
         <script src="../assets/js/alertify/alertify.js"></script>
-
     </head>
     <body class="no-skin">
         <%
@@ -173,11 +164,11 @@
 
                 <ul class="nav nav-list">
                     <%
-                        if (opciones.contains(11)) {
+                        if (opciones.contains(1)) {
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-newspaper-o"></i>
+                            <i class="menu-icon fa fa-bar-chart-o"></i>
                             <span class="menu-text">Ventas </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -187,7 +178,7 @@
 
                         <ul class="submenu">
                             <%
-                                if (opciones.contains(12)) {
+                                if (opciones.contains(2)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-RegistrarVenta.jsp">
@@ -199,7 +190,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(13)) {
+                                if (opciones.contains(3)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionNota.jsp">
@@ -211,19 +202,55 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(14)) {
+                                if (opciones.contains(4)) {
                             %>
                             <li class="">
-                                <a href="GC-Business-GestionCotizacion.jsp">
+                                <a href="GC-Business-Comprobante.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
-                                    Cotización
+                                    Comprobantes
                                 </a>
 
                                 <b class="arrow"></b>
                             </li>
                             <%
                                 }
-                                if (opciones.contains(15)) {
+                                if (opciones.contains(5)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-Comprobante.jsp?accion=anular">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Anulaciones
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if (opciones.contains(6)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-Cotizacion.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Registrar Cotización
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if (opciones.contains(7)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-GestionCotizacion.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Cotizaciones
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if (opciones.contains(8)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionOrdenVenta.jsp">
@@ -240,11 +267,11 @@
                     </li>
                     <%
                         }
-                        if (opciones.contains(31)) {
-                    %>
+                        if (opciones.contains(11)) {
+                    %>                
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-ban"></i>
+                            <i class="menu-icon fa fa-users"></i>
                             <span class="menu-text"> Clientes </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -254,7 +281,7 @@
 
                         <ul class="submenu">
                             <%
-                                if (opciones.contains(32)) {
+                                if (opciones.contains(12)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionCliente.jsp">
@@ -266,7 +293,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(33)) {
+                                if (opciones.contains(13)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionContacto.jsp">
@@ -278,7 +305,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(34)) {
+                                if (opciones.contains(14)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionCuentaCobrar.jsp">
@@ -287,19 +314,19 @@
                                 </a>
 
                                 <b class="arrow"></b>
-                            </li>
+                            </li>                                                    
                             <%
                                 }
                             %>
                         </ul>
-                    </li>
+                    </li>    
                     <%
                         }
                         if (opciones.contains(21)) {
-                    %>
+                    %> 
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-ban"></i>
+                            <i class="menu-icon fa fa-truck"></i>
                             <span class="menu-text"> Compras </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -333,16 +360,28 @@
                             </li>
                             <%
                                 }
+                                if (opciones.contains(24)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ListaCompras.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Lista de Compras 
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
                             %>
                         </ul>
                     </li>
                     <%
                         }
-                        if (opciones.contains(41)) {
-                    %>
+                        if (opciones.contains(31)) {
+                    %>                                       
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-ban"></i>
+                            <i class="menu-icon fa fa-briefcase"></i>
                             <span class="menu-text"> Proveedores </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -352,7 +391,7 @@
 
                         <ul class="submenu">
                             <%
-                                if (opciones.contains(42)) {
+                                if (opciones.contains(32)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionProveedor.jsp">
@@ -364,7 +403,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(43)) {
+                                if (opciones.contains(33)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionCuentaPagar.jsp">
@@ -381,11 +420,11 @@
                     </li>
                     <%
                         }
-                        if (opciones.contains(51)) {
-                    %>
+                        if (opciones.contains(41)) {
+                    %>                                    
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-list"></i>
+                            <i class="menu-icon fa fa-industry"></i>
                             <span class="menu-text"> Inventario </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -395,7 +434,7 @@
 
                         <ul class="submenu">
                             <%
-                                if (opciones.contains(52)) {
+                                if (opciones.contains(42)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionIngresoSalida.jsp">
@@ -404,10 +443,10 @@
                                 </a>
 
                                 <b class="arrow"></b>
-                            </li>
+                            </li>                           
                             <%
                                 }
-                                if (opciones.contains(53)) {
+                                if (opciones.contains(43)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-TrasladoAlmacen.jsp">
@@ -424,11 +463,11 @@
                     </li>
                     <%
                         }
-                        if (opciones.contains(1)) {
-                    %>
+                        if (opciones.contains(51)) {
+                    %>                    
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-tachometer"></i>
+                            <i class="menu-icon fa fa-list"></i>
                             <span class="menu-text"> Productos </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -437,7 +476,7 @@
 
                         <ul class="submenu">
                             <%
-                                if (opciones.contains(10)) {
+                                if (opciones.contains(52)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionProducto.jsp">
@@ -449,7 +488,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(2)) {
+                                if (opciones.contains(53)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionFamiliaProducto.jsp">
@@ -461,7 +500,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(3)) {
+                                if (opciones.contains(54)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionClaseProducto.jsp">
@@ -473,7 +512,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(4)) {
+                                if (opciones.contains(55)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionLineaProducto.jsp">
@@ -485,7 +524,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(5)) {
+                                if (opciones.contains(56)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionCategoriaProducto.jsp">
@@ -497,7 +536,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(6)) {
+                                if (opciones.contains(57)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionMarca.jsp">
@@ -509,7 +548,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(7)) {
+                                if (opciones.contains(58)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionTarifa.jsp">
@@ -600,18 +639,6 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(67)) {
-                            %>
-                            <li class="">
-                                <a href="GC-Business-GestionAcceso.jsp">
-                                    <i class="menu-icon fa fa-caret-right"></i>
-                                    Accesos
-                                </a>
-
-                                <b class="arrow"></b>
-                            </li>
-                            <%
-                                }
                             %>
                         </ul>
                     </li>
@@ -636,7 +663,7 @@
                             <li class="">
                                 <a href="#">
                                     <i class="menu-icon fa fa-caret-right"></i>
-                                    Cambiar Contraseña
+                                    Reporte 1
                                 </a>
 
                                 <b class="arrow"></b>
@@ -645,6 +672,18 @@
                                 }
                             %>
                         </ul>
+                    </li>
+                    <%
+                        }
+                        if (opciones.contains(99)) {
+                    %>
+                    <li class="">
+                        <a href="#" class="dropdown-toggle">
+                            <i class="menu-icon fa fa-cogs"></i>
+                            <span class="menu-text"> Cambiar Contraseña </span>
+
+                            <b class="arrow fa fa-angle-down"></b>
+                        </a>
                     </li>
                     <%
                         }
@@ -667,285 +706,77 @@
                             <li>
                                 <a href="#">Ventas</a>
                             </li>
-                            <li>
-                                <a href="GC-Business-RegistrarVenta.jsp">Registrar Venta</a>
-                            </li>
-                            <li class="active">Factura Electónica</li>
+                            <li class="active">Cotizaciones</li>
                         </ul><!-- /.breadcrumb -->
 
-                    </div>
+                    </div>                   
 
                     <div class="page-content">
 
                         <div class="page-header">
                             <h1>
-                                Emitir cotización - Almacén: <%=descripcionalmacen%>
+                                Cotizaciones - Almacen: <%=descripcionalmacen%>
+                                <small>
+                                    <i class="ace-icon fa fa-angle-double-right"></i>
+                                    Transformar cotizaciones a ventas
+                                </small>
                             </h1>
                         </div><!-- /.page-header -->
 
-                        <!-- PAGE CONTENT BEGINS -->
-                        <div class="row datos_comprobante">
-                            <div class="col-xs-12">
-                                <div class="panel panel-primary">
-                                    <div class="panel-heading"> Datos Generales </div>
-                                    <div class="panel-body">
-                                        <div class="row col-md-12">
-                                            <div class="form-group">
-                                                <label for="numero" class="control-label" style="width: 80px;">Número:</label>
-                                                <input type="text" name="numero" id="numero" tabindex="2" style="width: 80px;" class="styled-select" disabled>
-                                                &nbsp;&nbsp;&nbsp;
-                                                <label for="moneda" class="control-label" style="width: 55px;">Moneda:</label>
-                                                <select id="moneda" name="moneda" class="styled-select" style="width: 175px;" tabindex="3" >
-                                                    <%
-                                                        DaoMonedaImpl daoMoneda = new DaoMonedaImpl();
-                                                        List<BeanMoneda> moneda = daoMoneda.accionListar();
-
-                                                        for (int i = 0; i < moneda.size(); i++) {
-                                                    %>
-                                                    <option value="<%= moneda.get(i).getIdmoneda()%>">
-                                                        <%= moneda.get(i).getDescripcion()%>
-                                                    </option>
-                                                    <%
-
-                                                        }
-                                                    %>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div><!-- /.col -->
-                            </div>
-                        </div><!-- /.row -->
-                        <div class="row datos_cliente">
-                            <div class="col-xs-12">
-                                <div class="panel panel-primary">
-                                    <div class="panel-heading"> Productos </div>
-                                    <div class="panel-body">
-                                        <input type="hidden" id="idproducto" value="0">
-                                        <input type="hidden" id="rowdetalle" value="0">
-
-                                        <div class="row col-md-12">
-                                            <div class="form-group">
-                                                <label for="producto" class="control-label" style="width: 80px;">Producto:</label>
-                                                <select class="chosen-select" id="producto" tabindex="18" style="width: 400px;" data-placeholder="Seleccione producto...">
-                                                    <option value="" selected="selected"></option>
-                                                    <%
-                                                        DaoProductoImpl daoProducto = new DaoProductoImpl();
-                                                        List<BeanProducto> producto = daoProducto.accionListarActivo();
-                                                        for (int i = 0; i < producto.size(); i++) {%>
-                                                    <option value="<%= producto.get(i).getIdproducto()%>"><%= producto.get(i).getCodigo() + " | " + producto.get(i).getDescripcion()%></option>
-                                                    <%
-                                                        }
-                                                    %>
-                                                </select>
-                                                &nbsp;
-                                                <label id="lbllote" class="control-label hide" style="width: 80px;">Lote|F.V.:</label>
-                                                <select id="lote" name="lote" class="hide"  style="width: 200px;" tabindex="20">
-                                                </select>
-                                                &nbsp;
-                                                <button class="btn btn-sm btn-primary" id="btnAgregarDetalle" tabindex="21" title="Agregar Producto">
-                                                    <i class="ace-icon fa fa-plus"></i>
-                                                </button>
-                                            </div>
-                                            <div class="form-group">
-                                                <table id="detalleVenta" class="table table-striped table-bordered table-hover" sortable="1" style="font-size:10px">
-                                                    <thead>
-                                                        <tr>
-                                                            <th style="display: none">IdProducto</th>
-                                                            <th style="display: none">#</th>
-                                                            <th>Código</th>
-                                                            <th>Descripción</th>
-                                                            <th>Cantidad</th>
-                                                            <th>Medida</th>
-                                                            <th>Precio Unitario</th>
-                                                            <th style="display: none">Valor Unitario</th>
-                                                            <th style="display: none">Precio Total sDscto</th>
-                                                            <th style="display: none">Valor Total</th>
-                                                            <th style="display: none">Afecto IGV</th>
-                                                            <th style="display: none">IGV sDscto</th>
-                                                            <th style="display: none">ISC</th>
-                                                            <th style="display: none">Precio Unitario Dscto</th>
-                                                            <th style="display: none">Valor Unitario Dscto</th>
-                                                            <th>Precio Total</th>
-                                                            <th>IGV</th>
-                                                            <th style="display: none">Valor Total Dscto</th>
-                                                            <th>Descuento</th>
-                                                            <th style="display: none">Descuento Porc</th>
-                                                            <th style="display: none">Descuento Mont</th>
-                                                            <th>Lote|F.V.</th>
-                                                            <th>Stock Actual</th>
-                                                            <th>Bonificación</th>
-                                                            <th>Acciones</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="detalleVenta_data">
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div><!-- /.col -->
-                            </div>
-                        </div><!-- /.row -->
-
-                        <div class="row totales_div">
-                            <div class="col-md-3">
-
-                            </div>
-                            <div class="col-md-4">
-                                <div class="panel panel-primary">
-                                    <div class="panel-heading">Total impuestos</div>
-                                    <div class="panel-body">
-                                        <div class="form-group">
-                                            <label for="total_igv" class="control-label" style="width: 80px;">Total IGV:</label>
-                                            <span class="label label-default" >
-                                                <label class="lab_mon"> S/</label>
-                                            </span>
-                                            <input type="text" name="total_igv" id="total_igv" tabindex="-1" value="0.00" style="width: 200px;" disabled>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="total_isc" class="control-label" style="width: 80px;">Total ISC:</label>
-                                            <span class="label label-default" >
-                                                <label class="lab_mon"> S/</label>
-                                            </span>
-                                            <input type="text" name="total_isc" id="total_isc" tabindex="-1" value="0.00" style="width: 200px;" disabled>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="total_otros_impuestos" class="control-label" style="width: 80px;">Total otros impuestos:</label>
-                                            <span class="label label-default" >
-                                                <label class="lab_mon"> S/</label>
-                                            </span>
-                                            <input type="text" name="total_otros_impuestos" id="total_otros_impuestos" tabindex="-1" value="0.00" style="width: 200px;" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="panel-footer">
-                                        <div class="form-group">
-                                            <label for="total_impuestos" class="control-label" style="width: 80px;">Total:</label>
-                                            <span class="label label-default" >
-                                                <label class="lab_mon"> S/</label>
-                                            </span>
-                                            <input type="text" name="total_impuestos" id="total_impuestos" tabindex="-1" value="0.00" style="width: 200px;" disabled>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-5">
-                                <input type="hidden" id="total_valorventa" value="0">
-                                <input type="hidden" id="total_precioventa" value="0">
-                                <input type="hidden" id="dcto_global_monto" value="0"> 
-                                <input type="hidden" id="dcto_global_pcto" value="0"> 
-                                <div class="panel panel-primary">
-                                    <div class="panel-heading">Totales factura</div>
-                                    <div class="panel-body">
-                                        <div class="form-group">
-                                            <label for="input_dcto_global" class="control-label" style="width: 180px;">Descuento global:</label>
-                                            <input id="input_dcto_global" size="17" type="text">
-                                            <select id="select_dcto_total">
-                                                <option value="P">%</option>
-                                                <option value="M">Monto</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="total_gravadas" class="control-label" style="width: 180px;">Total gravadas:</label>
-                                            <span class="label label-default" >
-                                                <label class="lab_mon"> S/</label>
-                                            </span>
-                                            <input type="text" name="total_gravadas" id="total_gravadas" tabindex="-1" value="0.00" style="width: 200px;" disabled>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="total_inafectas" class="control-label" style="width: 180px;">Total inafectas:</label>
-                                            <span class="label label-default" >
-                                                <label class="lab_mon"> S/</label>
-                                            </span>
-                                            <input type="text" name="total_inafectas" id="total_inafectas" tabindex="-1" value="0.00" style="width: 200px;" disabled>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="total_exoneradas" class="control-label" style="width: 180px;">Total exoneradas:</label>
-                                            <span class="label label-default" >
-                                                <label class="lab_mon"> S/</label>
-                                            </span>
-                                            <input type="text" name="total_exoneradas" id="total_exoneradas" tabindex="-1" value="0.00" style="width: 200px;" disabled>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="total_gratuitas" class="control-label" style="width: 180px;">Total gratuitas:</label>
-                                            <span class="label label-default" >
-                                                <label class="lab_mon"> S/</label>
-                                            </span>
-                                            <input type="text" name="total_gratuitas" id="total_gratuitas" tabindex="-1" value="0.00" style="width: 200px;" disabled>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="total_otros_cargos" class="control-label" style="width: 180px;">Total otros cargos:</label>
-                                            <span class="label label-default" >
-                                                <label class="lab_mon"> S/</label>
-                                            </span>
-                                            <input type="text" name="total_otros_cargos" id="total_otros_cargos" tabindex="-1" placeholder="0.00" style="width: 200px;">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="total_descuentos" class="control-label" style="width: 180px;">Total descuentos:</label>
-                                            <span class="label label-default" >
-                                                <label class="lab_mon"> S/</label>
-                                            </span>
-                                            <input type="text" name="total_descuentos" id="total_descuentos" tabindex="-1" value="0.00" style="width: 200px;" disabled>
-                                        </div>
-
-                                        <div class="form-group" style="display:none;">
-                                            <label for="total_anticipos" class="control-label" style="width: 180px;">Total anticipos:</label>
-                                            <span class="label label-default" >
-                                                <label class="lab_mon"> S/</label>
-                                            </span>
-                                            <input type="text" name="total_anticipos" id="total_anticipos" tabindex="-1" value="0.00" style="width: 200px;" disabled>
-                                        </div>
-                                        <div class="form-group" style="display:none;">
-                                            <label for="total_percepciones" class="control-label" style="width: 180px;">Total percepciones:</label>
-                                            <span class="label label-default" >
-                                                <label class="lab_mon"> S/</label>
-                                            </span>
-                                            <input type="text" name="total_percepciones" id="total_percepciones" tabindex="-1" value="0.00" style="width: 200px;" disabled>
-                                        </div>
-
-                                    </div>
-                                    <div class="panel-footer">
-                                        <div class="form-group">
-                                            <label for="total_venta" class="control-label" style="width: 180px;">Importe total venta:</label>
-                                            <span class="label label-default" >
-                                                <label class="lab_mon"> S/</label>
-                                            </span>
-                                            <input type="text" name="total_venta" id="total_venta" tabindex="-1" value="0.00" style="width: 200px;" disabled>
-                                        </div>
-                                        <div class="form-group mostrar_tipo_cambio" style="display:none;">
-                                            <label for="total_venta_soles" class="control-label" style="width: 180px;">Importe total venta en soles:</label>
-                                            <span class="label label-default" >
-                                                <label class="lab_mon"> S/</label>
-                                            </span>
-                                            <input type="text" name="total_venta_soles" id="total_venta_soles" tabindex="-1" value="0.00" style="width: 200px;" disabled>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div>
+                            <label for="date-label-from" class="control-label">Desde: </label> 
+                            <input type="text" name="fecha_desde" id="fecha_desde" class="datepicker" style="width: 90px;" placeholder="dd/mm/yyyy" disabled/>
+                            &nbsp;
+                            <label for="date-label-to" class="control-label">Hasta: </label>
+                            <input type="text" name="fecha_hasta" id="fecha_hasta" class="datepicker" style="width: 90px;" placeholder="dd/mm/yyyy" disabled/>
+                            &nbsp;
+                            <label for="text-label-voucher" class="control-label">Estado Venta: </label>
+                            <select id="estado" name="estado" tabindex="3" style="width: 140px;">
+                                <option value="0">Todos</option>
+                                <option value="E" selected="selected">PENDIENTE</option>
+                                <option value="P">PROCESADA</option>
+                                <option value="A">ANULADA</option>
+                            </select>
+                            &nbsp;&nbsp;&nbsp;
+                            <input type="button" name="buscar" id="buscar" value="Buscar" class="btn btn-info"/>
                         </div>
-
-                        <div class="row">
-                            <div class="col-md-3">
-                            </div>
-                            <div class="col-md-6" style="margin-top: 5px;">
-                                <button class="btn btn-xs btn-primary registrar_cotizacion" style="font-size: 1.2em;"> <span><i class="fa fa-save"></i></span> Registrar</button>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <button type="button" class="btn btn-xs btn-primary imprimir" style="font-size: 1.2em;"> <span><i class="fa fa-print"></i></span> Imprimir</button>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <button class="btn btn-xs btn-primary limpiar" style="font-size: 1.2em;"> <span><i class="fa fa-trash"></i></span> Limpiar</button>
-                            </div>
-                            <div class="col-md-3">
-                            </div>
-                        </div>
-                        <!-- PAGE CONTENT ENDS -->
-                    </div><!-- /.main-content -->
-
-                    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
-                        <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
-                    </a>
+                        <hr>
+                        <div class="row">                            
+                            <div class="col-xs-12">
+                                <!-- PAGE CONTENT BEGINS -->
+                                <div class="clearfix">
+                                    <div class="pull-right tableTools-container"></div>
+                                </div>
+                                <div>
+                                    <table id="tablaClientes" class="table table-striped table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Fecha</th>
+                                                <th>Nro. Cotización</th>
+                                                <th>Moneda</th>   
+                                                <th>Total</th>
+                                                <th>Estado</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="employee_data">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- PAGE CONTENT ENDS -->
+                            </div><!-- /.col -->
+                        </div><!-- /.row -->
+                    </div><!-- /.page-content -->
                 </div>
-            </div><!-- /.main-container -->
-        </div>
+            </div><!-- /.main-content -->
+
+            <!-- Modales -->
+
+            <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+                <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+            </a>
+        </div><!-- /.main-container -->
+
 
         <!-- basic scripts -->
 
@@ -954,499 +785,174 @@
 
         <!-- <![endif]-->
 
-        <script src="../assets/js/jquery.tabletojson.min.js"></script>
-
         <!--[if IE]>
-        <script src="../assets/js/jquery-1.11.3.min.js"></script>
+        <script src="assets/js/jquery-1.11.3.min.js"></script>
         <![endif]-->
-        <script src="../assets/js/chosen.jquery.min.js"></script>
         <script type="text/javascript">
                     if ('ontouchstart' in document.documentElement)
                         document.write("<script src='../assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
         </script>
         <script src="../assets/js/bootstrap.min.js"></script>
-        <script src="../assets/js/jquery.maskedinput.min.js"></script>
+
+        <!-- page specific plugin scripts 
+        <script src="../assets/js/bootstrap-datepicker.min.js"></script>
+        <script src="../assets/js/jquery.jqGrid.min.js"></script>
+        <script src="../assets/js/grid.locale-en.js"></script>-->
 
         <!-- page specific plugin scripts -->
-
-        <!--[if lte IE 8]>
-        <script src="../assets/js/excanvas.min.js"></script>
-        <![endif]-->
-        <script src="../assets/js/jquery-ui.custom.min.js"></script>
-        <script src="../assets/js/jquery.ui.touch-punch.min.js"></script>
-        <script src="../assets/js/jquery.easypiechart.min.js"></script>
-        <script src="../assets/js/jquery.sparkline.index.min.js"></script>
-        <script src="../assets/js/jquery.flot.min.js"></script>
-        <script src="../assets/js/jquery.flot.pie.min.js"></script>
-        <script src="../assets/js/jquery.flot.resize.min.js"></script>
+        <script src="../assets/js/jquery.dataTables.min.js"></script>
+        <script src="../assets/js/jquery.dataTables.bootstrap.min.js"></script>
+        <script src="../assets/js/dataTables.buttons.min.js"></script>
+        <script src="../assets/js/buttons.flash.min.js"></script>
+        <script src="../assets/js/buttons.html5.min.js"></script>
+        <script src="../assets/js/buttons.print.min.js"></script>
+        <script src="../assets/js/buttons.colVis.min.js"></script>
+        <script src="../assets/js/dataTables.select.min.js"></script>
+        <script src="../assets/js/dataTables/jszip.min.js"></script>
+        <script src="../assets/js/dataTables/pdfmake.min.js"></script>
+        <script src="../assets/js/dataTables/vfs_fonts.js"></script>
 
         <!-- ace scripts -->
         <script src="../assets/js/ace-elements.min.js"></script>
         <script src="../assets/js/ace.min.js"></script>
 
-        <!-- page specific plugin scripts -->
+        <!--<script type="text/javascript" src="../assets/js/jquery.dataTables.min.js"></script>
+        <!--<script type="text/javascript" src="../assets/js/dataTables/dataTables.bootstrap.min.js"></script>-->
+
+        <!--<script type="text/javascript" src="../assets/js/dataTables.buttons.min.js"></script>
+        <!--<script type="text/javascript" src="../assets/js/dataTables/buttons.bootstrap.min.js"></script>-->
+
+        <!--<script type="text/javascript" src="../assets/js/buttons.html5.min.js"></script>
+
+        <!--<script type="text/javascript" src="../assets/js/dataTables/jszip.min.js"></script>
+        <script type="text/javascript" src="../assets/js/dataTables/pdfmake.min.js"></script>
+        <script type="text/javascript" src="../assets/js/dataTables/vfs_fonts.js"></script>-->
+        <link rel="stylesheet" href="../assets/css/jquery-ui.min.css" />
         <script src="../assets/js/jquery-ui.min.js"></script>
-        <script src="../assets/js/jquery.ui.touch-punch.min.js"></script>
-
+        <!-- inline scripts related to this page -->
         <script type="text/javascript">
+
                     $(document).ready(function () {
-                        $("#btnAgregarDetalle").click(function () {
-                            var rowCount = $('#detalleVenta >tbody >tr').length;
-                            var cont = parseInt($('#rowdetalle').val());
-                            var newRow = cont + 1;
-                            $('#rowdetalle').val(newRow);
-                            var idproducto = $('#producto').val();
-                            if (idproducto !== "0" && idproducto !== "") {
-                                $.get('../Producto', {
-                                    "opcion": "agregarVenta",
-                                    "idproducto": idproducto,
-                                    "numeroproductos": newRow
-                                }, function (response) {
-                                    $('#detalleVenta').append(response);
-                                    $('#producto')
-                                            .find('option:first-child').prop('selected', true)
-                                            .end().trigger('chosen:updated');
-                                    calcular(newRow);
-                                    calcularTotales();
-                                });
-                            }
-                        });
 
-                        $("#detalleVenta").on('click', '.eliminarDetalleVenta', function () {
-                            $(this).closest('tr').remove();
-                            calcularTotales();
-                        });
+                        var d = new Date();
+                        var month = d.getMonth() + 1;
+                        var day = d.getDate();
+                        var output = d.getFullYear() + '/' +
+                                (month < 10 ? '0' : '') + month + '/' +
+                                (day < 10 ? '0' : '') + day;
+                        cargarComprobantes("E", output, output);
 
-
-                        function calcular(orden) {
-                            var cantidad = $('#cantidad_' + orden).val();
-                            var stockActual = Number($('#stock_' + orden).html());
-                            if (cantidad > stockActual) {
-                                alertify.error("Alerta! El stock disponible es de " + stockActual);
-                                $('#stock_' + orden).css({"background-color": "red", "color": "white"});
-                                $('#cantidad_' + orden).focus();
-                                return;
-                            }
-                            var precioUni = Number($('#tarifa_' + orden + ' option:selected').text());
-
-                            var afecto_igv = $('#afecto_igv_' + orden).html();
-                            var valorIGV = 0;
-                            var igv = 0;
-                            var valorUni = 0;
-                            if (afecto_igv === 'G') {
-                                valorIGV = 0.18;
-                                igv = precioUni * (valorIGV / (1 + valorIGV));
-                            }
-                            $('#igv_' + orden).html(parseFloat(igv * cantidad).toFixed(2));
-
-                            var valorUni = precioUni - igv;
-                            $('#valor_uni_' + orden).html(parseFloat(valorUni).toFixed(2));
-                            var precioTot = Number(cantidad * precioUni);
-                            var valorTot = Number(cantidad * valorUni);
-                            $('#precio_tot_' + orden).html(parseFloat(precioTot).toFixed(2));
-                            $('#valor_tot_' + orden).html(parseFloat(valorTot).toFixed(2));
-
-                            var descuento = Number($('#descuento_' + orden).val());
-                            var tipoDcto = $('#dcto_prod_' + orden).val();
-                            var valorTotDscto = 0;
-                            if (tipoDcto === 'P') {
-                                var montDscto = valorTot * (descuento / 100);
-                                $('#dscto_porc_' + orden).html(parseFloat(descuento).toFixed(2));
-                                $('#dscto_mont_' + orden).html(parseFloat(montDscto).toFixed(2));
-                                valorTotDscto = valorTot - montDscto;
-                            } else {
-                                var porcDscto = (descuento / valorTot) * 100;
-                                $('#dscto_porc_' + orden).html(parseFloat(porcDscto).toFixed(2));
-                                $('#dscto_mont_' + orden).html(parseFloat(descuento).toFixed(2));
-                                valorTotDscto = valorTot - descuento;
-                            }
-
-                            var valorUniDscto = valorTotDscto / cantidad;
-                            $('#valor_tot_dscto_' + orden).html(parseFloat(valorTotDscto).toFixed(2));
-                            $('#valor_uni_dscto_' + orden).html(parseFloat(valorUniDscto).toFixed(2));
-
-                            var igvDscto = 0;
-                            if (afecto_igv === 'G') {
-                                valorIGV = 0.18;
-                                igvDscto = valorTotDscto * valorIGV;
-                            }
-                            $('#igv_dscto_' + orden).html(parseFloat(igvDscto).toFixed(2));
-
-                            var precioTotDscto = valorTotDscto + igvDscto;
-                            var precioUniDscto = precioTotDscto / cantidad;
-                            $('#precio_tot_dscto_' + orden).html(parseFloat(precioTotDscto).toFixed(2));
-                            $('#precio_uni_dscto_' + orden).html(parseFloat(precioUniDscto).toFixed(2));
-                        }
-
-                        $('#detalleVenta').on('change', '.input_cantidad', function () {
-                            var orden = $(this).parents('tr').find('td:eq(24)').find('button.eliminarDetalleVenta').attr('id');
-                            var bonificacion = $('#bonificacion_' + orden).is(':checked');
-                            $('#stock_' + orden).css({"background-color": "transparent", "color": "black"});
-                            if (bonificacion) {
-                                var cantidad = $('#cantidad_' + orden).val();
-                                var stockActual = Number($('#stock_' + orden).html());
-                                if (cantidad > stockActual) {
-                                    alertify.error("Alerta! El stock disponible es de " + stockActual);
-                                    $('#stock_' + orden).css({"background-color": "red", "color": "white"});
-                                    $('#cantidad_' + orden).focus();
-                                    return;
-                                }
-                            } else {
-                                calcular(orden);
-                            }
-                            calcularTotales();
-                        });
-
-                        $('#detalleVenta').on('keyup', '.input_cantidad', function () {
-                            var orden = $(this).parents('tr').find('td:eq(24)').find('button.eliminarDetalleVenta').attr('id');
-                            var bonificacion = $('#bonificacion_' + orden).is(':checked');
-                            $('#stock_' + orden).css({"background-color": "transparent", "color": "black"});
-                            if (bonificacion) {
-                                var cantidad = $('#cantidad_' + orden).val();
-                                var stockActual = Number($('#stock_' + orden).html());
-                                if (cantidad > stockActual) {
-                                    alertify.error("Alerta! El stock disponible es de " + stockActual);
-                                    $('#stock_' + orden).css({"background-color": "red", "color": "white"});
-                                    $('#cantidad_' + orden).focus();
-                                    return;
-                                }
-                            } else {
-                                calcular(orden);
-                            }
-                            calcularTotales();
-                        });
-
-                        $('#detalleVenta').on('click', '.bonificacion', function () {
-                            var orden = $(this).parents('tr').find('td:eq(24)').find('button.eliminarDetalleVenta').attr('id');
-                            if ($(this).is(':checked')) {
-                                var precioUni = Number($('#tarifa_' + orden + ' option:selected').text());
-                                $('#valor_uni_' + orden).html(parseFloat(precioUni).toFixed(2));
-                                $('#precio_tot_' + orden).html(parseFloat(0).toFixed(2));
-                                $('#valor_tot_' + orden).html(parseFloat(0).toFixed(2));
-                                $('#igv_' + orden).html(parseFloat(0).toFixed(2));
-                                $('#precio_uni_dscto_' + orden).html(parseFloat(precioUni).toFixed(2));
-                                $('#valor_uni_dscto_' + orden).html(parseFloat(precioUni).toFixed(2));
-                                $('#precio_tot_dscto_' + orden).html(parseFloat(0).toFixed(2));
-                                $('#valor_tot_dscto_' + orden).html(parseFloat(0).toFixed(2));
-                                $('#igv_dscto_' + orden).html(parseFloat(0).toFixed(2));
-                                $('#descuento_' + orden).val('');
-                                $('#descuento_' + orden).prop('disabled', true);
-                                $('#dscto_porc_' + orden).html(parseFloat(0).toFixed(2));
-                                $('#dscto_mont_' + orden).html(parseFloat(0).toFixed(2));
-                            } else {
-                                calcular(orden);
-                                $('#descuento_' + orden).val('');
-                                $('#descuento_' + orden).prop('disabled', false);
-                            }
-                            calcularTotales();
-                        });
-
-                        $('#detalleVenta').on('change', '.select_tarifa', function () {
-                            var orden = $(this).parents('tr').find('td:eq(24)').find('button.eliminarDetalleVenta').attr('id');
-                            var bonificacion = $('#bonificacion_' + orden).is(':checked');
-                            if (bonificacion) {
-                                var precioUni = Number($('#tarifa_' + orden + ' option:selected').text());
-                                $('#valor_uni_' + orden).html(parseFloat(precioUni).toFixed(2));
-                                $('#precio_uni_dscto_' + orden).html(parseFloat(precioUni).toFixed(2));
-                                $('#valor_uni_dscto_' + orden).html(parseFloat(precioUni).toFixed(2));
-                            } else {
-                                calcular(orden);
-                            }
-                            calcularTotales();
-                        });
-
-
-
-                        $('#detalleVenta').on('keyup', '.monto_descuento', function () {
-                            var orden = $(this).parents('tr').find('td:eq(24)').find('button.eliminarDetalleVenta').attr('id');
-                            var bonificacion = $('#bonificacion_' + orden).is(':checked');
-                            if (!bonificacion) {
-                                calcular(orden);
-                            }
-                            calcularTotales();
-                        });
-
-                        $('#detalleVenta').on('blur', '.monto_descuento', function () {
-                            var orden = $(this).parents('tr').find('td:eq(24)').find('button.eliminarDetalleVenta').attr('id');
-                            var bonificacion = $('#bonificacion_' + orden).is(':checked');
-                            if (!bonificacion) {
-                                calcular(orden);
-                            }
-                            calcularTotales();
-                        });
-
-                        $('#detalleVenta').on('change', '.select_tipo_dcto', function () {
-                            var orden = $(this).parents('tr').find('td:eq(24)').find('button.eliminarDetalleVenta').attr('id');
-                            var bonificacion = $('#bonificacion_' + orden).is(':checked');
-                            if (!bonificacion) {
-                                calcular(orden);
-                            }
-                            calcularTotales();
-                        });
-
-                        $('#detalleVenta').on('change', '.select_lote', function () {
-                            var orden = $(this).parents('tr').find('td:eq(24)').find('button.eliminarDetalleVenta').attr('id');
-                            var array = [];
-                            array = $('#lote_' + orden).val().split("|");
-                            var idlote = array[0];
-                            var stock = array[1];
-                            $('#stock_' + orden).html(parseFloat(stock).toFixed(2));
-                        });
-
-                        function calcularTotales() {
-                            var bonificacion;
-                            var afecto_igv = "";
-                            var total_igv = 0;
-                            var total_isc = 0;
-                            var total_gravadas = 0;
-                            var total_inafectas = 0;
-                            var total_exoneradas = 0;
-                            var total_gravadas_sdscto = 0;
-                            var total_inafectas_sdscto = 0;
-                            var total_exoneradas_sdscto = 0;
-                            var total_gratuitas = 0;
-                            var total_descuentos = 0;
-                            $(".valor_unitario").each(function () {
-                                bonificacion = $(this).parent().find('td:eq(23)').find('input.bonificacion').is(':checked');
-                                var orden = $(this).parents('tr').find('td:eq(24)').find('button.eliminarDetalleVenta').attr('id');
-                                var cantidad = $('#cantidad_' + orden).val();
-                                if (bonificacion) {
-                                    total_gratuitas += Number($('#precio_uni_dscto_' + orden).html()) * cantidad;
-                                } else {
-                                    afecto_igv = $(this).parent().find('td:eq(10)').html();
-                                    if (afecto_igv === 'G') {
-                                        total_gravadas += Number($('#valor_tot_dscto_' + orden).html());
-                                        total_gravadas_sdscto += Number($('#valor_tot_' + orden).html());
-                                    }
-                                    if (afecto_igv === 'E') {
-                                        total_exoneradas += Number($('#valor_tot_dscto_' + orden).html());
-                                        total_exoneradas_sdscto += Number($('#valor_tot_' + orden).html());
-                                    }
-                                    if (afecto_igv === 'I') {
-                                        total_inafectas += Number($('#valor_tot_dscto_' + orden).html());
-                                        total_inafectas_sdscto += Number($('#valor_tot_' + orden).html());
-                                    }
-                                }
-                                total_igv += Number($('#igv_dscto_' + orden).html());
-                                total_descuentos += Number($('#dscto_mont_' + orden).html());
-                            });
-
-                            //Valor total de venta sin descuento ni impuestos
-                            var totalValorVenta = total_gravadas_sdscto + total_exoneradas_sdscto + total_inafectas_sdscto;
-                            $('#total_valorventa').val(parseFloat(totalValorVenta).toFixed(2));
-
-                            var dctoGlobal = $('#input_dcto_global').val();
-                            var tipoDctoGlobal = $('#select_dcto_total').val();
-                            var dctoGlobalMonto = 0;
-                            var dctoGlobalPorcentaje = 0;
-                            if (dctoGlobal !== '') {
-                                if (total_gravadas + total_exoneradas + total_inafectas + total_igv + total_isc > 0) {
-                                    if (tipoDctoGlobal === 'P') {
-                                        dctoGlobalPorcentaje = dctoGlobal;
-                                        $('#dcto_global_pcto').val(dctoGlobalPorcentaje);
-                                        dctoGlobalMonto = (total_gravadas + total_exoneradas + total_inafectas + total_igv + total_isc) * dctoGlobalPorcentaje / 100;
-                                        $('#dcto_global_monto').val(dctoGlobalMonto);
-                                    } else {
-                                        dctoGlobalPorcentaje = (dctoGlobal / (total_gravadas + total_exoneradas + total_inafectas + total_igv + total_isc)) * 100;
-                                        $('#dcto_global_pcto').val(dctoGlobalPorcentaje);
-                                        dctoGlobalMonto = (total_gravadas + total_exoneradas + total_inafectas + total_igv + total_isc) * dctoGlobalPorcentaje / 100;
-                                        $('#dcto_global_monto').val(dctoGlobalMonto);
-                                    }
-                                } else {
-                                    $('#input_dcto_global').val('');
-                                    alertify.error("NO EXISTE MONTO PARA APLICAR DESCUENTO GLOBAL");
-                                    calcularTotales();
-                                }
-                            }
-                            total_gravadas = total_gravadas * (1 - dctoGlobalPorcentaje / 100);
-                            total_exoneradas = total_exoneradas * (1 - dctoGlobalPorcentaje / 100);
-                            total_inafectas = total_inafectas * (1 - dctoGlobalPorcentaje / 100);
-                            total_igv = total_igv * (1 - dctoGlobalPorcentaje / 100);
-                            total_isc = total_isc * (1 - dctoGlobalPorcentaje / 100);
-                            total_descuentos = total_descuentos + dctoGlobalMonto;
-
-                            $('#total_igv').val(parseFloat(total_igv).toFixed(2));
-                            $('#total_gravadas').val(parseFloat(total_gravadas).toFixed(2));
-                            $('#total_exoneradas').val(parseFloat(total_exoneradas).toFixed(2));
-                            $('#total_inafectas').val(parseFloat(total_inafectas).toFixed(2));
-                            $('#total_gratuitas').val(parseFloat(total_gratuitas).toFixed(2));
-                            $('#total_descuentos').val(parseFloat(total_descuentos).toFixed(2));
-
-                            var total_impuestos = total_igv + total_isc;
-                            $('#total_impuestos').val(parseFloat(total_impuestos).toFixed(2));
-
-                            var total_otros_cargos = $('#total_otros_cargos').val() * 1;
-
-                            var total_venta = total_gravadas + total_exoneradas + total_inafectas + total_igv + total_isc + total_otros_cargos;
-                            $('#total_venta').val(parseFloat(total_venta).toFixed(2));
-
-                            //Precio total de venta incluye impuestos y descuentos, pero no cargos.
-                            var totalPrecioVenta = total_gravadas + total_exoneradas + total_inafectas + total_igv + total_isc;
-                            $('#total_precioventa').val(parseFloat(totalPrecioVenta).toFixed(2));
-                        }
-
-                        $("#input_dcto_global").keyup(function () {
-                            calcularTotales();
-                        });
-
-                        $("#input_dcto_global").blur(function () {
-                            calcularTotales();
-                        });
-
-                        $("#select_dcto_total").change(function () {
-                            calcularTotales();
-                        });
-
-                        $("#total_otros_cargos").keyup(function () {
-                            calcularTotales();
-                        });
-
-                        $("#total_otros_cargos").blur(function () {
-                            calcularTotales();
-                        });
-
-                        if (!ace.vars['touch']) {
-                            $('.chosen-select').chosen({allow_single_deselect: true});
-                            //resize the chosen on window resize
-
-                            $(window)
-                                    .off('resize.chosen')
-                                    .on('resize.chosen', function () {
-                                        $('.chosen-select').each(function () {
-                                            var $this = $(this);
-                                            $this.next().css({'width': 540});
-                                        });
-                                    }).trigger('resize.chosen');
-                            //resize chosen on sidebar collapse/expand
-                            $(document).on('settings.ace.chosen', function (e, event_name, event_val) {
-                                if (event_name !== 'sidebar_collapsed')
-                                    return;
-                                $('.chosen-select').each(function () {
-                                    var $this = $(this);
-                                    $this.next().css({'width': $this.parent().width()});
-                                });
-                            });
-                        }
-
-
-                        $('.registrar_cotizacion').click(function (event) {
-                            event.preventDefault();
-
-                            var rowCount = $('#detalleVenta >tbody >tr').length;
-                            if (rowCount === 0) {
-                                alertify.error("NO HA INGRESADO NINGÚN PRODUCTO");
-                                $('#producto').focus();
-                                return;
-                            }
-
-                            var boolean = false;
-                            $("#detalleVenta tbody tr").each(function () {
-                                var nombre = $(this).find("td:eq(3)").html();
-                                var disponible = $(this).find("td:eq(22)").html();
-                                var cantidad = $(this).find("td:eq(4)").find(':input').val();
-                                if (cantidad === '') {
-                                    alertify.error("ERROR! DEBE INGRESAR CANTIDAD");
-                                    boolean = true;
-                                    return false;
-                                }
-                                var unidad = $(this).find("td:eq(5)").html();
-                                if (cantidad !== undefined && disponible !== undefined) {
-                                    if (Number(cantidad) > Number(disponible)) {
-                                        alertify.error("ERROR! SÓLO HAY " + disponible + " " + unidad + "(S) DE " + nombre);
-                                        boolean = true;
-                                        return false;
-                                    }
-                                }
-                            });
-
-                            if (boolean) {
-                                alertify.error("ERROR! VALIDAR LAS CANTIDADES DEL DETALLE");
-                                return false;
-                            }
-
-                            var table = $('#detalleVenta tbody tr').map(function (idxRow, ele) {
-                                // comienza construyendo el objeto retVal
-                                var retVal = {};
-                                // Por cada celda
-                                var $td = $(ele).find('td').map(function (idxCell, ele) {
-                                    var input = $(ele).find(':input');
-
-                                    // Si la celda contiene un input o un select
-                                    if (input.length === 1) {
-                                        var attr = $('#detalleVenta thead tr th').eq(idxCell).text();
-                                        if (attr === "Bonificación") {
-                                            retVal[attr] = input.is(':checked') ? "S" : "N";
-                                        } else {
-                                            retVal[attr] = input.val();
-                                        }
-                                    } else {
-                                        if (input.length === 2) {
-                                            var attr = $('#detalleVenta thead tr th').eq(idxCell).text();
-                                            retVal[attr] = $(ele).find('.monto_descuento').val() + " | " + $(ele).find('.select_tipo_dcto').val();
-                                        } else {
-                                            var attr = $('#detalleVenta thead tr th').eq(idxCell).text();
-                                            retVal[attr] = $(ele).text();
+                        var tablaClientes;
+                        function cargarComprobantes(estado, desde, hasta) {
+                            tablaClientes = $('#tablaClientes').DataTable({
+                                bAutoWidth: false,
+                                "processing": true,
+                                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+                                "iDisplayLength": -1,
+                                destroy: true,
+                                responsive: true,
+                                "searching": true,
+                                "order": [[0, 'asc']],
+                                ajax: {
+                                    method: "POST",
+                                    url: "../Cotizacion",
+                                    data: {"opcion": "listar", "desde": desde, "hasta": hasta, "estado": estado},
+                                    dataSrc: "data"
+                                },
+                                columns: [
+                                    {"data": "fecha"},
+                                    {"data": "nrocotizacion"},
+                                    {"data": "moneda"},
+                                    {"data": "total"},
+                                    {"data": "estado"},
+                                    {"data": "acciones"}
+                                ],
+                                dom: '<"row"<"col-xs-12 col-sm-4 col-md-4"l><"col-xs-12 col-sm-4 col-md-4"B><"col-xs-12 col-sm-4 col-md-4"f>>' +
+                                        'tr<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>> ',
+                                'columnDefs': [
+                                    {
+                                        'targets': [0, 1, 2, 3, 4, 5],
+                                        'createdCell': function (td, cellData, rowData, row, col) {
+                                            $(td).attr('contenteditable', 'false');
                                         }
                                     }
-                                });
-                                return retVal;
-                            }).get();
-
-                            var tipo_dctoglobal = $("#select_dcto_total").val();
-
-                            $('.registrar_cotizacion').prop('disabled', true);
-                            $.ajax({
-                                method: "POST",
-                                url: "../Cotizacion",
-                                data: {"opcion": "insertar", "detalleventa": JSON.stringify(table), "idmoneda": $('#moneda').val(),
-                                    "tipo_dctoglobal": tipo_dctoglobal, "pcto_dctoglobal": $('#dcto_global_pcto').val(),
-                                    "monto_dctoglobal": $('#dcto_global_monto').val(), "total_gravada": $('#total_gravadas').val(), "total_inafecta": $('#total_inafectas').val(),
-                                    "total_exonerada": $('#total_exoneradas').val(), "total_gratuita": $('#total_gratuitas').val(), "total_impuesto": $('#total_impuestos').val(), "total_igv": $('#total_igv').val(),
-                                    "total_isc": $('#total_isc').val(), "total_otrotributo": $('#total_otros_impuestos').val(), "total_valorventa": $('#total_valorventa').val(), "total_precioventa": $('#total_precioventa').val(),
-                                    "total_descuento": $('#total_descuentos').val(), "total_otrocargo": $('#total_otros_cargos').val(), "total_venta": $('#total_venta').val()
-                                }
-                            }).done(function (data) {
-                                var obj = jQuery.parseJSON(data);
-                                if (obj.mensaje.indexOf('ERROR') !== -1) {
-                                    $('.divError').html(obj.html);
-                                    $('.divError').addClass('tada animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
-                                        $('.divError').removeClass('tada animated');
-                                    });
-                                } else {
-                                    $("#numero").val(obj.numerocotizacion);
-                                    alertify.success(obj.mensaje);
+                                ],
+                                buttons: [
+                                ],
+                                language: {
+                                    "url": "../assets/util/espanol.txt"
                                 }
                             });
 
+                            $.fn.dataTable.Buttons.defaults.dom.container.className = 'dt-buttons btn-overlap btn-group btn-overlap';
+
+                            new $.fn.dataTable.Buttons(tablaClientes, {
+                                buttons: [
+                                    {
+                                        "extend": "copy",
+                                        "text": "<i class='fa fa-copy bigger-110 pink'></i>",
+                                        "titleAttr": "Copiar",
+                                        "className": "btn btn-white btn-primary btn-bold"
+                                    },
+                                    {
+                                        "extend": 'excel',
+                                        "titleAttr": "Excel",
+                                        "text": "<i class='fa fa-file-excel-o bigger-110 green'></i>",
+                                        "className": "btn btn-white btn-primary btn-bold"
+                                    },
+                                    {
+                                        "extend": "pdf",
+                                        "titleAttr": "PDF",
+                                        "text": "<i class='fa fa-file-pdf-o bigger-110 red'></i>",
+                                        "className": "btn btn-white btn-primary btn-bold"
+                                    },
+                                    {
+                                        "extend": "print",
+                                        "titleAttr": "Imprimir",
+                                        "text": "<i class='fa fa-print bigger-110 grey'></i>",
+                                        "className": "btn btn-white btn-primary btn-bold",
+                                        autoPrint: true,
+                                        message: 'This print was produced using the Print button for DataTables'
+                                    }
+                                ]
+                            });
+
+                            tablaClientes.buttons().container().appendTo($('.tableTools-container'));
+                        }
+
+                        $('#buscar').click(function () {
+                            var fecha_desde = $('#fecha_desde').val();
+                            var fecha_hasta = $('#fecha_hasta').val();
+                            var estado = $('#estado').val();
+                            $('#tablaComprobantes').DataTable().destroy();
+                            cargarComprobantes(estado, fecha_desde, fecha_hasta);
                         });
-
-                        $('.limpiar').click(function () {
-                            $("#numero").val('');
-                            $('#producto')
-                                    .find('option:first-child').prop('selected', true)
-                                    .end().trigger('chosen:updated');
-                            $('#dcto_global_pcto').val('0');
-                            $('#dcto_global_monto').val('0');
-                            $('#total_valorventa').val('0');
-                            $('#total_precioventa').val('0');
-
-                            $('#total_igv').val('0.00');
-                            $('#total_impuestos').val('0.00');
-                            $('#input_dcto_global').val('');
-                            $('#select_dcto_global').prop('selectedIndex', 0);
-                            $('#total_gravadas').val('0.00');
-                            $('#total_inafectas').val('0.00');
-                            $('#total_exoneradas').val('0.00');
-                            $('#total_gratuitas').val('0.00');
-                            $('#total_otros_cargos').val('');
-                            $('#total_descuentos').val('0.00');
-                            $('#total_venta').val('0.00');
-
-                            $('#moneda').prop('selectedIndex', 0);
-
-                            $('#detalleVenta tbody').remove();
-                            $('.registrar_cotizacion').prop('disabled', false);
-                        });
+                        $(".datepicker").datepicker({
+                            showOn: "button",
+                            buttonImage: "../assets/images/gif/calendar.gif",
+                            buttonImageOnly: false,
+                            dateFormat: 'dd/mm/yy',
+                            changeMonth: true,
+                            changeYear: true
+                        }).datepicker("setDate", new Date());
+                        $.datepicker.regional['es'] = {
+                            closeText: 'Cerrar',
+                            prevText: '< Ant',
+                            nextText: 'Sig >',
+                            currentText: 'Hoy',
+                            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+                            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+                            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+                            weekHeader: 'Sm',
+                            dateFormat: 'dd/mm/yy',
+                            firstDay: 1,
+                            isRTL: false,
+                            showMonthAfterYear: false,
+                            yearSuffix: ''
+                        };
+                        $.datepicker.setDefaults($.datepicker.regional['es']);
                     });
         </script>
     </body>

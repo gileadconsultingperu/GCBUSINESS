@@ -30,6 +30,7 @@
     BeanUsuario usuario = (BeanUsuario) session.getAttribute("usuario");
     String idalmacen = (String) session.getAttribute("idAlmacen");
     String descripcionalmacen = (String) session.getAttribute("descripcionAlmacen");
+    String idcotizacion = (String) request.getParameter("idcotizacion");
 %>
 <html>
     <head>
@@ -173,11 +174,11 @@
 
                 <ul class="nav nav-list">
                     <%
-                        if (opciones.contains(11)) {
+                        if (opciones.contains(1)) {
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-newspaper-o"></i>
+                            <i class="menu-icon fa fa-bar-chart-o"></i>
                             <span class="menu-text">Ventas </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -187,7 +188,7 @@
 
                         <ul class="submenu">
                             <%
-                                if (opciones.contains(12)) {
+                                if (opciones.contains(2)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-RegistrarVenta.jsp">
@@ -199,7 +200,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(13)) {
+                                if (opciones.contains(3)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionNota.jsp">
@@ -211,19 +212,55 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(14)) {
+                                if (opciones.contains(4)) {
                             %>
                             <li class="">
-                                <a href="GC-Business-GestionCotizacion.jsp">
+                                <a href="GC-Business-Comprobante.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
-                                    Cotización
+                                    Comprobantes
                                 </a>
 
                                 <b class="arrow"></b>
                             </li>
                             <%
                                 }
-                                if (opciones.contains(15)) {
+                                if (opciones.contains(5)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-Comprobante.jsp?accion=anular">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Anulaciones
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if (opciones.contains(6)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-Cotizacion.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Registrar Cotización
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if (opciones.contains(7)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-GestionCotizacion.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Cotizaciones
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if (opciones.contains(8)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionOrdenVenta.jsp">
@@ -240,11 +277,11 @@
                     </li>
                     <%
                         }
-                        if (opciones.contains(31)) {
-                    %>
+                        if (opciones.contains(11)) {
+                    %>                
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-ban"></i>
+                            <i class="menu-icon fa fa-users"></i>
                             <span class="menu-text"> Clientes </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -254,7 +291,7 @@
 
                         <ul class="submenu">
                             <%
-                                if (opciones.contains(32)) {
+                                if (opciones.contains(12)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionCliente.jsp">
@@ -266,7 +303,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(33)) {
+                                if (opciones.contains(13)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionContacto.jsp">
@@ -278,7 +315,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(34)) {
+                                if (opciones.contains(14)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionCuentaCobrar.jsp">
@@ -287,19 +324,19 @@
                                 </a>
 
                                 <b class="arrow"></b>
-                            </li>
+                            </li>                                                    
                             <%
                                 }
                             %>
                         </ul>
-                    </li>
+                    </li>    
                     <%
                         }
                         if (opciones.contains(21)) {
-                    %>
+                    %> 
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-ban"></i>
+                            <i class="menu-icon fa fa-truck"></i>
                             <span class="menu-text"> Compras </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -333,16 +370,28 @@
                             </li>
                             <%
                                 }
+                                if (opciones.contains(24)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ListaCompras.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Lista de Compras 
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
                             %>
                         </ul>
                     </li>
                     <%
                         }
-                        if (opciones.contains(41)) {
-                    %>
+                        if (opciones.contains(31)) {
+                    %>                                       
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-ban"></i>
+                            <i class="menu-icon fa fa-briefcase"></i>
                             <span class="menu-text"> Proveedores </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -352,7 +401,7 @@
 
                         <ul class="submenu">
                             <%
-                                if (opciones.contains(42)) {
+                                if (opciones.contains(32)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionProveedor.jsp">
@@ -364,7 +413,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(43)) {
+                                if (opciones.contains(33)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionCuentaPagar.jsp">
@@ -381,11 +430,11 @@
                     </li>
                     <%
                         }
-                        if (opciones.contains(51)) {
-                    %>
+                        if (opciones.contains(41)) {
+                    %>                                    
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-list"></i>
+                            <i class="menu-icon fa fa-industry"></i>
                             <span class="menu-text"> Inventario </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -395,7 +444,7 @@
 
                         <ul class="submenu">
                             <%
-                                if (opciones.contains(52)) {
+                                if (opciones.contains(42)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionIngresoSalida.jsp">
@@ -404,10 +453,10 @@
                                 </a>
 
                                 <b class="arrow"></b>
-                            </li>
+                            </li>                           
                             <%
                                 }
-                                if (opciones.contains(53)) {
+                                if (opciones.contains(43)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-TrasladoAlmacen.jsp">
@@ -424,11 +473,11 @@
                     </li>
                     <%
                         }
-                        if (opciones.contains(1)) {
-                    %>
+                        if (opciones.contains(51)) {
+                    %>                    
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-tachometer"></i>
+                            <i class="menu-icon fa fa-list"></i>
                             <span class="menu-text"> Productos </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -437,7 +486,7 @@
 
                         <ul class="submenu">
                             <%
-                                if (opciones.contains(10)) {
+                                if (opciones.contains(52)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionProducto.jsp">
@@ -449,7 +498,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(2)) {
+                                if (opciones.contains(53)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionFamiliaProducto.jsp">
@@ -461,7 +510,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(3)) {
+                                if (opciones.contains(54)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionClaseProducto.jsp">
@@ -473,7 +522,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(4)) {
+                                if (opciones.contains(55)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionLineaProducto.jsp">
@@ -485,7 +534,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(5)) {
+                                if (opciones.contains(56)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionCategoriaProducto.jsp">
@@ -497,7 +546,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(6)) {
+                                if (opciones.contains(57)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionMarca.jsp">
@@ -509,7 +558,7 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(7)) {
+                                if (opciones.contains(58)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-GestionTarifa.jsp">
@@ -600,18 +649,6 @@
                             </li>
                             <%
                                 }
-                                if (opciones.contains(67)) {
-                            %>
-                            <li class="">
-                                <a href="GC-Business-GestionAcceso.jsp">
-                                    <i class="menu-icon fa fa-caret-right"></i>
-                                    Accesos
-                                </a>
-
-                                <b class="arrow"></b>
-                            </li>
-                            <%
-                                }
                             %>
                         </ul>
                     </li>
@@ -636,7 +673,7 @@
                             <li class="">
                                 <a href="#">
                                     <i class="menu-icon fa fa-caret-right"></i>
-                                    Cambiar Contraseña
+                                    Reporte 1
                                 </a>
 
                                 <b class="arrow"></b>
@@ -645,6 +682,18 @@
                                 }
                             %>
                         </ul>
+                    </li>
+                    <%
+                        }
+                        if (opciones.contains(99)) {
+                    %>
+                    <li class="">
+                        <a href="#" class="dropdown-toggle">
+                            <i class="menu-icon fa fa-cogs"></i>
+                            <span class="menu-text"> Cambiar Contraseña </span>
+
+                            <b class="arrow fa fa-angle-down"></b>
+                        </a>
                     </li>
                     <%
                         }
@@ -668,9 +717,13 @@
                                 <a href="#">Ventas</a>
                             </li>
                             <li>
+                                <%if (idcotizacion == null) {%>
                                 <a href="GC-Business-RegistrarVenta.jsp">Registrar Venta</a>
+                                <%} else {%>
+                                <a href="GC-Business-GestionCotizacion.jsp">Cotizaciones</a>
+                                <%}%>
                             </li>
-                            <li class="active">Factura Electónica</li>
+                            <li class="active">Nota Pedido</li>
                         </ul><!-- /.breadcrumb -->
 
                     </div>
@@ -679,7 +732,11 @@
 
                         <div class="page-header">
                             <h1>
+                                <%if (idcotizacion == null) {%>
                                 Emitir nota pedido - Almacén: <%=descripcionalmacen%>
+                                <%} else {%>
+                                Emitir nota pedido - Almacén: <%=descripcionalmacen%> - Cotización: Nro. <%=idcotizacion%>
+                                <%}%> 
                             </h1>
                         </div><!-- /.page-header -->
 
@@ -999,7 +1056,7 @@
                                 <div class="panel panel-primary">
                                     <div class="panel-heading">Totales factura</div>
                                     <div class="panel-body">
-                                        <div class="form-group">
+                                        <div class="form-group hidden">
                                             <label for="input_dcto_global" class="control-label" style="width: 180px;">Descuento global:</label>
                                             <input id="input_dcto_global" size="17" type="text">
                                             <select id="select_dcto_total">
@@ -1154,6 +1211,58 @@
                     $(document).ready(function () {
                         $(window).load(function () {
                             cargarCorrelativo();
+
+                            var idcotizacion = '<%=idcotizacion%>';
+                            if (idcotizacion !== null) {
+                                $.ajax({
+                                    url: "../Cotizacion",
+                                    method: "GET",
+                                    data: {"opcion": "obtenercotizacion", "idcotizacion": idcotizacion},
+                                    success: function (data) {
+                                        var obj = jQuery.parseJSON(data);
+                                        $('#total_igv').val(obj.totaligv);
+                                        $('#total_isc').val(parseFloat(obj.totalisc).toFixed(2));
+                                        $('#total_otros_impuestos').val(parseFloat(obj.totalotrotributo).toFixed(2));
+                                        $('#total_impuestos').val(obj.totalimpuesto);
+                                        if (obj.tipodescuentoglobal === 'P') {
+                                            if (obj.pctodescuentoglobal !== 0) {
+                                                $('#input_dcto_global').val(obj.pctodescuentoglobal);
+                                            } else {
+                                                $('#input_dcto_global').val('');
+                                            }
+                                        } else {
+                                            if (obj.montodescuentoglobal !== 0) {
+                                                $('#input_dcto_global').val(obj.montodescuentoglobal);
+                                            } else {
+                                                $('#input_dcto_global').val('');
+                                            }
+                                        }
+                                        $('#select_dcto_total').val(obj.tipodescuentoglobal);
+                                        $('#total_gravadas').val(obj.totalgravada);
+                                        $('#total_exoneradas').val(obj.totalexonerada);
+                                        $('#total_inafectas').val(obj.totalinafecta);
+                                        $('#total_gratuitas').val(obj.totalgratuita);
+                                        $('#total_descuentos').val(obj.totaldescuento);
+                                        $('#total_venta').val(obj.totalventa);
+
+                                        //Obtener detalle
+                                        $.get('../Cotizacion', {
+                                            "opcion": "obtenerdetallecotizacion",
+                                            "idcotizacion": idcotizacion,
+                                            "idalmacen": obj.idalmacen
+                                        }, function (response) {
+                                            $('#detalleVenta').append(response);
+                                            $('#producto')
+                                                    .find('option:first-child').prop('selected', true)
+                                                    .end().trigger('chosen:updated');
+                                            calcularTotales();
+                                        });
+                                    },
+                                    error: function (error) {
+                                        alertify.error("ERROR AL EJECUTAR AJAX DE OBTENER DATOS USUARIO");
+                                    }
+                                }).done();
+                            }
                         });
 
                         var cargarCorrelativo = function () {
@@ -1676,7 +1785,7 @@
                                     return;
                                 $('.chosen-select').each(function () {
                                     var $this = $(this);
-                                    $this.next().css({'width': $this.parent().width()});
+                                    $this.next().css({'width': 540});
                                 });
                             });
                         }
@@ -1788,7 +1897,7 @@
                                     "total_isc": $('#total_isc').val(), "total_otrotributo": $('#total_otros_impuestos').val(), "total_valorventa": $('#total_valorventa').val(), "total_precioventa": $('#total_precioventa').val(),
                                     "total_descuento": $('#total_descuentos').val(), "total_otrocargo": $('#total_otros_cargos').val(), "total_anticipo": total_anticipo, "total_venta": $('#total_venta').val(),
                                     "importe_pago": importe_pago, "monto_efectivo": monto_efectivo, "monto_otro": monto_otro, "referencia_otro": referencia_otro, "cambio_pago": cambio_pago,
-                                    "ruc": $('#ruc').val(), "nuevocliente": $('#nuevocliente').val(), "direccion": $('#direccion').val(), "ubigeocliente": $('#ubigeocliente').val()
+                                    "ruc": $('#ruc').val(), "nuevocliente": $('#nuevocliente').val(), "direccion": $('#direccion').val(), "ubigeocliente": $('#ubigeocliente').val(), "idcotizacion": '<%=idcotizacion%>'
                                 }
                             }).done(function (data) {
                                 var obj = jQuery.parseJSON(data);

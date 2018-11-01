@@ -105,6 +105,70 @@ public class DaoCompraImpl {
         return listCompra;
     }
     
+    public List<DTOCompra> accionListarDTOCompraParaAnular(String numeroComprobante, String tipoComprobante, String fecha_desde, String fecha_hasta) {
+        DTOCompra compra = null;
+
+        ConectaDb db = new ConectaDb();
+        Connection cn = db.getConnection();
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        List<DTOCompra> listCompras = null;
+
+        if (cn != null) {
+            try {
+                String qry = "SELECT c.id_compra, c.fecha_emision, tc.codigo_sunat codigocomprobante, tc.abreviatura tipocomprobante, c.serie_comprobante, c.correlativo_serie, p.numero_documento, p.nombre proveedor, "
+                        + "m.codigo_sunat, c.total_compra, c.estado "
+                        + "FROM gcbusiness.compra c "
+                        + "LEFT JOIN gcbusiness.tipocomprobante tc ON tc.id_tipocomprobante = c.id_tipocomprobante "
+                        + "LEFT JOIN gcbusiness.proveedor p ON p.id_proveedor = c.id_proveedor "
+                        + "LEFT JOIN gcbusiness.tipodocumento td ON td.id_tipodocumento = p.id_tipodocumento "
+                        + "LEFT JOIN gcbusiness.moneda m ON m.id_moneda = c.id_moneda "
+                        + "WHERE date(c.fecha_emision) BETWEEN '" + fecha_desde + "' AND '" + fecha_hasta + "'\n";
+
+
+                if (!numeroComprobante.equals("")) {
+                    qry += " AND CONCAT(c.serie_comprobante,'-', c.correlativo_serie)  = '" + numeroComprobante.toUpperCase() + "'\n";
+                }
+
+                if (!tipoComprobante.equals("0")) {
+                    qry += " AND tc.codigo_sunat = '" + tipoComprobante + "'\n";
+                }
+
+                System.out.println("qry: " + qry);
+                st = cn.prepareStatement(qry);
+
+                rs = st.executeQuery();
+
+                listCompras = new LinkedList<DTOCompra>();
+
+                while (rs.next()) {
+                    compra = new DTOCompra();
+                    compra.setIdcompra(rs.getInt("id_compra"));
+                    compra.setFecha_emision(rs.getTimestamp("fecha_emision"));
+                    compra.setAbreviaturacomprobante(rs.getString("tipocomprobante"));
+                    compra.setCodigoSunatcomprobante(rs.getString("codigocomprobante"));
+                    compra.setSerie(rs.getString("serie_comprobante"));
+                    compra.setCorrelativoserie(rs.getInt("correlativo_serie"));
+                    compra.setNumerodocumentoproveedor(rs.getString("numero_documento"));
+                    compra.setNombreproveedor(rs.getString("proveedor"));
+                    compra.setCodigoSunatMoneda(rs.getString("codigo_sunat"));
+                    compra.setTotal_compra(rs.getDouble("total_compra"));
+                    compra.setEstado(rs.getString("estado"));
+                    listCompras.add(compra);
+                }
+
+                cn.close();
+
+            } catch (SQLException e1) {
+                System.out.println(e1.getMessage());
+                compra = null;
+            }
+        }
+
+        return listCompras;
+    }
+    
     public DTOCompra accionObtener(Integer id) {
         DTOCompra compra = null;
 

@@ -1,13 +1,22 @@
 <%-- 
     Compañia            : Gilead Consulting S.A.C.
     Sistema             : GC-Business
-    Módulo              : Productos
-    Nombre              : GC-Business-GestionFamiliaProducto.jsp
+    Módulo              : Administracion
+    Nombre              : GC-Business-Comprobante.jsp
     Versión             : 1.0
     Fecha Creación      : 21-08-2018
     Autor Creación      : Pablo Jimenez Aguado
-    Uso                 : Crear, Modificar, Consultar e Inactivar una familia de productos
+    Uso                 : Buscar y Anular comprobantes
 --%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="gilead.gcbusiness.model.BeanTipoDocumento"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoTipoDocumentoImpl"%>
+<%@page import="gilead.gcbusiness.model.BeanTipoPersona"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoTipoPersonaImpl"%>
+<%@page import="gilead.gcbusiness.model.BeanVendedor"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoVendedorImpl"%>
+<%@page import="gilead.gcbusiness.model.BeanUbigeo"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoUbigeoImpl"%>
 <%@page import="java.util.List"%>
 <%@page import="gilead.gcbusiness.model.BeanUsuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -15,12 +24,13 @@
 <%
     List opciones = (List) session.getAttribute("accesos");
     BeanUsuario usuario = (BeanUsuario) session.getAttribute("usuario");
+    String accion = request.getParameter("accion") != null ? (String) request.getParameter("accion") : "visualizar";
 %>
 <html>
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <meta charset="utf-8" />
-        <title>GC BUSINESS - Gestión de Familias de Producto</title>
+        <title>GC BUSINESS - Comprobantes</title>
 
         <meta name="description" content="Dynamic tables and grids using jqGrid plugin" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
@@ -694,9 +704,9 @@
                                 <a href="#">Inicio</a>
                             </li>
                             <li>
-                                <a href="#">Productos</a>
+                                <a href="#">Ventas</a>
                             </li>
-                            <li class="active">Familias</li>
+                            <li class="active">Comprobantes</li>
                         </ul><!-- /.breadcrumb -->
 
                     </div>
@@ -705,28 +715,59 @@
 
                         <div class="page-header">
                             <h1>
-                                Familias
+                                Ventas
                                 <small>
                                     <i class="ace-icon fa fa-angle-double-right"></i>
-                                    Crear, modificar, eliminar familias de productos
+                                    <%if (accion.equals("anular")) {%>
+                                    Anular comprobantes
+                                    <%} else {%>
+                                    Ver comprobantes
+                                    <% }%> 
                                 </small>
                             </h1>
-                        </div><!-- /.page-header -->
+                        </div><!-- /.page-header -->  
 
+                        <div>
+                            <label for="date-label-from" class="control-label">Desde: </label> 
+                            <input type="text" name="fecha_desde" id="fecha_desde" class="datepicker" style="width: 90px;" placeholder="dd/mm/yyyy" disabled/>
+                            &nbsp;
+                            <label for="date-label-to" class="control-label">Hasta: </label>
+                            <input type="text" name="fecha_hasta" id="fecha_hasta" class="datepicker" style="width: 90px;" placeholder="dd/mm/yyyy" disabled/>
+                            &nbsp;
+                            <label for="text-label-voucher" class="control-label">Tipo Comprobrobante: </label>
+                            <select id="tipoCmp" name="tipoCmp" tabindex="3" style="width: 140px;">
+                                <option value="0" selected="selected">Todos</option>
+                                <option value="01">FACTURA</option>
+                                <option value="03">BOLETA</option>
+                                <option value="07">NOTA CRÉDITO</option>
+                                <option value="08">NOTA DÉBITO</option>
+                                <option value="00">NOTA PEDIDO</option>
+                            </select>
+                            &nbsp;
+                            <label for="text-label-nroComprob" class="control-label">Nº Comprobante: </label>
+                            <input type="text" name="nroComprob" id="nroComprob" style="width: 120px; text-transform: none;" placeholder="serie-correlativo"/>
+                            &nbsp;&nbsp;&nbsp;
+                            <input type="button" name="buscar" id="buscar" value="Buscar" class="btn btn-info"/>
+                        </div>
+                        <hr>
                         <div class="row">
                             <div class="col-xs-12">
                                 <!-- PAGE CONTENT BEGINS -->
                                 <div class="clearfix">
                                     <div class="pull-right tableTools-container"></div>
-                                </div>
+                                </div>                               
                                 <div>
-                                    <table id="tablaFamiliaProductos" class="table table-striped table-bordered table-hover">
+                                    <table id="tablaComprobantes" class="table table-striped table-bordered table-hover">
                                         <thead>
                                             <tr>
-                                                <th>Nro</th>
-                                                <th>Descripción</th>    
-                                                <th>Abreviatura</th> 
-                                                <th>Estado</th>
+                                                <th>Fecha</th>
+                                                <th>Tipo Comprobante</th>
+                                                <th>Serie</th>   
+                                                <th>Correlativo</th>
+                                                <th>Nro. Documento</th>
+                                                <th>Cliente</th>
+                                                <th>Moneda</th>   
+                                                <th>Total</th>
                                                 <th>Acciones</th>
                                             </tr>
                                         </thead>
@@ -742,47 +783,27 @@
             </div><!-- /.main-content -->
 
             <!-- Modales -->
-            <div class="modal" id="modalAgregarFamiliaProducto" tabindex="-1">
-                <div class="modal-dialog">
+            <div class="modal" id="modalMotivoAnulacion" tabindex="-1">
+                <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="blue bigger">Registrar Nueva Familia Producto</h4>
+                            <h4 class="blue bigger">Motivo Anulación</h4>
                         </div>
 
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-xs-12 col-sm-12">
-                                    <input type="hidden" id="idfamiliaproducto" value="">
-                                    <input type="hidden" id="opcion" value="">
+                                    <input type="hidden" id="idcomprobante" value="">
+                                    <input type="hidden" id="codigoSunatComprobante" value="">
 
                                     <div class="form-group">
-                                        <label for="descripcion" class="col-sm-3 control-label">Descripción</label>
-
-                                        <div class="col-sm-9">
-                                            <input type="text" id="descripcion" class="form-control" style="text-transform:uppercase" tabindex="1"/>
+                                        <div>
+                                            <label for="motivo" class="col-sm-4 control-label">Ingrese motivo de anulación</label>
                                         </div>
-                                    </div>
 
-                                    &nbsp;&nbsp;
-
-                                    <div class="form-group">
-                                        <label for="abreviatura" class="col-sm-3 control-label">Abreviatura</label>
-
-                                        <div class="col-sm-9">
-                                            <input type="text" id="abreviatura" class="form-control" style="text-transform:uppercase" tabindex="1"/>
-                                        </div>
-                                    </div>
-
-                                    &nbsp;&nbsp;
-
-                                    <div class="form-group" id="divestado">
-                                        <label for="estado" class="col-sm-2 control-label">Estado</label>
-                                        <div class="col-sm-3">  
-                                            <select id="estado" name="estado" class="form-control" tabindex="5">
-                                                <option value="A">ACTIVO</option>
-                                                <option value="I">INACTIVO</option>
-                                            </select> 
+                                        <div class="col-sm-8">
+                                            <input type="text" id="motivo" class="form-control"  style="text-transform:uppercase" tabindex="1"/>
                                         </div>
                                     </div>
                                 </div>
@@ -796,9 +817,12 @@
                             </button>
 
                             <button class="btn btn-sm btn-primary" id="btnGuardar">
-                                <i class="ace-icon fa fa-check"></i>
-                                Grabar
+                                <i class="ace-icon fa fa-"></i>
+                                Anular
                             </button>
+
+                            <hr style="margin-top: 15px;margin-bottom: 15px;">
+                            <div class="divError"></div>
                         </div>
 
                     </div>
@@ -861,73 +885,78 @@
         <script type="text/javascript" src="../assets/js/dataTables/pdfmake.min.js"></script>
         <script type="text/javascript" src="../assets/js/dataTables/vfs_fonts.js"></script>-->
 
+        <link rel="stylesheet" href="../assets/css/jquery-ui.min.css" />
+        <script src="../assets/js/jquery-ui.min.js"></script>
+
         <!-- inline scripts related to this page -->
         <script type="text/javascript">
 
                     $(document).ready(function () {
 
-                        $('body').on('shown.bs.modal', '#modalAgregarFamiliaProducto', function () {
-                            $('input:visible:enabled:first', this).focus();
-                        });
+                        var d = new Date();
 
-                        var tablaFamiliaProductos = $('#tablaFamiliaProductos').DataTable({
-                            bAutoWidth: false,
-                            "processing": true,
-                            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
-                            "iDisplayLength": -1,
-                            destroy: true,
-                            responsive: true,
-                            "searching": true,
-                            "order": [[0, 'asc']],
-                            ajax: {
-                                method: "POST",
-                                url: "../FamiliaProducto",
-                                data: {"opcion": "listar"},
-                                dataSrc: "data"
-                            },
-                            columns: [
-                                {"data": "nro"},
-                                {"data": "descripcion"},
-                                {"data": "abreviatura"},
-                                {"data": "estado"},
-                                {"data": "acciones"}
-                            ],
-                            dom: '<"row"<"col-xs-12 col-sm-4 col-md-4"l><"col-xs-12 col-sm-4 col-md-4"B><"col-xs-12 col-sm-4 col-md-4"f>>' +
-                                    'tr<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>> ',
-                            'columnDefs': [
-                                {
-                                    'targets': [0, 1, 2, 3, 4],
-                                    'createdCell': function (td, cellData, rowData, row, col) {
-                                        $(td).attr('contenteditable', 'false');
+                        var month = d.getMonth() + 1;
+                        var day = d.getDate();
+
+                        var output = d.getFullYear() + '/' +
+                                (month < 10 ? '0' : '') + month + '/' +
+                                (day < 10 ? '0' : '') + day;
+
+                        cargarComprobantes("", "0", output, output);
+
+                        var tablaComprobantes;
+                        function cargarComprobantes(nroComp, tipoComp, desde, hasta) {
+                            tablaComprobantes = $('#tablaComprobantes').DataTable({
+                                bAutoWidth: false,
+                                "processing": true,
+                                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+                                "iDisplayLength": -1,
+                                destroy: true,
+                                responsive: true,
+                                "searching": true,
+                                "order": [[0, 'asc']],
+                                ajax: {
+                                    method: "POST",
+                                    url: "../Comprobante",
+                                    data: {"opcion": "listarcomprobantes", "accion": "<%=accion%>", "desde": desde, "hasta": hasta, "tipoComp": tipoComp, "nroComp": nroComp},
+                                    dataSrc: "data"
+                                },
+                                columns: [
+                                    {"data": "fecha"},
+                                    {"data": "tipocomprobante"},
+                                    {"data": "serie"},
+                                    {"data": "correlativo"},
+                                    {"data": "nrodocumento"},
+                                    {"data": "cliente"},
+                                    {"data": "moneda"},
+                                    {"data": "total"},
+                                    {"data": "acciones"}
+                                ],
+                                dom: '<"row"<"col-xs-12 col-sm-4 col-md-4"l><"col-xs-12 col-sm-4 col-md-4"B><"col-xs-12 col-sm-4 col-md-4"f>>' +
+                                        'tr<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>> ',
+                                'columnDefs': [
+                                    {
+                                        'targets': [0, 1, 2, 3, 4, 5, 6, 7],
+                                        'createdCell': function (td, cellData, rowData, row, col) {
+                                            $(td).attr('contenteditable', 'false');
+                                        }
+                                    },
+                                    {
+                                        "targets": [1, 2, 3, 6, 8],
+                                        "searchable": false
                                     }
+                                ],
+                                buttons: [
+                                ],
+                                language: {
+                                    "url": "../assets/util/espanol.txt"
                                 }
-                            ],
-                            buttons: [
-                            ],
-                            language: {
-                                "url": "../assets/util/espanol.txt"
-                            }
-                        });
+                            });
+                        }
 
                         $.fn.dataTable.Buttons.defaults.dom.container.className = 'dt-buttons btn-overlap btn-group btn-overlap';
-                        new $.fn.dataTable.Buttons(tablaFamiliaProductos, {
+                        new $.fn.dataTable.Buttons(tablaComprobantes, {
                             buttons: [
-                                {
-                                    "text": "<i class='fa fa-plus bigger-110 blue'></i>",
-                                    "titleAttr": "Nuevo",
-                                    "className": "btn btn-white btn-primary btn-bold",
-                                    "action": function () {
-                                        $('#opcion').val('insertar');
-                                        $('#descripcion').val('');
-                                        $('#abreviatura').val('');
-                                        $('#estado').val('A');
-                                        $('#divestado').hide();
-                                        $('#descripcion').prop('disabled', false);
-                                        $('#modalAgregarFamiliaProducto .blue').text('Registrar Nueva Familia Producto');
-                                        $('#modalAgregarFamiliaProducto').modal('show');
-                                        $('.divError').empty();
-                                    }
-                                },
                                 {
                                     "extend": "copy",
                                     "text": "<i class='fa fa-copy bigger-110 pink'></i>",
@@ -957,109 +986,88 @@
                             ]
                         });
 
-                        tablaFamiliaProductos.buttons().container().appendTo($('.tableTools-container'));
+                        tablaComprobantes.buttons().container().appendTo($('.tableTools-container'));
+
+                        $('#buscar').click(function () {
+                            var fecha_desde = $('#fecha_desde').val();
+                            var fecha_hasta = $('#fecha_hasta').val();
+                            var tipoComp = $('#tipoCmp').val();
+                            var nroComp = $('#nroComprob').val();
+                            $('#tablaComprobantes').DataTable().destroy();
+                            cargarComprobantes(nroComp, tipoComp, fecha_desde, fecha_hasta);
+                        });
+
+                        $(".datepicker").datepicker({
+                            showOn: "button",
+                            buttonImage: "../assets/images/gif/calendar.gif",
+                            buttonImageOnly: false,
+                            dateFormat: 'dd/mm/yy',
+                            changeMonth: true,
+                            changeYear: true
+                        }).datepicker("setDate", new Date());
+
+                        $.datepicker.regional['es'] = {
+                            closeText: 'Cerrar',
+                            prevText: '< Ant',
+                            nextText: 'Sig >',
+                            currentText: 'Hoy',
+                            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+                            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+                            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+                            weekHeader: 'Sm',
+                            dateFormat: 'dd/mm/yy',
+                            firstDay: 1,
+                            isRTL: false,
+                            showMonthAfterYear: false,
+                            yearSuffix: ''
+                        };
+                        $.datepicker.setDefaults($.datepicker.regional['es']);
+
+                        //Anular Comprobante
+                        $(document).on('click', '.anular', function () {
+                            var datos = $(this).attr('id');
+                            var row = $(this).parent().parent();
+                            var array = [];
+                            array = datos.split("|");
+                            var idcomprobante = array[0];
+                            var codigoSunatComprobante = array[1];
+                            $('#idcomprobante').val(idcomprobante);
+                            $('#codigoSunatComprobante').val(codigoSunatComprobante);
+                            $('#modalMotivoAnulacion .blue').text('Ingresar Motivo Anulación');
+                            $('#modalMotivoAnulacion').modal({backdrop: 'static', keyboard: false});
+                            $('#modalMotivoAnulacion').modal('show');
+                            $('.divError').empty();
+                        });
+
+                        $('body').on('shown.bs.modal', '#modalMotivoAnulacion', function () {
+                            $('input:visible:enabled:first', this).focus();
+                        });
 
                         $('#btnGuardar').click(function (event) {
-                            var idfamiliaproducto = $('#idfamiliaproducto').val();
-                            var descripcion = $('#descripcion').val();
-                            var abreviatura = $('#abreviatura').val();
-                            var estado = $('#estado').val();
-                            var opcion = $('#opcion').val();
+                            var idcomprobante = $('#idcomprobante').val();
+                            var codigoSunatComprobante = $('#codigoSunatComprobante').val();
+                            var motivo = $('#motivo').val();
+                            if (motivo === null || motivo === "") {
+                                $('#modalMotivoAnulacion .modal-footer .divError').html("<div class='alert alert-danger'><span class='glyphicon glyphicon-remove'></span> Advertencia: DEBE INGRESAR EL MOTIVO DE ANULACIÓN.</div>");
+                                $('#motivo').focus();
+                                return;
+                            }
                             $.ajax({
+                                url: "../Comprobante",
                                 method: "POST",
-                                url: "../FamiliaProducto",
-                                data: {"opcion": opcion, "idfamiliaproducto": idfamiliaproducto, "descripcion": descripcion, "abreviatura": abreviatura, "estado": estado}
+                                data: {"opcion": "anular", "idcomprobante": idcomprobante, "codTipoCmp": codigoSunatComprobante, "motivo": motivo}
                             }).done(function (data) {
                                 var obj = jQuery.parseJSON(data);
                                 if (obj.mensaje.indexOf('ERROR') !== -1) {
-                                    $('.divError').html(obj.html);
-                                    $('.divError').addClass('tada animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
-                                        $('.divError').removeClass('tada animated');
-                                    });
+                                    alertify.error(obj.mensaje);
                                 } else {
-                                    tablaFamiliaProductos.ajax.reload();
+                                    tablaComprobantes.ajax.reload();
                                     alertify.success(obj.mensaje);
                                 }
-                                $('#modalAgregarFamiliaProducto').modal('hide');
+                                $('#modalMotivoAnulacion').modal('hide');
                             });
-                        });
-
-                        //Actualizar registro
-                        $(document).on('click', '.actualizar', function () {
-                            var idfamiliaproducto = $(this).attr('id');
-                            var row = $(this).parent().parent();
-                            $.ajax({
-                                url: "../FamiliaProducto",
-                                method: "POST",
-                                data: {"opcion": "buscar", "idfamiliaproducto": idfamiliaproducto},
-                                success: function (data) {
-                                    var obj = jQuery.parseJSON(data);
-                                    $('#opcion').val('actualizar');
-                                    $('#idfamiliaproducto').val(obj.idfamiliaproducto);
-                                    $('#descripcion').val(obj.descripcion);
-                                    $('#abreviatura').val(obj.abreviatura);
-                                    $('#estado').val(obj.estado);
-                                    $('#divestado').hide();
-                                    $('#modalAgregarFamiliaProducto .blue').text('Modificar Familia Producto');
-                                    $('#modalAgregarFamiliaProducto').modal('show');
-                                },
-                                error: function (error) {
-                                    alertify.error("ERROR AL EJECUTAR AJAX DE OBTENER DATOS USUARIO");
-                                }
-                            }).done();
-
-                        });
-
-                        //Eliminar registro
-                        $(document).on('click', '.eliminar', function () {
-                            var idfamiliaproducto = $(this).attr('id');
-                            var row = $(this).parent().parent();
-                            $.ajax({
-                                url: "../FamiliaProducto",
-                                method: "POST",
-                                data: {"opcion": "eliminar", "idfamiliaproducto": idfamiliaproducto},
-                                success: function (data) {
-                                    var obj = jQuery.parseJSON(data);
-                                    if (obj.mensaje.indexOf('ERROR') !== -1) {
-                                        $('.divError').html(obj.html);
-                                        $('.divError').addClass('tada animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
-                                            $('.divError').removeClass('tada animated');
-                                        });
-                                    } else {
-                                        tablaFamiliaProductos.ajax.reload();
-                                        alertify.success(obj.mensaje);
-                                    }
-                                },
-                                error: function (error) {
-                                    alertify.error("ERROR AL EJECUTAR AJAX DE INHABILITAR");
-                                }
-                            }).done();
-                        });
-
-                        //Activar familiaproducto
-                        $(document).on('click', '.activar', function () {
-                            var idfamiliaproducto = $(this).attr('id');
-                            var row = $(this).parent().parent();
-                            $.ajax({
-                                url: "../FamiliaProducto",
-                                method: "POST",
-                                data: {"opcion": "activar", "idfamiliaproducto": idfamiliaproducto},
-                                success: function (data) {
-                                    var obj = jQuery.parseJSON(data);
-                                    if (obj.mensaje.indexOf('ERROR') !== -1) {
-                                        $('.divError').html(obj.html);
-                                        $('.divError').addClass('tada animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
-                                            $('.divError').removeClass('tada animated');
-                                        });
-                                    } else {
-                                        tablaFamiliaProductos.ajax.reload();
-                                        alertify.success(obj.mensaje);
-                                    }
-                                },
-                                error: function (error) {
-                                    alertify.error("ERROR AL EJECUTAR AJAX DE INHABILITAR");
-                                }
-                            }).done();
                         });
 
                     });
