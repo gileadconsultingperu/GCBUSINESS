@@ -658,12 +658,36 @@
 
                         <ul class="submenu">
                             <%
-                                if (opciones.contains(72)) {
+                                if(opciones.contains(72)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-ReporteVenta.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
-                                    Reporte 1
+                                    Reporte de Ventas
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if(opciones.contains(73)){
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteCuentaCobrar.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte Cuentas por Cobrar
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if(opciones.contains(74)){
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteInventario.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Inventario
                                 </a>
 
                                 <b class="arrow"></b>
@@ -768,6 +792,7 @@
                                                 <th>Cliente</th>
                                                 <th>Moneda</th>   
                                                 <th>Total</th>
+                                                <th>Estado</th>
                                                 <th>Acciones</th>
                                             </tr>
                                         </thead>
@@ -930,13 +955,14 @@
                                     {"data": "cliente"},
                                     {"data": "moneda"},
                                     {"data": "total"},
+                                    {"data": "estado"},
                                     {"data": "acciones"}
                                 ],
                                 dom: '<"row"<"col-xs-12 col-sm-4 col-md-4"l><"col-xs-12 col-sm-4 col-md-4"B><"col-xs-12 col-sm-4 col-md-4"f>>' +
                                         'tr<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>> ',
                                 'columnDefs': [
                                     {
-                                        'targets': [0, 1, 2, 3, 4, 5, 6, 7],
+                                        'targets': [0, 1, 2, 3, 4, 5, 6, 7, 8],
                                         'createdCell': function (td, cellData, rowData, row, col) {
                                             $(td).attr('contenteditable', 'false');
                                         }

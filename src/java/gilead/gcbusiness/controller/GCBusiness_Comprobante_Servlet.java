@@ -50,12 +50,27 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
 
                 for (int i = 0; i < listComprobante.size(); i++) {
                     String acciones = "";
+                    String cantidadnota = "";
+                    Integer cantidaddocumento = daoComprobanteImpl.accionContarDocumentoRelacionado(listComprobante.get(i).getIdtipocomprobante(), listComprobante.get(i).getIdserie(), listComprobante.get(i).getCorrelativoserie());
 
-                    acciones = "<div class=\"hidden-sm hidden-xs btn-group\">"
-                            + "<a href=\"GC-Business-NotaCredito.jsp?idventa=" + listComprobante.get(i).getIdventa() + "\" class=\"btn btn-xs btn-info imprimir\"><i class=\"ace-icon fa fa-pencil-square-o bigger-120\" title='Nota Crédito'></i></a>";
+                    if (!listComprobante.get(i).getCodigoSunatcomprobante().equals("00")) {
+                        acciones = "<div class=\"hidden-sm hidden-xs btn-group\">"
+                                + "<a href=\"GC-Business-NotaCredito.jsp?idventa=" + listComprobante.get(i).getIdventa() + "\" class=\"btn btn-xs btn-info imprimir\"><i class=\"ace-icon\" title='Nota Crédito'><b>NC</b></i></a>";
+                    } else {
+                        acciones = "<div class=\"hidden-sm hidden-xs btn-group\">"
+                                + "<a href=\"GC-Business-DevolucionNotaPedido.jsp?idventa=" + listComprobante.get(i).getIdventa() + "\" class=\"btn btn-xs btn-info imprimir\"><i class=\"ace-icon\" title='Devolución Nota Pedido'><b>DV</b></i></a>";
+                    }
+
+                    if (cantidaddocumento == 0) {
+                        cantidadnota = String.valueOf(cantidaddocumento);
+                    } else if (cantidaddocumento > 0) {
+                        cantidadnota = cantidaddocumento + "&nbsp;&nbsp;&nbsp;&nbsp;<div class=\"hidden-sm hidden-xs btn-group\">"
+                                + "<button type='button' name='verdetalle' id='" + listComprobante.get(i).getIdtipocomprobante() + " | " + listComprobante.get(i).getIdserie() + " | " + listComprobante.get(i).getCorrelativoserie() + "' class='btn btn-xs btn-ligth verdetalle' title='Ver Detalle'><i class=\"ace-icon\">Ver</i></button>";
+                    }
 
                     org.json.simple.JSONObject obj = new org.json.simple.JSONObject();
                     obj.put("fecha", dateFormat.format(listComprobante.get(i).getFecha_emision().getTime()));
+                    obj.put("codigocomprobante", listComprobante.get(i).getCodigoSunatcomprobante());
                     obj.put("tipocomprobante", listComprobante.get(i).getAbreviaturacomprobante());
                     obj.put("serie", listComprobante.get(i).getSerie());
                     obj.put("correlativo", listComprobante.get(i).getCorrelativoserie());
@@ -63,6 +78,7 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
                     obj.put("cliente", listComprobante.get(i).getNombrecliente());
                     obj.put("moneda", listComprobante.get(i).getCodigoSunatMoneda());
                     obj.put("total", listComprobante.get(i).getTotal_venta());
+                    obj.put("cantidadnota", cantidadnota);
                     obj.put("acciones", acciones);
                     datos.add(obj);
                 }
@@ -77,8 +93,12 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
                 String numeroComprobante = request.getParameter("nroComp") != null ? (String) request.getParameter("nroComp") : "";
                 String tipoComprobante = request.getParameter("tipoComp") != null ? (String) request.getParameter("tipoComp") : "0";
                 DaoComprobanteImpl daoComprobanteImpl = new DaoComprobanteImpl();
-                List<DTOComprobante> listComprobante = daoComprobanteImpl.accionListarDTOComprobanteParaAnular(numeroComprobante, tipoComprobante, fecha_desde, fecha_hasta);
-
+                List<DTOComprobante> listComprobante = null;
+                if (accion.equals("anular")) {
+                    listComprobante = daoComprobanteImpl.accionListarDTOComprobanteParaAnular(numeroComprobante, tipoComprobante, fecha_desde, fecha_hasta);
+                } else if (accion.equals("visualizar")) {
+                    listComprobante = daoComprobanteImpl.accionListarDTOComprobantes(numeroComprobante, tipoComprobante, fecha_desde, fecha_hasta);
+                }
                 org.json.simple.JSONArray datos = new org.json.simple.JSONArray();
 
                 DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.DATE_FIELD, Locale.UK);
@@ -105,6 +125,7 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
                     obj.put("cliente", listComprobante.get(i).getNombrecliente());
                     obj.put("moneda", listComprobante.get(i).getCodigoSunatMoneda());
                     obj.put("total", listComprobante.get(i).getTotal_venta());
+                    obj.put("estado", listComprobante.get(i).getEstado().equals("E") ? "EMITIDO" : "ANULADO");
                     obj.put("acciones", acciones);
                     datos.add(obj);
                 }
@@ -698,6 +719,26 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
                 } catch (SQLException ex) {
                     Logger.getLogger(GCBusiness_Producto_Servlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
+            }
+        } else if (opcion.equals("obtenernotas")) {
+            try (PrintWriter out = response.getWriter()) {
+                Integer idtipocomprobante = Integer.parseInt(request.getParameter("idtipocomprobante"));
+                Integer idserie = Integer.parseInt(request.getParameter("idserie"));
+                Integer correlativoserie = Integer.parseInt(request.getParameter("correlativoserie"));
+                DaoComprobanteImpl daoComprobanteImpl = new DaoComprobanteImpl();
+                List<DTOComprobante> listComprobante = daoComprobanteImpl.accionObtenerDocumentoRelacionado(idtipocomprobante, idserie, correlativoserie);
+
+                org.json.simple.JSONArray datos = new org.json.simple.JSONArray();
+
+                for (int i = 0; i < listComprobante.size(); i++) {
+                    org.json.simple.JSONObject obj = new org.json.simple.JSONObject();
+                    obj.put("tipocomprobante", listComprobante.get(i).getAbreviaturacomprobante());
+                    obj.put("serie", listComprobante.get(i).getSerie());
+                    obj.put("correlativo", listComprobante.get(i).getCorrelativoserie());
+                    datos.add(obj);
+                }
+                System.out.println(" {\"data\":" + datos.toJSONString() + "} ");
+                out.print(" {\"data\":" + datos.toJSONString() + "} ");
             }
         }
     }

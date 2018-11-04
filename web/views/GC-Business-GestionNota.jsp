@@ -657,12 +657,36 @@
 
                         <ul class="submenu">
                             <%
-                                if (opciones.contains(72)) {
+                                if(opciones.contains(72)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-ReporteVenta.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
-                                    Reporte 1
+                                    Reporte de Ventas
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if(opciones.contains(73)){
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteCuentaCobrar.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte Cuentas por Cobrar
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if(opciones.contains(74)){
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteInventario.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Inventario
                                 </a>
 
                                 <b class="arrow"></b>
@@ -734,8 +758,6 @@
                                 <option value="0" selected="selected">Todos</option>
                                 <option value="01">FACTURA</option>
                                 <option value="03">BOLETA</option>
-                                <option value="07">NOTA CRÉDITO</option>
-                                <option value="08">NOTA DÉBITO</option>
                                 <option value="00">NOTA PEDIDO</option>
                             </select>
                             &nbsp;
@@ -763,6 +785,7 @@
                                                 <th>Cliente</th>
                                                 <th>Moneda</th>   
                                                 <th>Total</th>
+                                                <th>Cant. Nota</th>
                                                 <th>Acciones</th>
                                             </tr>
                                         </thead>
@@ -778,6 +801,41 @@
             </div><!-- /.main-content -->
 
             <!-- Modales -->
+            <div class="modal" id="modalMostrarDetalle" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="blue bigger">Notas y Devoluciones</h4>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group">     			
+                                        <div>
+                                            <table id="detalleNota" class="table table-striped table-bordered table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Tipo Comprobante</th>
+                                                        <th>Nro. Comprobante</th>                       
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="employee_data">
+                                                </tbody>
+                                            </table>
+                                        </div>     		
+                                    </div>  
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
 
             <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
                 <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
@@ -878,13 +936,14 @@
                                     {"data": "cliente"},
                                     {"data": "moneda"},
                                     {"data": "total"},
+                                    {"data": "cantidadnota"},
                                     {"data": "acciones"}
                                 ],
                                 dom: '<"row"<"col-xs-12 col-sm-4 col-md-4"l><"col-xs-12 col-sm-4 col-md-4"B><"col-xs-12 col-sm-4 col-md-4"f>>' +
                                         'tr<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>> ',
                                 'columnDefs': [
                                     {
-                                        'targets': [0, 1, 2, 3, 4, 5, 6, 7],
+                                        'targets': [0, 1, 2, 3, 4, 5, 6, 7, 8],
                                         'createdCell': function (td, cellData, rowData, row, col) {
                                             $(td).attr('contenteditable', 'false');
                                         }
@@ -968,6 +1027,33 @@
                             yearSuffix: ''
                         };
                         $.datepicker.setDefaults($.datepicker.regional['es']);
+
+                        //Ver Detalle
+                        $(document).on('click', '.verdetalle', function () {
+                            var datos = $(this).attr('id');
+                            $('#modalMostrarDetalle').modal('show');
+                            var array = [];
+                            array = datos.split(" | ");
+                            $('#detalleNota tbody').remove();
+                            $.ajax({
+                                url: "../Comprobante",
+                                method: "GET",
+                                data: {"opcion": 'obtenernotas', "idtipocomprobante": array[0], "idserie": array[1], "correlativoserie": array[2]},
+                                success: function (data) {
+                                    var obj = jQuery.parseJSON(data);
+                                    for (i = 0; i < obj.data.length; i++) {
+                                        var nuevaFila = "<tr class=\"dtNota\" id=\"" + i + "\">";
+                                        nuevaFila += "<td>" + obj.data[i].tipocomprobante + "</td>";
+                                        nuevaFila += "<td>" + obj.data[i].serie + "-" + obj.data[i].correlativo + "</td>"
+                                        $("#detalleNota").append(nuevaFila);
+                                    }
+
+                                },
+                                error: function (error) {
+                                    alertify.error('ERROR AL EJECUTAR EL PROCEDIMIENTO AJAX.');
+                                }
+                            }).done();
+                        });
                     });
         </script>
     </body>

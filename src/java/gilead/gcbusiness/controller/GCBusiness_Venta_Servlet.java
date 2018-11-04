@@ -424,7 +424,8 @@ public class GCBusiness_Venta_Servlet extends HttpServlet {
                 }
 
                 json = "{ \"mensaje\":\"<em>SE GENERÓ CORRECTAMENTE LA VENTA</em>\" ";
-
+                json += ",";
+                json += " \"idventa\":\"" + idVenta + "\" ";
                 cn.commit();
 
             } catch (SQLException ex) {

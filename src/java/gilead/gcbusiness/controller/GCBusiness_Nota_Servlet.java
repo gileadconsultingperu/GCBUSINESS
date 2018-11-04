@@ -155,9 +155,20 @@ public class GCBusiness_Nota_Servlet extends HttpServlet {
                     idMovimientoInventario = rs.getInt(1);
                 }
 
+                Integer idmotivomovimiento = null;
+                if (idtipoComprobante == 3) {
+                    if (idtiponota == 6 || idtiponota == 7) {
+                        idmotivomovimiento = 6;
+                    } else if (idtiponota == 1 || idtiponota == 2) {
+                        idmotivomovimiento = 5;
+                    }
+                } else if (idtipoComprobante == 8) {
+                    idmotivomovimiento = 18;
+                }
+
                 query = "INSERT INTO gcbusiness.movimientoinventario (id_movimientoinventario, id_almacen, id_motivomovimiento, fecha, observacion, id_referencia, estado,"
                         + " fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion)"
-                        + " VALUES (" + idMovimientoInventario + ", " + idalmacen + ", 6, '" + ts + "', '" + observacion + "', " + idNota + ", 'A',"
+                        + " VALUES (" + idMovimientoInventario + ", " + idalmacen + ", " + idmotivomovimiento + ", '" + ts + "', '" + observacion + "', " + idNota + ", 'A',"
                         + " '" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
 
                 sqlEjecucion = query;
@@ -312,6 +323,8 @@ public class GCBusiness_Nota_Servlet extends HttpServlet {
 //                    }
 //                }
                 json = "{ \"mensaje\":\"<em>SE GENERÓ CORRECTAMENTE LA VENTA</em>\" ";
+                json += ",";
+                json += " \"idnota\":\"" + idNota + "\" ";
 
                 cn.commit();
 

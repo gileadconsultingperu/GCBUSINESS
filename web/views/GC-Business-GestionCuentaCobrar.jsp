@@ -659,12 +659,36 @@
 
                         <ul class="submenu">
                             <%
-                                if (opciones.contains(72)) {
+                                if(opciones.contains(72)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-ReporteVenta.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
-                                    Reporte 1
+                                    Reporte de Ventas
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if(opciones.contains(73)){
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteCuentaCobrar.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte Cuentas por Cobrar
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if(opciones.contains(74)){
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteInventario.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Inventario
                                 </a>
 
                                 <b class="arrow"></b>

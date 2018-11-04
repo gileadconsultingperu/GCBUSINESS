@@ -16,29 +16,35 @@ public class DTOComprobante implements Serializable {
 
     private Integer idventa;
     private Timestamp fecha_emision;
+    private Integer idtipocomprobante;
     private String codigoSunatcomprobante;
     private String abreviaturacomprobante;
+    private Integer idserie;
     private String serie;
     private Integer correlativoserie;
     private String numerodocumentocliente;
     private String nombrecliente;
     private String codigoSunatMoneda;
     private Double total_venta;
+    private String estado;
 
     public DTOComprobante() {
     }
 
-    public DTOComprobante(Integer idventa, Timestamp fecha_emision, String codigoSunatcomprobante, String abreviaturacomprobante, String serie, Integer correlativoserie, String numerodocumentocliente, String nombrecliente, String codigoSunatMoneda, Double total_venta) {
+    public DTOComprobante(Integer idventa, Timestamp fecha_emision, Integer idtipocomprobante, String codigoSunatcomprobante, String abreviaturacomprobante, Integer idserie, String serie, Integer correlativoserie, String numerodocumentocliente, String nombrecliente, String codigoSunatMoneda, Double total_venta, String estado) {
         this.idventa = idventa;
         this.fecha_emision = fecha_emision;
+        this.idtipocomprobante = idtipocomprobante;
         this.codigoSunatcomprobante = codigoSunatcomprobante;
         this.abreviaturacomprobante = abreviaturacomprobante;
+        this.idserie = idserie;
         this.serie = serie;
         this.correlativoserie = correlativoserie;
         this.numerodocumentocliente = numerodocumentocliente;
         this.nombrecliente = nombrecliente;
         this.codigoSunatMoneda = codigoSunatMoneda;
         this.total_venta = total_venta;
+        this.estado = estado;
     }
 
     /**
@@ -70,6 +76,20 @@ public class DTOComprobante implements Serializable {
     }
 
     /**
+     * @return the idtipocomprobante
+     */
+    public Integer getIdtipocomprobante() {
+        return idtipocomprobante;
+    }
+
+    /**
+     * @param idtipocomprobante the idtipocomprobante to set
+     */
+    public void setIdtipocomprobante(Integer idtipocomprobante) {
+        this.idtipocomprobante = idtipocomprobante;
+    }
+
+    /**
      * @return the codigoSunatcomprobante
      */
     public String getCodigoSunatcomprobante() {
@@ -95,6 +115,20 @@ public class DTOComprobante implements Serializable {
      */
     public void setAbreviaturacomprobante(String abreviaturacomprobante) {
         this.abreviaturacomprobante = abreviaturacomprobante;
+    }
+
+    /**
+     * @return the idserie
+     */
+    public Integer getIdserie() {
+        return idserie;
+    }
+
+    /**
+     * @param idserie the idserie to set
+     */
+    public void setIdserie(Integer idserie) {
+        this.idserie = idserie;
     }
 
     /**
@@ -181,5 +215,18 @@ public class DTOComprobante implements Serializable {
         this.total_venta = total_venta;
     }
 
+    /**
+     * @return the estado
+     */
+    public String getEstado() {
+        return estado;
+    }
+
+    /**
+     * @param estado the estado to set
+     */
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
     
 }

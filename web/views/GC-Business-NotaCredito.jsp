@@ -670,12 +670,36 @@
 
                         <ul class="submenu">
                             <%
-                                if (opciones.contains(72)) {
+                                if(opciones.contains(72)){
                             %>
                             <li class="">
-                                <a href="#">
+                                <a href="GC-Business-ReporteVenta.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
-                                    Reporte 1
+                                    Reporte de Ventas
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if(opciones.contains(73)){
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteCuentaCobrar.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte Cuentas por Cobrar
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if(opciones.contains(74)){
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteInventario.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Inventario
                                 </a>
 
                                 <b class="arrow"></b>
@@ -943,21 +967,21 @@
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_igv" id="total_igv" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_igv" id="total_igv" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label for="total_isc" class="control-label" style="width: 80px;">Total ISC:</label>
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_isc" id="total_isc" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_isc" id="total_isc" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label for="total_otros_impuestos" class="control-label" style="width: 80px;">Total otros impuestos:</label>
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_otros_impuestos" id="total_otros_impuestos" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_otros_impuestos" id="total_otros_impuestos" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
                                     </div>
                                     <div class="panel-footer">
@@ -966,7 +990,7 @@
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_impuestos" id="total_impuestos" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_impuestos" id="total_impuestos" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -981,8 +1005,8 @@
                                     <div class="panel-body">
                                         <div class="form-group hidden">
                                             <label for="input_dcto_global" class="control-label" style="width: 180px;">Descuento global:</label>
-                                            <input id="input_dcto_global" size="17" type="text">
-                                            <select id="select_dcto_total">
+                                            <input type="text" name="input_dcto_global" id="input_dcto_global" tabindex="-1" style="width: 115px;">
+                                            <select id="select_dcto_total" style="width: 72px;">
                                                 <option value="P">%</option>
                                                 <option value="M">Monto</option>
                                             </select>
@@ -992,42 +1016,42 @@
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_gravadas" id="total_gravadas" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_gravadas" id="total_gravadas" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label for="total_inafectas" class="control-label" style="width: 180px;">Total inafectas:</label>
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_inafectas" id="total_inafectas" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_inafectas" id="total_inafectas" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label for="total_exoneradas" class="control-label" style="width: 180px;">Total exoneradas:</label>
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_exoneradas" id="total_exoneradas" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_exoneradas" id="total_exoneradas" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label for="total_gratuitas" class="control-label" style="width: 180px;">Total gratuitas:</label>
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_gratuitas" id="total_gratuitas" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_gratuitas" id="total_gratuitas" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
                                         <div class="form-group">
                                             <label for="total_otros_cargos" class="control-label" style="width: 180px;">Total otros cargos:</label>
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_otros_cargos" id="total_otros_cargos" tabindex="-1" placeholder="0.00" style="width: 200px;">
+                                            <input type="text" name="total_otros_cargos" id="total_otros_cargos" tabindex="-1" placeholder="0.00" style="width: 160px;">
                                         </div>
                                         <div class="form-group">
                                             <label for="total_descuentos" class="control-label" style="width: 180px;">Total descuentos:</label>
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_descuentos" id="total_descuentos" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_descuentos" id="total_descuentos" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
 
                                         <div class="form-group" style="display:none;">
@@ -1035,14 +1059,14 @@
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_anticipos" id="total_anticipos" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_anticipos" id="total_anticipos" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
                                         <div class="form-group" style="display:none;">
                                             <label for="total_percepciones" class="control-label" style="width: 180px;">Total percepciones:</label>
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_percepciones" id="total_percepciones" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_percepciones" id="total_percepciones" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
 
                                     </div>
@@ -1052,14 +1076,14 @@
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_venta" id="total_venta" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_venta" id="total_venta" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
                                         <div class="form-group mostrar_tipo_cambio" style="display:none;">
                                             <label for="total_venta_soles" class="control-label" style="width: 180px;">Importe total venta en soles:</label>
                                             <span class="label label-default" >
                                                 <label class="lab_mon"> S/</label>
                                             </span>
-                                            <input type="text" name="total_venta_soles" id="total_venta_soles" tabindex="-1" value="0.00" style="width: 200px;" disabled>
+                                            <input type="text" name="total_venta_soles" id="total_venta_soles" tabindex="-1" value="0.00" style="width: 160px;" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -1072,7 +1096,9 @@
                             <div class="col-md-6" style="margin-top: 5px;">
                                 <button class="btn btn-xs btn-primary registrar_venta" style="font-size: 1.2em;"> <span><i class="fa fa-save"></i></span> Registrar Nota</button>
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <button type="button" class="btn btn-xs btn-primary imprimir" style="font-size: 1.2em;"> <span><i class="fa fa-print"></i></span> Imprimir</button>
+                                <a href="#" id="imprimir" class="btn btn-xs btn-primary imprimir" target="_blank" style="font-size: 1.2em;">
+                                    <span><i class="fa fa-print"></i></span> Imprimir
+                                </a> 
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 <button class="btn btn-xs btn-primary limpiar" style="font-size: 1.2em;"> <span><i class="fa fa-trash"></i></span> Limpiar</button>
                             </div>
@@ -1632,6 +1658,8 @@
                                         $('.divError').removeClass('tada animated');
                                     });
                                 } else {
+                                    $('#imprimir').attr('href', '../ImprimirComprobante?tipo=NC&idnota=' + obj.idnota + '&total=' + $('#total_venta').val());
+                                    window.open('../ImprimirComprobante?tipo=NC&idnota=' + obj.idnota + '&total=' + $('#total_venta').val(), '_blank');
                                     alertify.success(obj.mensaje);
                                 }
                             });
