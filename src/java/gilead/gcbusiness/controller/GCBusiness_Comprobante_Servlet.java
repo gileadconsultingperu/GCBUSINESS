@@ -55,7 +55,8 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
 
                     if (!listComprobante.get(i).getCodigoSunatcomprobante().equals("00")) {
                         acciones = "<div class=\"hidden-sm hidden-xs btn-group\">"
-                                + "<a href=\"GC-Business-NotaCredito.jsp?idventa=" + listComprobante.get(i).getIdventa() + "\" class=\"btn btn-xs btn-info imprimir\"><i class=\"ace-icon\" title='Nota Crédito'><b>NC</b></i></a>";
+                                //+ "<a href=\"GC-Business-NotaCredito.jsp?idventa=" + listComprobante.get(i).getIdventa() + "\" class=\"btn btn-xs btn-info imprimir\"><i class=\"ace-icon\" title='Nota Crédito'><b>NC</b></i></a>"
+                                + "<button type='button' name='seleccionarnota' id='" + listComprobante.get(i).getIdventa() + "' class='btn btn-xs btn-info seleccionarnota' title='Nota Crédito'><i class=\"ace-icon\"><b>NC</b></i></button>";;
                     } else {
                         acciones = "<div class=\"hidden-sm hidden-xs btn-group\">"
                                 + "<a href=\"GC-Business-DevolucionNotaPedido.jsp?idventa=" + listComprobante.get(i).getIdventa() + "\" class=\"btn btn-xs btn-info imprimir\"><i class=\"ace-icon\" title='Devolución Nota Pedido'><b>DV</b></i></a>";
@@ -112,7 +113,7 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
                                 + "</div>";
                     } else if (accion.equals("visualizar")) {
                         acciones = "<div class=\"hidden-sm hidden-xs btn-group\">"
-                                + "<button type='button' name='imprimir' id='" + listComprobante.get(i).getIdventa() + " | " + listComprobante.get(i).getCodigoSunatcomprobante() + "' class='btn btn-info btn-xs imprimir' title='Imprimir'><span class='glyphicon glyphicon-print'></span></button>"
+                                + "<button type='button' name='imprimir' id='" + listComprobante.get(i).getIdventa() + " | " + listComprobante.get(i).getCodigoSunatcomprobante() + " | " + listComprobante.get(i).getTotal_venta() + "' class='btn btn-info btn-xs imprimir' title='Imprimir'><span class='glyphicon glyphicon-print'></span></button>"
                                 + "</div>";
                     }
 
@@ -139,7 +140,8 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
             Connection cn = null;
             Statement st = null, st1 = null;
             String sqlEjecucion = null;
-            String json = null;
+            String json = "{";
+            Integer flag_anulado = 0;
             try {
                 cn = db.getConnection();
                 cn.setAutoCommit(false);
@@ -148,326 +150,647 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
 
                 Integer idcomprobante = Integer.parseInt(request.getParameter("idcomprobante").trim());
                 String codTipoCmp = request.getParameter("codTipoCmp").trim();
-                String motivoAnulacion = request.getParameter("motivo").trim();
+                String motivoAnulacion = request.getParameter("motivo").trim().toUpperCase();
                 java.util.Date utilDate = new java.util.Date(System.currentTimeMillis());
                 java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
                 java.sql.Timestamp ts = new java.sql.Timestamp(sqlDate.getTime());
                 String login_usuario = (String) session.getAttribute("login_usuario");
 
                 if (codTipoCmp.equals("01") || codTipoCmp.equals("03")) {//SI ES FACTURA O BOLETA
-                    //RETORNO DE INVENTARIO SOLO AL ANULAR BOLETA O FACTURA
-                    //OBTENEMOS IDALMACEN PARA SABER A QUE ALMACEN RETORNARA LOS PRODUCTOS 
-                    Integer id_almacen = 0;
-                    String sql = "SELECT id_almacen FROM gcbusiness.venta WHERE id_venta=" + idcomprobante;
-                    sqlEjecucion = sql;
+                    //OBTENER CANTIDAD DE NOTAS EMITIDAS RELACIONADAS
+                    Integer cantidad_nota = 0;
+                    String sql = "SELECT count(n.*) cantidad_nota "
+                            + "FROM gcbusiness.nota n "
+                            + "LEFT JOIN gcbusiness.venta v ON v.id_tipocomprobante=n.id_tipocomprobante_modifica AND v.id_serie=n.id_serie_modifica AND v.correlativo_serie=n.correlativo_serie_modifica "
+                            + "WHERE v.id_venta = " + idcomprobante + " AND n.estado = 'E'";
+                    System.out.println("sql: " + sql);
                     ResultSet rs = st.executeQuery(sql);
-
-                    if (rs.next()) {
-                        id_almacen = rs.getInt("id_almacen");
+                    try {
+                        if (rs.next()) {
+                            cantidad_nota = rs.getInt("cantidad_nota");
+                        }
+                    } catch (java.sql.SQLException sqle) {
                     }
 
-                    //INSERTAMOS CABECERA MOVIMIENTO INVENTARIO
-                    int id_movimientoinventario = 0;
-                    sql = "SELECT NEXTVAL('gcbusiness.movimientoinventario_id_movimientoinventario_seq')";
-                    sqlEjecucion = sql;
-                    rs = st.executeQuery(sql);
-
-                    if (rs.next()) {
-                        id_movimientoinventario = rs.getInt(1);
-                    }
-
-                    sql = "INSERT INTO gcbusiness.movimientoinventario(id_movimientoinventario, id_almacen, id_motivomovimiento, fecha, observacion, id_referencia, estado, "
-                            + "fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion) "
-                            + "VALUES (" + id_movimientoinventario + ", " + id_almacen + ", 4, '" + ts + "', 'ANULACION COMPROBANTE', " + idcomprobante + ", 'A', "
-                            + "'" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
-
-                    sqlEjecucion = sql;
-                    st.executeUpdate(sql);
-
-                    //OBTENEMOS IDPRODUCTO Y CANTIDAD PARA RETORNAR AL ALMACEN 
-                    Integer idProducto = 0, idLote = null;
-                    Double cantidad;
-                    sql = "SELECT id_producto, id_lote, cantidad FROM gcbusiness.detalle_venta WHERE id_venta=" + idcomprobante;
-                    sqlEjecucion = sql;
-                    rs = st.executeQuery(sql);
-
-                    while (rs.next()) {
-                        idProducto = rs.getInt("id_producto");
-                        idLote = rs.getInt("id_lote");
-                        cantidad = rs.getDouble("cantidad");
-
-                        //OBTENEMOS STOCK ACTUAL DEL PRODUCTO Y DEL ALMACEN CORRESPONDIENTE 
-                        Double stockActual = 0.00;
-                        if (idLote != 0) {
-                            sql = "SELECT stock_actual FROM gcbusiness.almacenproductolote WHERE id_producto=" + idProducto + " AND id_lote=" + idLote + " AND id_almacen=" + id_almacen + ";";
-                        } else {
-                            sql = "SELECT stock_actual FROM gcbusiness.almacenproductolote WHERE id_producto=" + idProducto + " AND id_almacen=" + id_almacen + ";";
-                            idLote = null;
-                        }
-
+                    //EN CASO NO EXISTA NOTAS EMITIDAS SE PUEDE ANULAR EL COMPROBANTE
+                    if (cantidad_nota == 0) {
+                        //RETORNO DE INVENTARIO SOLO AL ANULAR BOLETA O FACTURA
+                        //OBTENEMOS IDALMACEN PARA SABER A QUE ALMACEN RETORNARA LOS PRODUCTOS 
+                        Integer id_almacen = 0;
+                        sql = "SELECT id_almacen FROM gcbusiness.venta WHERE id_venta=" + idcomprobante;
                         sqlEjecucion = sql;
+                        rs = st.executeQuery(sql);
 
-                        ResultSet rs1 = st1.executeQuery(sql);
-                        if (rs1.next()) {
-                            stockActual = rs1.getDouble("stock_actual");
+                        if (rs.next()) {
+                            id_almacen = rs.getInt("id_almacen");
                         }
 
-                        Double nuevoStock = stockActual + cantidad;
-
-                        //INSERTAMOS DETALLE MOVIMIENTO INVENTARIO
-                        int id_detalle_movimientoinventario = 0;
-                        sql = "SELECT NEXTVAL('gcbusiness.detalle_movimientoinventario_id_detalle_movimientoinventario_se')";
+                        //INSERTAMOS CABECERA MOVIMIENTO INVENTARIO
+                        int id_movimientoinventario = 0;
+                        sql = "SELECT NEXTVAL('gcbusiness.movimientoinventario_id_movimientoinventario_seq')";
                         sqlEjecucion = sql;
-                        rs1 = st1.executeQuery(sql);
+                        rs = st.executeQuery(sql);
 
-                        if (rs1.next()) {
-                            id_detalle_movimientoinventario = rs1.getInt(1);
+                        if (rs.next()) {
+                            id_movimientoinventario = rs.getInt(1);
                         }
 
-                        sql = "INSERT INTO gcbusiness.detalle_movimientoinventario (id_detalle_movimientoinventario, id_movimientoinventario, id_producto, id_lote, cantidad, stock_saldo, "
+                        sql = "INSERT INTO gcbusiness.movimientoinventario(id_movimientoinventario, id_almacen, id_motivomovimiento, fecha, observacion, id_referencia, estado, "
                                 + "fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion) "
-                                + "VALUES (" + id_detalle_movimientoinventario + ", " + id_movimientoinventario + ", " + idProducto + ", " + idLote + ", " + cantidad + ", " + nuevoStock
-                                + ", '" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
+                                + "VALUES (" + id_movimientoinventario + ", " + id_almacen + ", 4, '" + ts + "', 'ANULACION COMPROBANTE', " + idcomprobante + ", 'A', "
+                                + "'" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
 
                         sqlEjecucion = sql;
-                        st1.executeUpdate(sql);
+                        st.executeUpdate(sql);
 
-                        //ACTUALIZAMOS STOCK 
-                        if (idLote != null) {
-                            sql = "UPDATE gcbusiness.almacenproductolote SET stock_actual=" + nuevoStock + " WHERE id_producto=" + idProducto + " AND id_lote=" + idLote + " AND id_almacen=" + id_almacen + ";";
-                        } else {
-                            sql = "UPDATE gcbusiness.almacenproductolote SET stock_actual=" + nuevoStock + " WHERE id_producto=" + idProducto + " AND id_almacen=" + id_almacen + ";";
+                        //OBTENEMOS IDPRODUCTO Y CANTIDAD PARA RETORNAR AL ALMACEN 
+                        Integer idProducto = 0, idLote = null;
+                        Double cantidad;
+                        sql = "SELECT id_producto, id_lote, cantidad FROM gcbusiness.detalle_venta WHERE id_venta=" + idcomprobante;
+                        sqlEjecucion = sql;
+                        rs = st.executeQuery(sql);
+
+                        while (rs.next()) {
+                            idProducto = rs.getInt("id_producto");
+                            idLote = rs.getInt("id_lote");
+                            cantidad = rs.getDouble("cantidad");
+
+                            //OBTENEMOS STOCK ACTUAL DEL PRODUCTO Y DEL ALMACEN CORRESPONDIENTE 
+                            Double stockActual = 0.00;
+                            if (idLote != 0) {
+                                sql = "SELECT stock_actual FROM gcbusiness.almacenproductolote WHERE id_producto=" + idProducto + " AND id_lote=" + idLote + " AND id_almacen=" + id_almacen;
+                            } else {
+                                sql = "SELECT stock_actual FROM gcbusiness.almacenproductolote WHERE id_producto=" + idProducto + " AND id_almacen=" + id_almacen;
+                                idLote = null;
+                            }
+
+                            sqlEjecucion = sql;
+
+                            ResultSet rs1 = st1.executeQuery(sql);
+                            if (rs1.next()) {
+                                stockActual = rs1.getDouble("stock_actual");
+                            }
+
+                            Double nuevoStock = stockActual + cantidad;
+
+                            //INSERTAMOS DETALLE MOVIMIENTO INVENTARIO
+                            int id_detalle_movimientoinventario = 0;
+                            sql = "SELECT NEXTVAL('gcbusiness.detalle_movimientoinventario_id_detalle_movimientoinventario_se')";
+                            sqlEjecucion = sql;
+                            rs1 = st1.executeQuery(sql);
+
+                            if (rs1.next()) {
+                                id_detalle_movimientoinventario = rs1.getInt(1);
+                            }
+
+                            sql = "INSERT INTO gcbusiness.detalle_movimientoinventario (id_detalle_movimientoinventario, id_movimientoinventario, id_producto, id_lote, cantidad, stock_saldo, "
+                                    + "fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion) "
+                                    + "VALUES (" + id_detalle_movimientoinventario + ", " + id_movimientoinventario + ", " + idProducto + ", " + idLote + ", " + cantidad + ", " + nuevoStock
+                                    + ", '" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
+
+                            sqlEjecucion = sql;
+                            st1.executeUpdate(sql);
+
+                            //ACTUALIZAMOS STOCK 
+                            if (idLote != null) {
+                                sql = "UPDATE gcbusiness.almacenproductolote SET stock_actual=" + nuevoStock + " WHERE id_producto=" + idProducto + " AND id_lote=" + idLote + " AND id_almacen=" + id_almacen;
+                            } else {
+                                sql = "UPDATE gcbusiness.almacenproductolote SET stock_actual=" + nuevoStock + " WHERE id_producto=" + idProducto + " AND id_almacen=" + id_almacen;
+                            }
+
+                            sqlEjecucion = sql;
+                            st1.executeUpdate(sql);
                         }
 
+                        //ACTUALIZA CUENTA COBRAR SI HAY CUENTA POR COBRAR
+                        sql = "UPDATE gcbusiness.cuentacobrar SET estado = 'A', fecha_modificacion='" + ts + "', usuario_modificacion='" + login_usuario + "', "
+                                + "terminal_modificacion='" + request.getRemoteHost() + "', ip_modificacion='" + request.getRemoteAddr() + "' WHERE id_comprobante=" + idcomprobante;
                         sqlEjecucion = sql;
-                        st1.executeUpdate(sql);
+                        st.executeUpdate(sql);
+
+                        //ACTUALIZA VENTA
+                        sql = "UPDATE gcbusiness.venta SET estado = 'A', motivo_anulacion='" + motivoAnulacion + "', fecha_modificacion='" + ts + "', usuario_modificacion='" + login_usuario + "', "
+                                + "terminal_modificacion='" + request.getRemoteHost() + "', ip_modificacion='" + request.getRemoteAddr() + "' WHERE id_venta=" + idcomprobante;
+
+                        sqlEjecucion = sql;
+                        st.executeUpdate(sql);
+                        flag_anulado = 1;
+                    } else { //ERROR ANULAR PRIMERO LAS NOTAS REFERENCIADAS
+                        json += " \"mensaje\":\"<em>ERROR AL ANULAR EL COMPROBANTE. El comprobante posee una o varias notas referenciadas.</em>\" ";
                     }
-
-                    //ACTUALIZA CUENTA COBRAR SI HAY CUENTA POR COBRAR
-                    sql = "UPDATE gcbusiness.cuentacobrar SET estado = 'A', fecha_modificacion='" + ts + "', usuario_modificacion='" + login_usuario + "', "
-                            + "terminal_modificacion='" + request.getRemoteHost() + "', ip_modificacion='" + request.getRemoteAddr() + "' WHERE id_comprobante=" + idcomprobante;
-                    sqlEjecucion = sql;
-                    st.executeUpdate(sql);
-
-                    //ACTUALIZA VENTA
-                    sql = "UPDATE gcbusiness.venta SET estado = 'A', motivo_anulacion='" + motivoAnulacion + "', fecha_modificacion='" + ts + "', usuario_modificacion='" + login_usuario + "', "
-                            + "terminal_modificacion='" + request.getRemoteHost() + "', ip_modificacion='" + request.getRemoteAddr() + "' WHERE id_venta=" + idcomprobante;
-
-                    sqlEjecucion = sql;
-                    st.executeUpdate(sql);
-
                 } else if (codTipoCmp.equals("00")) {//SI ES NOTA DE PEDIDO
-                    //RETORNO DE INVENTARIO SOLO AL ANULAR NOTA DE PEDIDO
-                    //OBTENEMOS IDALMACEN PARA SABER A QUE ALMACEN RETORNARA LOS PRODUCTOS 
-                    Integer id_almacen = 0;
-                    String sql = "SELECT id_almacen FROM gcbusiness.venta WHERE id_venta=" + idcomprobante;
-                    sqlEjecucion = sql;
+                    Integer cantidad_nota = 0;
+                    String sql = "SELECT count(n.*) cantidad_nota "
+                            + "FROM gcbusiness.nota n "
+                            + "LEFT JOIN gcbusiness.venta v ON v.id_tipocomprobante=n.id_tipocomprobante_modifica AND v.id_serie=n.id_serie_modifica AND v.correlativo_serie=n.correlativo_serie_modifica "
+                            + "WHERE v.id_venta = " + idcomprobante + " AND n.estado = 'E'";
+                    System.out.println("sql: " + sql);
                     ResultSet rs = st.executeQuery(sql);
-
-                    if (rs.next()) {
-                        id_almacen = rs.getInt("id_almacen");
+                    try {
+                        if (rs.next()) {
+                            cantidad_nota = rs.getInt("cantidad_nota");
+                        }
+                    } catch (java.sql.SQLException sqle) {
                     }
 
-                    //INSERTAMOS CABECERA MOVIMIENTO INVENTARIO
-                    int id_movimientoinventario = 0;
-                    sql = "SELECT NEXTVAL('gcbusiness.movimientoinventario_id_movimientoinventario_seq')";
-                    sqlEjecucion = sql;
-                    rs = st.executeQuery(sql);
-
-                    if (rs.next()) {
-                        id_movimientoinventario = rs.getInt(1);
-                    }
-
-                    sql = "INSERT INTO gcbusiness.movimientoinventario(id_movimientoinventario, id_almacen, id_motivomovimiento, fecha, observacion, id_referencia, estado, "
-                            + "fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion) "
-                            + "VALUES (" + id_movimientoinventario + ", " + id_almacen + ", 5, '" + ts + "', 'ANULACION COMPROBANTE', " + idcomprobante + ", 'A', "
-                            + "'" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
-
-                    sqlEjecucion = sql;
-                    st.executeUpdate(sql);
-
-                    //OBTENEMOS IDPRODUCTO Y CANTIDAD PARA RETORNAR AL ALMACEN 
-                    Integer idProducto = 0, idLote = null;
-                    Double cantidad;
-                    sql = "SELECT id_producto, id_lote, cantidad FROM gcbusiness.detalle_venta WHERE id_venta=" + idcomprobante;
-                    sqlEjecucion = sql;
-                    rs = st.executeQuery(sql);
-
-                    while (rs.next()) {
-                        idProducto = rs.getInt("id_producto");
-                        idLote = rs.getInt("id_lote");
-                        cantidad = rs.getDouble("cantidad");
-
-                        //OBTENEMOS STOCK ACTUAL DEL PRODUCTO Y DEL ALMACEN CORRESPONDIENTE 
-                        Double stockActual = 0.00;
-                        if (idLote != 0) {
-                            sql = "SELECT stock_actual FROM gcbusiness.almacenproductolote WHERE id_producto=" + idProducto + " AND id_lote=" + idLote + " AND id_almacen=" + id_almacen + ";";
-                        } else {
-                            sql = "SELECT stock_actual FROM gcbusiness.almacenproductolote WHERE id_producto=" + idProducto + " AND id_almacen=" + id_almacen + ";";
-                            idLote = null;
-                        }
-
+                    if (cantidad_nota == 0) {
+                        //RETORNO DE INVENTARIO SOLO AL ANULAR NOTA DE PEDIDO
+                        //OBTENEMOS IDALMACEN PARA SABER A QUE ALMACEN RETORNARA LOS PRODUCTOS 
+                        Integer id_almacen = 0;
+                        sql = "SELECT id_almacen FROM gcbusiness.venta WHERE id_venta=" + idcomprobante;
                         sqlEjecucion = sql;
+                        rs = st.executeQuery(sql);
 
-                        ResultSet rs1 = st1.executeQuery(sql);
-                        if (rs1.next()) {
-                            stockActual = rs1.getDouble("stock_actual");
+                        if (rs.next()) {
+                            id_almacen = rs.getInt("id_almacen");
                         }
 
-                        Double nuevoStock = stockActual + cantidad;
-
-                        //INSERTAMOS DETALLE MOVIMIENTO INVENTARIO
-                        int id_detalle_movimientoinventario = 0;
-                        sql = "SELECT NEXTVAL('gcbusiness.detalle_movimientoinventario_id_detalle_movimientoinventario_se')";
+                        //INSERTAMOS CABECERA MOVIMIENTO INVENTARIO
+                        int id_movimientoinventario = 0;
+                        sql = "SELECT NEXTVAL('gcbusiness.movimientoinventario_id_movimientoinventario_seq')";
                         sqlEjecucion = sql;
-                        rs1 = st1.executeQuery(sql);
+                        rs = st.executeQuery(sql);
 
-                        if (rs1.next()) {
-                            id_detalle_movimientoinventario = rs1.getInt(1);
+                        if (rs.next()) {
+                            id_movimientoinventario = rs.getInt(1);
                         }
 
-                        sql = "INSERT INTO gcbusiness.detalle_movimientoinventario (id_detalle_movimientoinventario, id_movimientoinventario, id_producto, id_lote, cantidad, stock_saldo, "
+                        sql = "INSERT INTO gcbusiness.movimientoinventario(id_movimientoinventario, id_almacen, id_motivomovimiento, fecha, observacion, id_referencia, estado, "
                                 + "fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion) "
-                                + "VALUES (" + id_detalle_movimientoinventario + ", " + id_movimientoinventario + ", " + idProducto + ", " + idLote + ", " + cantidad + ", " + nuevoStock
-                                + ", '" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
+                                + "VALUES (" + id_movimientoinventario + ", " + id_almacen + ", 5, '" + ts + "', 'ANULACION COMPROBANTE', " + idcomprobante + ", 'A', "
+                                + "'" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
 
                         sqlEjecucion = sql;
-                        st1.executeUpdate(sql);
+                        st.executeUpdate(sql);
 
-                        //ACTUALIZAMOS STOCK 
-                        if (idLote != null) {
-                            sql = "UPDATE gcbusiness.almacenproductolote SET stock_actual=" + nuevoStock + " WHERE id_producto=" + idProducto + " AND id_lote=" + idLote + " AND id_almacen=" + id_almacen + ";";
-                        } else {
-                            sql = "UPDATE gcbusiness.almacenproductolote SET stock_actual=" + nuevoStock + " WHERE id_producto=" + idProducto + " AND id_almacen=" + id_almacen + ";";
+                        //OBTENEMOS IDPRODUCTO Y CANTIDAD PARA RETORNAR AL ALMACEN 
+                        Integer idProducto = 0, idLote = null;
+                        Double cantidad;
+                        sql = "SELECT id_producto, id_lote, cantidad FROM gcbusiness.detalle_venta WHERE id_venta=" + idcomprobante;
+                        sqlEjecucion = sql;
+                        rs = st.executeQuery(sql);
+
+                        while (rs.next()) {
+                            idProducto = rs.getInt("id_producto");
+                            idLote = rs.getInt("id_lote");
+                            cantidad = rs.getDouble("cantidad");
+
+                            //OBTENEMOS STOCK ACTUAL DEL PRODUCTO Y DEL ALMACEN CORRESPONDIENTE 
+                            Double stockActual = 0.00;
+                            if (idLote != 0) {
+                                sql = "SELECT stock_actual FROM gcbusiness.almacenproductolote WHERE id_producto=" + idProducto + " AND id_lote=" + idLote + " AND id_almacen=" + id_almacen;
+                            } else {
+                                sql = "SELECT stock_actual FROM gcbusiness.almacenproductolote WHERE id_producto=" + idProducto + " AND id_almacen=" + id_almacen;
+                                idLote = null;
+                            }
+
+                            sqlEjecucion = sql;
+
+                            ResultSet rs1 = st1.executeQuery(sql);
+                            if (rs1.next()) {
+                                stockActual = rs1.getDouble("stock_actual");
+                            }
+
+                            Double nuevoStock = stockActual + cantidad;
+
+                            //INSERTAMOS DETALLE MOVIMIENTO INVENTARIO
+                            int id_detalle_movimientoinventario = 0;
+                            sql = "SELECT NEXTVAL('gcbusiness.detalle_movimientoinventario_id_detalle_movimientoinventario_se')";
+                            sqlEjecucion = sql;
+                            rs1 = st1.executeQuery(sql);
+
+                            if (rs1.next()) {
+                                id_detalle_movimientoinventario = rs1.getInt(1);
+                            }
+
+                            sql = "INSERT INTO gcbusiness.detalle_movimientoinventario (id_detalle_movimientoinventario, id_movimientoinventario, id_producto, id_lote, cantidad, stock_saldo, "
+                                    + "fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion) "
+                                    + "VALUES (" + id_detalle_movimientoinventario + ", " + id_movimientoinventario + ", " + idProducto + ", " + idLote + ", " + cantidad + ", " + nuevoStock
+                                    + ", '" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
+
+                            sqlEjecucion = sql;
+                            st1.executeUpdate(sql);
+
+                            //ACTUALIZAMOS STOCK 
+                            if (idLote != null) {
+                                sql = "UPDATE gcbusiness.almacenproductolote SET stock_actual=" + nuevoStock + " WHERE id_producto=" + idProducto + " AND id_lote=" + idLote + " AND id_almacen=" + id_almacen;
+                            } else {
+                                sql = "UPDATE gcbusiness.almacenproductolote SET stock_actual=" + nuevoStock + " WHERE id_producto=" + idProducto + " AND id_almacen=" + id_almacen;
+                            }
+
+                            sqlEjecucion = sql;
+                            st1.executeUpdate(sql);
                         }
 
+                        //ACTUALIZA CUENTA COBRAR SI HAY CUENTA POR COBRAR
+                        sql = "UPDATE gcbusiness.cuentacobrar SET estado = 'A', fecha_modificacion='" + ts + "', usuario_modificacion='" + login_usuario + "', "
+                                + "terminal_modificacion='" + request.getRemoteHost() + "', ip_modificacion='" + request.getRemoteAddr() + "' WHERE id_comprobante=" + idcomprobante;
                         sqlEjecucion = sql;
-                        st1.executeUpdate(sql);
+                        st.executeUpdate(sql);
+
+                        //ACTUALIZA VENTA
+                        sql = "UPDATE gcbusiness.venta SET estado = 'A', motivo_anulacion='" + motivoAnulacion + "', fecha_modificacion='" + ts + "', usuario_modificacion='" + login_usuario + "', "
+                                + "terminal_modificacion='" + request.getRemoteHost() + "', ip_modificacion='" + request.getRemoteAddr() + "' WHERE id_venta=" + idcomprobante;
+
+                        sqlEjecucion = sql;
+                        st.executeUpdate(sql);
+                        flag_anulado = 1;
+                    } else { //ERROR ANULAR PRIMERO LAS NOTAS REFERENCIADAS
+                        json += " \"mensaje\":\"<em>ERROR AL ANULAR LA NOTA DE PEDIDO. El comprobante posee una o varias notas referenciadas.</em>\" ";
                     }
-
-                    //ACTUALIZA CUENTA COBRAR SI HAY CUENTA POR COBRAR
-                    sql = "UPDATE gcbusiness.cuentacobrar SET estado = 'A', fecha_modificacion='" + ts + "', usuario_modificacion='" + login_usuario + "', "
-                            + "terminal_modificacion='" + request.getRemoteHost() + "', ip_modificacion='" + request.getRemoteAddr() + "' WHERE id_comprobante=" + idcomprobante;
-                    sqlEjecucion = sql;
-                    st.executeUpdate(sql);
-
-                    //ACTUALIZA VENTA
-                    sql = "UPDATE gcbusiness.venta SET estado = 'A', motivo_anulacion='" + motivoAnulacion + "', fecha_modificacion='" + ts + "', usuario_modificacion='" + login_usuario + "', "
-                            + "terminal_modificacion='" + request.getRemoteHost() + "', ip_modificacion='" + request.getRemoteAddr() + "' WHERE id_venta=" + idcomprobante;
-
-                    sqlEjecucion = sql;
-                    st.executeUpdate(sql);
-
-                } else if (codTipoCmp.equals("07") || codTipoCmp.equals("08")) {//SI ES NOTA DE CREDITO O DEBITO
+                } else if (codTipoCmp.equals("07")) {//SI ES NOTA DE CREDITO
                     //RETORNO DE INVENTARIO SOLO AL ANULAR NOTA DE CREDITO
                     //OBTENEMOS IDALMACEN PARA SABER A QUE ALMACEN RETORNARA LOS PRODUCTOS 
-                    Integer id_almacen = 0;
-                    String sql = "SELECT id_almacen FROM gcbusiness.nota WHERE id_nota=" + idcomprobante;
+                    Integer id_almacen = 0, id_tiponota = 0, id_tipocomprobante_modifica = 0, id_serie_modifica = 0, correlativo_serie_modifica = 0;
+                    Double total_venta = 0.00;
+                    String sql = "SELECT id_almacen, id_tiponota, id_tipocomprobante_modifica, id_serie_modifica, correlativo_serie_modifica, total_venta FROM gcbusiness.nota WHERE id_nota=" + idcomprobante;
                     sqlEjecucion = sql;
                     ResultSet rs = st.executeQuery(sql);
 
                     if (rs.next()) {
                         id_almacen = rs.getInt("id_almacen");
+                        id_tiponota = rs.getInt("id_tiponota");
+                        id_tipocomprobante_modifica = rs.getInt("id_tipocomprobante_modifica");
+                        id_serie_modifica = rs.getInt("id_serie_modifica");
+                        correlativo_serie_modifica = rs.getInt("correlativo_serie_modifica");
+                        total_venta = rs.getDouble("total_venta");
                     }
 
-                    //INSERTAMOS CABECERA MOVIMIENTO INVENTARIO
-                    int id_movimientoinventario = 0;
-                    sql = "SELECT NEXTVAL('gcbusiness.movimientoinventario_id_movimientoinventario_seq')";
+                    if (id_tiponota == 1 || id_tiponota == 6 || id_tiponota == 7) {
+                        //INSERTAMOS CABECERA MOVIMIENTO INVENTARIO
+                        int id_movimientoinventario = 0;
+                        sql = "SELECT NEXTVAL('gcbusiness.movimientoinventario_id_movimientoinventario_seq')";
+                        sqlEjecucion = sql;
+                        rs = st.executeQuery(sql);
+
+                        if (rs.next()) {
+                            id_movimientoinventario = rs.getInt(1);
+                        }
+
+                        Integer id_motivomovimiento = null;
+                        if (id_tiponota == 1) {
+                            id_motivomovimiento = 14;
+                        } else {
+                            id_motivomovimiento = 13;
+                        }
+
+                        sql = "INSERT INTO gcbusiness.movimientoinventario(id_movimientoinventario, id_almacen, id_motivomovimiento, fecha, observacion, id_referencia, estado, "
+                                + "fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion) "
+                                + "VALUES (" + id_movimientoinventario + ", " + id_almacen + ", " + id_motivomovimiento + ", '" + ts + "', 'ANULACION COMPROBANTE', " + idcomprobante + ", 'A', "
+                                + "'" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
+
+                        sqlEjecucion = sql;
+                        st.executeUpdate(sql);
+
+                        //OBTENEMOS IDPRODUCTO Y CANTIDAD PARA RETORNAR AL ALMACEN 
+                        Integer idProducto = 0, idLote = null;
+                        Double cantidad;
+                        sql = "SELECT id_producto, id_lote, cantidad FROM gcbusiness.detalle_nota WHERE id_nota=" + idcomprobante;
+                        sqlEjecucion = sql;
+                        rs = st.executeQuery(sql);
+
+                        while (rs.next()) {
+                            idProducto = rs.getInt("id_producto");
+                            idLote = rs.getInt("id_lote");
+                            cantidad = rs.getDouble("cantidad");
+
+                            //OBTENEMOS STOCK ACTUAL DEL PRODUCTO Y DEL ALMACEN CORRESPONDIENTE 
+                            Double stockActual = 0.00;
+                            if (idLote != 0) {
+                                sql = "SELECT stock_actual FROM gcbusiness.almacenproductolote WHERE id_producto=" + idProducto + " AND id_lote=" + idLote + " AND id_almacen=" + id_almacen;
+                            } else {
+                                sql = "SELECT stock_actual FROM gcbusiness.almacenproductolote WHERE id_producto=" + idProducto + " AND id_almacen=" + id_almacen;
+                                idLote = null;
+                            }
+
+                            sqlEjecucion = sql;
+
+                            ResultSet rs1 = st1.executeQuery(sql);
+                            if (rs1.next()) {
+                                stockActual = rs1.getDouble("stock_actual");
+                            }
+
+                            Double nuevoStock = stockActual - cantidad;
+
+                            //INSERTAMOS DETALLE MOVIMIENTO INVENTARIO
+                            int id_detalle_movimientoinventario = 0;
+                            sql = "SELECT NEXTVAL('gcbusiness.detalle_movimientoinventario_id_detalle_movimientoinventario_se')";
+                            sqlEjecucion = sql;
+                            rs1 = st1.executeQuery(sql);
+
+                            if (rs1.next()) {
+                                id_detalle_movimientoinventario = rs1.getInt(1);
+                            }
+
+                            sql = "INSERT INTO gcbusiness.detalle_movimientoinventario (id_detalle_movimientoinventario, id_movimientoinventario, id_producto, id_lote, cantidad, stock_saldo, "
+                                    + "fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion) "
+                                    + "VALUES (" + id_detalle_movimientoinventario + ", " + id_movimientoinventario + ", " + idProducto + ", " + idLote + ", " + cantidad + ", " + nuevoStock
+                                    + ", '" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
+
+                            sqlEjecucion = sql;
+                            st1.executeUpdate(sql);
+
+                            //ACTUALIZAMOS STOCK 
+                            if (idLote != null) {
+                                sql = "UPDATE gcbusiness.almacenproductolote SET stock_actual=" + nuevoStock + " WHERE id_producto=" + idProducto + " AND id_lote=" + idLote + " AND id_almacen=" + id_almacen;
+                            } else {
+                                sql = "UPDATE gcbusiness.almacenproductolote SET stock_actual=" + nuevoStock + " WHERE id_producto=" + idProducto + " AND id_almacen=" + id_almacen;
+                            }
+
+                            sqlEjecucion = sql;
+                            st1.executeUpdate(sql);
+                        }
+
+                        //REGISTRAR MOVIMIENTO A CUENTAS POR COBRAR SI APLICA
+                        Integer idcomprobantemodifica = 0;
+                        sql = "SELECT id_venta FROM gcbusiness.venta "
+                                + "WHERE id_tipocomprobante = " + id_tipocomprobante_modifica + " "
+                                + "AND id_serie = " + id_serie_modifica + " "
+                                + "AND correlativo_serie = " + correlativo_serie_modifica;
+
+                        rs = st.executeQuery(sql);
+                        if (rs.next()) {
+                            idcomprobantemodifica = rs.getInt("id_venta");
+                        }
+
+                        Double saldoAnterior = 0.00, saldoActual = 0.00;
+                        Integer idcuentacobrar = 0;
+                        sql = "SELECT id_cuentacobrar, saldo FROM gcbusiness.cuentacobrar WHERE id_comprobante = " + idcomprobantemodifica + " AND id_tipocomprobante = " + id_tipocomprobante_modifica;
+                        rs = st.executeQuery(sql);
+                        if (rs.next()) {
+                            idcuentacobrar = rs.getInt("id_cuentacobrar");
+                            saldoAnterior = rs.getDouble("saldo");
+                        }
+
+                        if (idcuentacobrar != 0) {
+                            saldoActual = saldoAnterior + total_venta;
+
+                            if (saldoActual <= 0) {
+                                sql = "UPDATE gcbusiness.cuentacobrar SET saldo = " + saldoActual + ", estado = 'C' WHERE id_cuentacobrar = " + idcuentacobrar;
+                            } else {
+                                sql = "UPDATE gcbusiness.cuentacobrar SET saldo = " + saldoActual + ", estado = 'P' WHERE id_cuentacobrar = " + idcuentacobrar;
+                            }
+                            sqlEjecucion = sql;
+                            st.executeUpdate(sql);
+
+                            Integer idNovimientoCuentaCobrar = 0;
+                            sql = "SELECT NEXTVAL('gcbusiness.movimiento_cuentacobrar_id_movimiento_cuentacobrar_seq')";
+                            sqlEjecucion = sql;
+
+                            rs = st.executeQuery(sql);
+
+                            if (rs.next()) {
+                                idNovimientoCuentaCobrar = rs.getInt(1);
+                            }
+
+                            String observacion = "ANULACION NOTA";
+
+                            sql = "INSERT INTO gcbusiness.movimiento_cuentacobrar (id_movimiento_cuentacobrar, id_cuentacobrar,fecha,monto,saldo_anterior,saldo_actual,documento_referencia"
+                                    + ",estado,fecha_insercion,usuario_insercion,terminal_insercion,ip_insercion) "
+                                    + "VALUES (" + idNovimientoCuentaCobrar + ", " + idcuentacobrar + ",'" + ts + "'," + total_venta * (-1) + ", " + saldoAnterior + ", " + saldoActual + ", '" + observacion
+                                    + "', 'A', '" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
+                            sqlEjecucion = sql;
+                            st.executeUpdate(sql);
+                        }
+                        //FIN REGISTRAR MOVIMIENTO A CUENTAS POR COBRAR  
+
+                        //ACTUALIZA NOTA
+                        sql = "UPDATE gcbusiness.nota SET estado = 'A', motivo_anulacion='" + motivoAnulacion + "', fecha_modificacion='" + ts + "', usuario_modificacion='" + login_usuario + "', "
+                                + "terminal_modificacion='" + request.getRemoteHost() + "', ip_modificacion='" + request.getRemoteAddr() + "' WHERE id_nota=" + idcomprobante;
+
+                        sqlEjecucion = sql;
+                        st.executeUpdate(sql);
+                        flag_anulado = 1;
+                    } else if (id_tiponota == 4) {
+                        //REGISTRAR MOVIMIENTO A CUENTAS POR COBRAR SI APLICA
+                        Integer idcomprobantemodifica = 0;
+                        sql = "SELECT id_venta FROM gcbusiness.venta "
+                                + "WHERE id_tipocomprobante = " + id_tipocomprobante_modifica + " "
+                                + "AND id_serie = " + id_serie_modifica + " "
+                                + "AND correlativo_serie = " + correlativo_serie_modifica;
+
+                        rs = st.executeQuery(sql);
+                        if (rs.next()) {
+                            idcomprobantemodifica = rs.getInt("id_venta");
+                        }
+
+                        Double saldoAnterior = 0.00, saldoActual = 0.00;
+                        Integer idcuentacobrar = 0;
+                        sql = "SELECT id_cuentacobrar, saldo FROM gcbusiness.cuentacobrar WHERE id_comprobante = " + idcomprobantemodifica + " AND id_tipocomprobante = " + id_tipocomprobante_modifica;
+                        rs = st.executeQuery(sql);
+                        if (rs.next()) {
+                            idcuentacobrar = rs.getInt("id_cuentacobrar");
+                            saldoAnterior = rs.getDouble("saldo");
+                        }
+
+                        if (idcuentacobrar != 0) {
+                            saldoActual = saldoAnterior + total_venta;
+
+                            if (saldoActual <= 0) {
+                                sql = "UPDATE gcbusiness.cuentacobrar SET saldo = " + saldoActual + ", estado = 'C' WHERE id_cuentacobrar = " + idcuentacobrar;
+                            } else {
+                                sql = "UPDATE gcbusiness.cuentacobrar SET saldo = " + saldoActual + ", estado = 'P' WHERE id_cuentacobrar = " + idcuentacobrar;
+                            }
+                            sqlEjecucion = sql;
+                            st.executeUpdate(sql);
+
+                            Integer idNovimientoCuentaCobrar = 0;
+                            sql = "SELECT NEXTVAL('gcbusiness.movimiento_cuentacobrar_id_movimiento_cuentacobrar_seq')";
+                            sqlEjecucion = sql;
+
+                            rs = st.executeQuery(sql);
+
+                            if (rs.next()) {
+                                idNovimientoCuentaCobrar = rs.getInt(1);
+                            }
+
+                            String observacion = "ANULACION NOTA";
+
+                            sql = "INSERT INTO gcbusiness.movimiento_cuentacobrar (id_movimiento_cuentacobrar, id_cuentacobrar,fecha,monto,saldo_anterior,saldo_actual,documento_referencia"
+                                    + ",estado,fecha_insercion,usuario_insercion,terminal_insercion,ip_insercion) "
+                                    + "VALUES (" + idNovimientoCuentaCobrar + ", " + idcuentacobrar + ",'" + ts + "'," + total_venta * (-1) + ", " + saldoAnterior + ", " + saldoActual + ", '" + observacion
+                                    + "', 'A', '" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
+                            sqlEjecucion = sql;
+                            st.executeUpdate(sql);
+                        }
+                        //FIN REGISTRAR MOVIMIENTO A CUENTAS POR COBRAR  
+
+                        //ACTUALIZA NOTA
+                        sql = "UPDATE gcbusiness.nota SET estado = 'A', motivo_anulacion='" + motivoAnulacion + "', fecha_modificacion='" + ts + "', usuario_modificacion='" + login_usuario + "', "
+                                + "terminal_modificacion='" + request.getRemoteHost() + "', ip_modificacion='" + request.getRemoteAddr() + "' WHERE id_nota=" + idcomprobante;
+
+                        sqlEjecucion = sql;
+                        st.executeUpdate(sql);
+                        flag_anulado = 1;
+                    }
+                } else if (codTipoCmp.equals("99")) {//SI ES DEVOLUCION NOTA PEDIDO
+                    //RETORNO DE INVENTARIO SOLO AL ANULAR NOTA DE CREDITO
+                    //OBTENEMOS IDALMACEN PARA SABER A QUE ALMACEN RETORNARA LOS PRODUCTOS 
+                    Integer id_almacen = 0, id_tiponota = 0, id_tipocomprobante_modifica = 0, id_serie_modifica = 0, correlativo_serie_modifica = 0;
+                    Double total_venta = 0.00;
+                    String sql = "SELECT id_almacen, id_tiponota, id_tipocomprobante_modifica, id_serie_modifica, correlativo_serie_modifica, total_venta FROM gcbusiness.nota WHERE id_nota=" + idcomprobante;
                     sqlEjecucion = sql;
-                    rs = st.executeQuery(sql);
+                    ResultSet rs = st.executeQuery(sql);
 
                     if (rs.next()) {
-                        id_movimientoinventario = rs.getInt(1);
+                        id_almacen = rs.getInt("id_almacen");
+                        id_tiponota = rs.getInt("id_tiponota");
+                        id_tipocomprobante_modifica = rs.getInt("id_tipocomprobante_modifica");
+                        id_serie_modifica = rs.getInt("id_serie_modifica");
+                        correlativo_serie_modifica = rs.getInt("correlativo_serie_modifica");
+                        total_venta = rs.getDouble("total_venta");
                     }
 
-                    sql = "INSERT INTO gcbusiness.movimientoinventario(id_movimientoinventario, id_almacen, id_motivomovimiento, fecha, observacion, id_referencia, estado, "
-                            + "fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion) "
-                            + "VALUES (" + id_movimientoinventario + ", " + id_almacen + ", 13, '" + ts + "', 'ANULACION COMPROBANTE', " + idcomprobante + ", 'A', "
-                            + "'" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
-
-                    sqlEjecucion = sql;
-                    st.executeUpdate(sql);
-
-                    //OBTENEMOS IDPRODUCTO Y CANTIDAD PARA RETORNAR AL ALMACEN 
-                    Integer idProducto = 0, idLote = null;
-                    Double cantidad;
-                    sql = "SELECT id_producto, id_lote, cantidad FROM gcbusiness.detalle_venta WHERE id_venta=" + idcomprobante;
-                    sqlEjecucion = sql;
-                    rs = st.executeQuery(sql);
-
-                    while (rs.next()) {
-                        idProducto = rs.getInt("id_producto");
-                        idLote = rs.getInt("id_lote");
-                        cantidad = rs.getDouble("cantidad");
-
-                        //OBTENEMOS STOCK ACTUAL DEL PRODUCTO Y DEL ALMACEN CORRESPONDIENTE 
-                        Double stockActual = 0.00;
-                        if (idLote != 0) {
-                            sql = "SELECT stock_actual FROM gcbusiness.almacenproductolote WHERE id_producto=" + idProducto + " AND id_lote=" + idLote + " AND id_almacen=" + id_almacen + ";";
-                        } else {
-                            sql = "SELECT stock_actual FROM gcbusiness.almacenproductolote WHERE id_producto=" + idProducto + " AND id_almacen=" + id_almacen + ";";
-                            idLote = null;
-                        }
-
+                    if (id_tiponota == 12) {
+                        //INSERTAMOS CABECERA MOVIMIENTO INVENTARIO
+                        int id_movimientoinventario = 0;
+                        sql = "SELECT NEXTVAL('gcbusiness.movimientoinventario_id_movimientoinventario_seq')";
                         sqlEjecucion = sql;
+                        rs = st.executeQuery(sql);
 
-                        ResultSet rs1 = st1.executeQuery(sql);
-                        if (rs1.next()) {
-                            stockActual = rs1.getDouble("stock_actual");
+                        if (rs.next()) {
+                            id_movimientoinventario = rs.getInt(1);
                         }
 
-                        Double nuevoStock = stockActual - cantidad;
-
-                        //INSERTAMOS DETALLE MOVIMIENTO INVENTARIO
-                        int id_detalle_movimientoinventario = 0;
-                        sql = "SELECT NEXTVAL('gcbusiness.detalle_movimientoinventario_id_detalle_movimientoinventario_se')";
-                        sqlEjecucion = sql;
-                        rs1 = st1.executeQuery(sql);
-
-                        if (rs1.next()) {
-                            id_detalle_movimientoinventario = rs1.getInt(1);
-                        }
-
-                        sql = "INSERT INTO gcbusiness.detalle_movimientoinventario (id_detalle_movimientoinventario, id_movimientoinventario, id_producto, id_lote, cantidad, stock_saldo, "
+                        sql = "INSERT INTO gcbusiness.movimientoinventario(id_movimientoinventario, id_almacen, id_motivomovimiento, fecha, observacion, id_referencia, estado, "
                                 + "fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion) "
-                                + "VALUES (" + id_detalle_movimientoinventario + ", " + id_movimientoinventario + ", " + idProducto + ", " + idLote + ", " + cantidad + ", " + nuevoStock
-                                + ", '" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
+                                + "VALUES (" + id_movimientoinventario + ", " + id_almacen + ", 18, '" + ts + "', 'ANULACION COMPROBANTE', " + idcomprobante + ", 'A', "
+                                + "'" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
 
                         sqlEjecucion = sql;
-                        st1.executeUpdate(sql);
+                        st.executeUpdate(sql);
 
-                        //ACTUALIZAMOS STOCK 
-                        if (idLote != null) {
-                            sql = "UPDATE gcbusiness.almacenproductolote SET stock_actual=" + nuevoStock + " WHERE id_producto=" + idProducto + " AND id_lote=" + idLote + " AND id_almacen=" + id_almacen + ";";
-                        } else {
-                            sql = "UPDATE gcbusiness.almacenproductolote SET stock_actual=" + nuevoStock + " WHERE id_producto=" + idProducto + " AND id_almacen=" + id_almacen + ";";
+                        //OBTENEMOS IDPRODUCTO Y CANTIDAD PARA RETORNAR AL ALMACEN 
+                        Integer idProducto = 0, idLote = null;
+                        Double cantidad;
+                        sql = "SELECT id_producto, id_lote, cantidad FROM gcbusiness.detalle_nota WHERE id_nota=" + idcomprobante;
+                        sqlEjecucion = sql;
+                        rs = st.executeQuery(sql);
+
+                        while (rs.next()) {
+                            idProducto = rs.getInt("id_producto");
+                            idLote = rs.getInt("id_lote");
+                            cantidad = rs.getDouble("cantidad");
+
+                            //OBTENEMOS STOCK ACTUAL DEL PRODUCTO Y DEL ALMACEN CORRESPONDIENTE 
+                            Double stockActual = 0.00;
+                            if (idLote != 0) {
+                                sql = "SELECT stock_actual FROM gcbusiness.almacenproductolote WHERE id_producto=" + idProducto + " AND id_lote=" + idLote + " AND id_almacen=" + id_almacen;
+                            } else {
+                                sql = "SELECT stock_actual FROM gcbusiness.almacenproductolote WHERE id_producto=" + idProducto + " AND id_almacen=" + id_almacen;
+                                idLote = null;
+                            }
+
+                            sqlEjecucion = sql;
+
+                            ResultSet rs1 = st1.executeQuery(sql);
+                            if (rs1.next()) {
+                                stockActual = rs1.getDouble("stock_actual");
+                            }
+
+                            Double nuevoStock = stockActual - cantidad;
+
+                            //INSERTAMOS DETALLE MOVIMIENTO INVENTARIO
+                            int id_detalle_movimientoinventario = 0;
+                            sql = "SELECT NEXTVAL('gcbusiness.detalle_movimientoinventario_id_detalle_movimientoinventario_se')";
+                            sqlEjecucion = sql;
+                            rs1 = st1.executeQuery(sql);
+
+                            if (rs1.next()) {
+                                id_detalle_movimientoinventario = rs1.getInt(1);
+                            }
+
+                            sql = "INSERT INTO gcbusiness.detalle_movimientoinventario (id_detalle_movimientoinventario, id_movimientoinventario, id_producto, id_lote, cantidad, stock_saldo, "
+                                    + "fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion) "
+                                    + "VALUES (" + id_detalle_movimientoinventario + ", " + id_movimientoinventario + ", " + idProducto + ", " + idLote + ", " + cantidad + ", " + nuevoStock
+                                    + ", '" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
+
+                            sqlEjecucion = sql;
+                            st1.executeUpdate(sql);
+
+                            //ACTUALIZAMOS STOCK 
+                            if (idLote != null) {
+                                sql = "UPDATE gcbusiness.almacenproductolote SET stock_actual=" + nuevoStock + " WHERE id_producto=" + idProducto + " AND id_lote=" + idLote + " AND id_almacen=" + id_almacen;
+                            } else {
+                                sql = "UPDATE gcbusiness.almacenproductolote SET stock_actual=" + nuevoStock + " WHERE id_producto=" + idProducto + " AND id_almacen=" + id_almacen;
+                            }
+
+                            sqlEjecucion = sql;
+                            st1.executeUpdate(sql);
                         }
 
+                        //REGISTRAR MOVIMIENTO A CUENTAS POR COBRAR SI APLICA
+                        Integer idcomprobantemodifica = 0;
+                        sql = "SELECT id_venta FROM gcbusiness.venta "
+                                + "WHERE id_tipocomprobante = " + id_tipocomprobante_modifica + " "
+                                + "AND id_serie = " + id_serie_modifica + " "
+                                + "AND correlativo_serie = " + correlativo_serie_modifica;
+
+                        rs = st.executeQuery(sql);
+                        if (rs.next()) {
+                            idcomprobantemodifica = rs.getInt("id_venta");
+                        }
+
+                        Double saldoAnterior = 0.00, saldoActual = 0.00;
+                        Integer idcuentacobrar = 0;
+                        sql = "SELECT id_cuentacobrar, saldo FROM gcbusiness.cuentacobrar WHERE id_comprobante = " + idcomprobantemodifica + " AND id_tipocomprobante = " + id_tipocomprobante_modifica;
+                        rs = st.executeQuery(sql);
+                        if (rs.next()) {
+                            idcuentacobrar = rs.getInt("id_cuentacobrar");
+                            saldoAnterior = rs.getDouble("saldo");
+                        }
+
+                        if (idcuentacobrar != 0) {
+                            saldoActual = saldoAnterior + total_venta;
+
+                            if (saldoActual <= 0) {
+                                sql = "UPDATE gcbusiness.cuentacobrar SET saldo = " + saldoActual + ", estado = 'C' WHERE id_cuentacobrar = " + idcuentacobrar;
+                            } else {
+                                sql = "UPDATE gcbusiness.cuentacobrar SET saldo = " + saldoActual + ", estado = 'P' WHERE id_cuentacobrar = " + idcuentacobrar;
+                            }
+                            sqlEjecucion = sql;
+                            st.executeUpdate(sql);
+
+                            Integer idNovimientoCuentaCobrar = 0;
+                            sql = "SELECT NEXTVAL('gcbusiness.movimiento_cuentacobrar_id_movimiento_cuentacobrar_seq')";
+                            sqlEjecucion = sql;
+
+                            rs = st.executeQuery(sql);
+
+                            if (rs.next()) {
+                                idNovimientoCuentaCobrar = rs.getInt(1);
+                            }
+
+                            String observacion = "ANULACION NOTA";
+
+                            sql = "INSERT INTO gcbusiness.movimiento_cuentacobrar (id_movimiento_cuentacobrar, id_cuentacobrar,fecha,monto,saldo_anterior,saldo_actual,documento_referencia"
+                                    + ",estado,fecha_insercion,usuario_insercion,terminal_insercion,ip_insercion) "
+                                    + "VALUES (" + idNovimientoCuentaCobrar + ", " + idcuentacobrar + ",'" + ts + "'," + total_venta * (-1) + ", " + saldoAnterior + ", " + saldoActual + ", '" + observacion
+                                    + "', 'A', '" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
+                            sqlEjecucion = sql;
+                            st.executeUpdate(sql);
+                        }
+                        //FIN REGISTRAR MOVIMIENTO A CUENTAS POR COBRAR  
+
+                        //ACTUALIZA NOTA
+                        sql = "UPDATE gcbusiness.nota SET estado = 'A', motivo_anulacion='" + motivoAnulacion + "', fecha_modificacion='" + ts + "', usuario_modificacion='" + login_usuario + "', "
+                                + "terminal_modificacion='" + request.getRemoteHost() + "', ip_modificacion='" + request.getRemoteAddr() + "' WHERE id_nota=" + idcomprobante;
+
                         sqlEjecucion = sql;
-                        st1.executeUpdate(sql);
+                        st.executeUpdate(sql);
+                        flag_anulado = 1;
                     }
-
-                    //ACTUALIZA CUENTA COBRAR SI HAY CUENTA POR COBRAR
-//                    sql = "UPDATE gcbusiness.cuentacobrar SET estado = 'A', fecha_modificacion='" + ts + "', usuario_modificacion='" + login_usuario + "', "
-//                            + "terminal_modificacion='" + request.getRemoteHost() + "', ip_modificacion='" + request.getRemoteAddr() + "' WHERE id_comprobante=" + idcomprobante;
-//                    sqlEjecucion = sql;
-//                    st.executeUpdate(sql);
-                    //ACTUALIZA VENTA
-                    sql = "UPDATE gcbusiness.nota SET estado = 'A', motivo_anulacion='" + motivoAnulacion + "', fecha_modificacion='" + ts + "', usuario_modificacion='" + login_usuario + "', "
-                            + "terminal_modificacion='" + request.getRemoteHost() + "', ip_modificacion='" + request.getRemoteAddr() + "' WHERE id_nota=" + idcomprobante;
-
-                    sqlEjecucion = sql;
-                    st.executeUpdate(sql);
-
                 }
 
-                json = "{ \"mensaje\":\"<em>SE ANULÓ CORRECTAMENTE EL COMRPOBANTE</em>\" ";
+                if (flag_anulado == 1) {
+                    json += " \"mensaje\":\"<em>SE ANULÓ CORRECTAMENTE EL COMRPOBANTE</em>\" ";
 
-                cn.commit();
+                    cn.commit();
+                }
 
             } catch (SQLException ex) {
                 Logger.getLogger(GCBusiness_Producto_Servlet.class.getName()).log(Level.SEVERE, null, ex);
-                json = "{ \"mensaje\":\"<em>ERROR AL REALIZAR LA OPERACIÓN</em>\" ";
+                json += " \"mensaje\":\"<em>ERROR AL REALIZAR LA OPERACIÓN</em>\" ";
                 json += ",";
                 json += " \"html\":\"<div class='alert alert-danger'><span class='glyphicon glyphicon-remove'></span> " + ex.getMessage().replace("\n", "").concat(". " + sqlEjecucion) + "</div>\" ";
                 if (cn != null) {
@@ -553,6 +876,7 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
 
                 Integer idventa = Integer.parseInt(request.getParameter("idventa"));
                 Integer idalmacen = Integer.parseInt(request.getParameter("idalmacen"));
+                Integer idmotivonota = request.getParameter("idmotivonota") == null ? 7 : Integer.parseInt(request.getParameter("idmotivonota"));
 
                 DaoVentaImpl daoVentaImpl = new DaoVentaImpl();
                 List<DTODetalleVenta> lstDetalleVenta = daoVentaImpl.accionListarDTODetalleVenta(idventa);
@@ -561,14 +885,23 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
                     respuesta += "<tr class='detalleVenta'>";
                     Integer orden = i + 1;
 
-                    respuesta += "<td style='display: none'>" + lstDetalleVenta.get(i).getIdproducto() + "</td>" //COLUMNA 00:  IdProducto
-                            + "<td style='display: none'>" + orden + "</td>" //COLUMNA 01:  #
-                            + "<td>" + lstDetalleVenta.get(i).getCodigoproducto() + "</td>" //COLUMNA 02:  Código
-                            + "<td>" + lstDetalleVenta.get(i).getNombreproducto() + "</td>" //COLUMNA 03:  Descripción
-                            + "<td> <input class='input_cantidad' id='cantidad_" + orden + "' type='number' value='" + lstDetalleVenta.get(i).getCantidad() + "' min='1' max='100' style='font-size:10px'></td>" //COLUMNA 04:  Cantidad
-                            + "<td>" + lstDetalleVenta.get(i).getUnidadmedida() + "</td>";     //COLUMNA 05:  Medida
+                    if (idmotivonota == 7) {
+                        respuesta += "<td style='display: none'>" + lstDetalleVenta.get(i).getIdproducto() + "</td>" //COLUMNA 00:  IdProducto
+                                + "<td style='display: none'>" + orden + "</td>" //COLUMNA 01:  #
+                                + "<td>" + lstDetalleVenta.get(i).getCodigoproducto() + "</td>" //COLUMNA 02:  Código
+                                + "<td>" + lstDetalleVenta.get(i).getNombreproducto() + "</td>" //COLUMNA 03:  Descripción
+                                + "<td> <input class='input_cantidad' id='cantidad_" + orden + "' type='number' value='" + lstDetalleVenta.get(i).getCantidad() + "' min='1' style='font-size:10px'></td>" //COLUMNA 04:  Cantidad
+                                + "<td>" + lstDetalleVenta.get(i).getUnidadmedida() + "</td>";     //COLUMNA 05:  Medida
+                    } else {
+                        respuesta += "<td style='display: none'>" + lstDetalleVenta.get(i).getIdproducto() + "</td>" //COLUMNA 00:  IdProducto
+                                + "<td style='display: none'>" + orden + "</td>" //COLUMNA 01:  #
+                                + "<td>" + lstDetalleVenta.get(i).getCodigoproducto() + "</td>" //COLUMNA 02:  Código
+                                + "<td>" + lstDetalleVenta.get(i).getNombreproducto() + "</td>" //COLUMNA 03:  Descripción
+                                + "<td> <input class='input_cantidad' id='cantidad_" + orden + "' type='number' value='" + lstDetalleVenta.get(i).getCantidad() + "' min='1' style='font-size:10px' disabled></td>" //COLUMNA 04:  Cantidad
+                                + "<td>" + lstDetalleVenta.get(i).getUnidadmedida() + "</td>";     //COLUMNA 05:  Medida  
+                    }
 
-                    String comboTarifas = "<td> <select class='select_tarifa' id='tarifa_" + orden + "'>";
+                    String comboTarifas = "<td> <select class='select_tarifa' id='tarifa_" + orden + "' disabled>";
                     comboTarifas += "<option value='" + lstDetalleVenta.get(i).getPreciounitarioventa() + "' >" + Math.round(lstDetalleVenta.get(i).getPreciounitarioventa() * Math.pow(10, 2)) / Math.pow(10, 2) + "</option>";
                     comboTarifas += "</select>";
 
@@ -611,17 +944,17 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
                     //COLUMNA 18:  Descuento
                     if (lstDetalleVenta.get(i).getTipodescuento().equals("P")) {
                         if (lstDetalleVenta.get(i).getPctodescuento() == 0) {
-                            respuesta += "<td> <input class='monto_descuento' id='descuento_" + orden + "' placeholder='0.00' size='5' type='text' style='font-size:10px'>"
-                                    + "<select class='select_tipo_dcto' id='dcto_prod_" + orden + "'>"
+                            respuesta += "<td> <input class='monto_descuento' id='descuento_" + orden + "' placeholder='0.00' size='5' type='text' style='font-size:10px' disabled>"
+                                    + "<select class='select_tipo_dcto' id='dcto_prod_" + orden + "' disabled>"
                                     + "<option value='P' selected>%</option>"
-                                    + "<option value='M'>MONTO</option>"
+                                    //            + "<option value='M'>MONTO</option>"
                                     + "</select>\n"
                                     + "</td>";
                         } else {
-                            respuesta += "<td> <input class='monto_descuento' id='descuento_" + orden + "' placeholder='0.00' size='5' type='text' style='font-size:10px' value='" + Math.round(lstDetalleVenta.get(i).getPctodescuento() * Math.pow(10, 2)) / Math.pow(10, 2) + "'>"
-                                    + "<select class='select_tipo_dcto' id='dcto_prod_" + orden + "'>"
+                            respuesta += "<td> <input class='monto_descuento' id='descuento_" + orden + "' placeholder='0.00' size='5' type='text' style='font-size:10px' value='" + Math.round(lstDetalleVenta.get(i).getPctodescuento() * Math.pow(10, 2)) / Math.pow(10, 2) + "' disabled>"
+                                    + "<select class='select_tipo_dcto' id='dcto_prod_" + orden + "' disabled>"
                                     + "<option value='P' selected>%</option>"
-                                    + "<option value='M'>MONTO</option>"
+                                    //            + "<option value='M'>MONTO</option>"
                                     + "</select>\n"
                                     + "</td>";
                         }
@@ -667,7 +1000,8 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
                         respuesta += comboLotes;
 
                         //COLUMNA 22:  Stock Actual
-                        respuesta += "<td id='stock_" + orden + "'>" + Math.round(listaStock.get(0) * Math.pow(10, 3)) / Math.pow(10, 3) + "</td>";
+                        //respuesta += "<td id='stock_" + orden + "'>" + Math.round(listaStock.get(0) * Math.pow(10, 3)) / Math.pow(10, 3) + "</td>";
+                        respuesta += "<td id='stock_" + orden + "'>" + Math.round(lstDetalleVenta.get(i).getCantidad() * Math.pow(10, 3)) / Math.pow(10, 3) + "</td>";
 
                     } else {
                         String query = "SELECT stock_actual from gcbusiness.almacenproductolote "
@@ -684,14 +1018,22 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
                         respuesta += comboLotes;
 
                         //COLUMNA 22:  Stock Actual
-                        respuesta += "<td id='stock_" + orden + "'>" + Math.round(stockActual * Math.pow(10, 3)) / Math.pow(10, 3) + "</td>";
+                        //respuesta += "<td id='stock_" + orden + "'>" + Math.round(stockActual * Math.pow(10, 3)) / Math.pow(10, 3) + "</td>";
+                        respuesta += "<td id='stock_" + orden + "'>" + Math.round(lstDetalleVenta.get(i).getCantidad() * Math.pow(10, 3)) / Math.pow(10, 3) + "</td>";
                     }
 
                     //COLUMNA 23:  Bonificación
-                    respuesta += "<td> "
-                            + "<input id='bonificacion_" + orden + "' class='ace ace-switch bonificacion' type='checkbox' value='" + lstDetalleVenta.get(i).getFlagbonificacion() + "'/>"
-                            + "<span class='lbl' data-lbl=\"SI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NO\"></span>"
-                            + "</td>";
+                    if (lstDetalleVenta.get(i).getFlagbonificacion().equals("S")) {
+                        respuesta += "<td> "
+                                + "<input id='bonificacion_" + orden + "' class='ace ace-switch bonificacion' type='checkbox' checked disabled/>"
+                                + "<span class='lbl' data-lbl=\"SI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NO\" ></span>"
+                                + "</td>";
+                    } else if (lstDetalleVenta.get(i).getFlagbonificacion().equals("N")) {
+                        respuesta += "<td> "
+                                + "<input id='bonificacion_" + orden + "' class='ace ace-switch bonificacion' type='checkbox' disabled/>"
+                                + "<span class='lbl' data-lbl=\"SI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NO\" ></span>"
+                                + "</td>";
+                    }
 
                     //COLUMNA 24:  Acciones
                     respuesta += "<td> "

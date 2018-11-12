@@ -28,7 +28,7 @@
     //String ID = (String) session.getAttribute("ID");
     List opciones = (List) session.getAttribute("accesos");
     BeanUsuario usuario = (BeanUsuario) session.getAttribute("usuario");
-    String idalmacen = (String) session.getAttribute("idAlmacen");
+    Integer idalmacen = Integer.parseInt(session.getAttribute("idAlmacen").toString());
     String descripcionalmacen = (String) session.getAttribute("descripcionAlmacen");
     String idcotizacion = (String) request.getParameter("idcotizacion");
 %>
@@ -658,7 +658,7 @@
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-cogs"></i>
+                            <i class="menu-icon fa fa-file-text"></i>
                             <span class="menu-text"> Reportes </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -668,7 +668,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(72)){
+                                if (opciones.contains(72)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteVenta.jsp">
@@ -680,7 +680,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(73)){
+                                if (opciones.contains(73)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteCuentaCobrar.jsp">
@@ -692,12 +692,24 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(74)){
+                                if (opciones.contains(74)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteInventario.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Reporte de Inventario
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if (opciones.contains(75)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteMovimientoInventario.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Movimientos de Inventario
                                 </a>
 
                                 <b class="arrow"></b>
@@ -776,7 +788,7 @@
                                                 <select id="serie" name="serie" class="styled-select tipo_comprobante" style="width: 70px;" tabindex="1" >
                                                     <%
                                                         DaoSerieImpl daoSerie = new DaoSerieImpl();
-                                                        List<BeanSerie> serie = daoSerie.listarSerieTipoComprobante("03");
+                                                        List<BeanSerie> serie = daoSerie.listarSerieTipoComprobanteAlmacen("03", idalmacen);
 
                                                         for (int i = 0; i < serie.size(); i++) {
                                                     %>
@@ -808,10 +820,10 @@
                                                     %>
                                                 </select>
                                                 &nbsp;&nbsp;&nbsp;
-                                                <label for="negociable" class="control-label" style="width: 75px;">Negociable:</label>
+                                                <label for="negociable" class="control-label hidden" style="width: 75px;">Negociable:</label>
                                                 &nbsp;
-                                                <input id="switch-negociable" class="ace ace-switch" type="checkbox" />
-                                                <span class="lbl" data-lbl="SI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NO" tabindex="4" ></span>
+                                                <input id="switch-negociable" class="ace ace-switch hidden" type="checkbox" />
+                                                <span class="lbl hidden" data-lbl="SI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NO" tabindex="4" ></span>
                                                 &nbsp;
                                                 <label id="lblfechavencimiento" class="control-label hide" style="width: 130px;">Fecha Vencimiento:</label>
                                                 <input type="text" id="fechavencimiento" style="width: 120px;" class="hide" tabindex="5" readonly>
@@ -850,12 +862,12 @@
                                                 <label id="lblmontopagado" class="control-label hide" style="width: 100px;">Monto Pagado:</label>
                                                 <input type="text" name="montopagado" id="montopagado" tabindex="11" style="width: 100px;" placeholder="0.00" class="styled-select tipo_comprobante hide">
                                             </div>
-                                            <div class="form-group" style="display:none;">
+                                            <div class="form-group hidden" style="display:none;">
                                                 <label for="facturagravada" class="control-label" style="width: 115px;">Factura Gravada:</label>
                                                 <input id="switch-gravada" class="ace ace-switch" type="checkbox" />
                                                 <span class="lbl" data-lbl="SI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NO" tabindex="12" ></span>
                                             </div>
-                                            <div class="form-group">
+                                            <div class="form-group hidden">
                                                 <label for="anticipo" class="control-label" style="width: 60px;">Anticipo:</label>
                                                 <input id="switch-anticipo" class="ace ace-switch" type="checkbox" />
                                                 <span class="lbl" data-lbl="SI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NO" tabindex="13" ></span>
@@ -1170,7 +1182,7 @@
                         <div class="row">
                             <div class="col-md-3">
                             </div>
-                            <div class="col-md-6" style="margin-top: 5px;">
+                            <div class="col-md-6 center" style="margin-top: 5px;">
                                 <button class="btn btn-xs btn-primary registrar_venta" style="font-size: 1.2em;"> <span><i class="fa fa-save"></i></span> Registrar Venta</button>
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 <a href="#" id="imprimir" class="btn btn-xs btn-primary imprimir" target="_blank" style="font-size: 1.2em;">
@@ -1237,24 +1249,7 @@
                     $(document).ready(function () {
                         $(window).load(function () {
                             cargarCorrelativo();
-                            
-                            $.ajax({
-                                url: "../Cliente",
-                                method: "POST",
-                                data: {"opcion": "buscar", "idcliente": "4974"},
-                                success: function (data) {
-                                    var obj = jQuery.parseJSON(data);
-                                    $('#idcliente').val(obj.idcliente);
-                                    $('#tipodocumento').val(obj.tipodocumento);
-                                    $('#ruc').val(obj.numerodocumento);
-                                    $('#direccion').val(obj.direccion);
-                                    $('#vendedor').val(obj.vendedor);
-                                },
-                                error: function (error) {
-                                    alertify.error("ERROR AL EJECUTAR AJAX DE OBTENER DATOS USUARIO");
-                                }
-                            }).done();
-                            
+
                             var idcotizacion = <%=idcotizacion%>;
                             if (idcotizacion !== null) {
                                 $.ajax({
@@ -1788,7 +1783,8 @@
                             //Precio total de venta incluye impuestos y descuentos, pero no cargos.
                             var totalPrecioVenta = total_gravadas + total_exoneradas + total_inafectas + total_igv + total_isc;
                             $('#total_precioventa').val(parseFloat(totalPrecioVenta).toFixed(2));
-                        };
+                        }
+                        ;
 
                         $("#input_dcto_global").keyup(function () {
                             calcularTotales();

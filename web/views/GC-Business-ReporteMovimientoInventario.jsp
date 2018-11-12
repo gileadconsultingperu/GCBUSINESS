@@ -2,12 +2,14 @@
     Compañia            : Gilead Consulting S.A.C.
     Sistema             : GC-Business
     Módulo              : Reportes
-    Nombre              : GC-Business-ReporteVenta.jsp
+    Nombre              : GC-Business-ReporteMovimientoInventario.jsp
     Versión             : 1.0
     Fecha Creación      : 01-11-2018
     Autor Creación      : Pablo Jimenez Aguado
-    Uso                 : Exportar Reporte de Ventas
+    Uso                 : Exportar Reporte de Movimientos de Inventario
 --%>
+<%@page import="gilead.gcbusiness.model.BeanProducto"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoProductoImpl"%>
 <%@page import="gilead.gcbusiness.dao.impl.DaoSucursalImpl"%>
 <%@page import="gilead.gcbusiness.model.BeanSucursal"%>
 <%@page import="gilead.gcbusiness.model.BeanAlmacen"%>
@@ -27,7 +29,7 @@
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <meta charset="utf-8" />
-        <title>GC BUSINESS - Reporte de Ventas</title>
+        <title>GC BUSINESS - Reporte de Movimientos de Inventario</title>
 
         <meta name="description" content="Common form elements and layouts" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
@@ -738,7 +740,7 @@
                             <li>
                                 <a href="#">Reportes</a>
                             </li>
-                            <li class="active">Reporte de Ventas</li>
+                            <li class="active">Reporte de Movimientos de Inventario</li>
                         </ul><!-- /.breadcrumb -->
 
                     </div>
@@ -747,54 +749,24 @@
 
                         <div class="page-header">
                             <h1>
-                                Reporte de Ventas
+                                Reporte de Movimientos de Inventario
                                 <small>
                                     <i class="ace-icon fa fa-angle-double-right"></i>
-                                    Exportar reporte de ventas
+                                    Exportar reporte de movimientos de inventario
                                 </small>
                             </h1>
                         </div><!-- /.page-header -->
 
                         <div style="text-align: center;">
-                            <input type="hidden" id="busqueda" value="rbvendedor">
-                            <label for="date-label-from" class="control-label">Desde: </label> 
-                            <input type="text" name="fecha_desde" id="fecha_desde" class="datepicker" style="width: 90px;" placeholder="dd/mm/yyyy" disabled/>
-                            &nbsp;
-                            <label for="date-label-to" class="control-label">Hasta: </label>
-                            <input type="text" name="fecha_hasta" id="fecha_hasta" class="datepicker" style="width: 90px;" placeholder="dd/mm/yyyy" disabled/>
-                            &nbsp;
-                            <div class="control-group" style="margin-top: 20px;">
-                                <div class="radio">
-                                    <label>
-                                        <input id="rbvendedor" name="form-field-radio" type="radio" class="ace" checked/>
-                                        <span class="lbl"> Por Vendedor</span>
-                                    </label>
-                                    <label>
-                                        <input id="rbalmacen" name="form-field-radio" type="radio" class="ace" />
-                                        <span class="lbl"> Por Almacén</span>
-                                    </label>
-                                </div>
+                            <div>
+                                <label for="date-label-from" class="control-label">Desde: </label> 
+                                <input type="text" name="fecha_desde" id="fecha_desde" class="datepicker" style="width: 90px;" placeholder="dd/mm/yyyy" disabled/>
+                                &nbsp;
+                                <label for="date-label-to" class="control-label">Hasta: </label>
+                                <input type="text" name="fecha_hasta" id="fecha_hasta" class="datepicker" style="width: 90px;" placeholder="dd/mm/yyyy" disabled/>
                             </div>
                             &nbsp;
-                            <div id="porVendedor">
-                                <label for="vendedor" class="control-label">Vendedor: </label>
-                                <select id="vendedor" name="vendedor" tabindex="3" style="width: 140px;">
-                                    <option value="0" selected="selected">TODOS</option>
-                                    <%
-                                        DaoVendedorImpl daoVendedor = new DaoVendedorImpl();
-                                        List<BeanVendedor> vendedor = daoVendedor.accionListar();
-
-                                        for (int i = 0; i < vendedor.size(); i++) {
-                                    %>
-                                    <option value="<%=vendedor.get(i).getIdvendedor()%>">
-                                        <%=vendedor.get(i).getDescripcion()%> 
-                                    </option>
-                                    <%
-                                        }
-                                    %>
-                                </select>
-                            </div>
-                            <div id="porAlmacen" class="hide">
+                            <div>
                                 <label for="sucursal" class="control-label">Sucursal: </label>
                                 <select id="sucursal" name="sucursal" tabindex="4" style="width: 130px;">
                                     <option value="0" selected="selected">TODAS</option>
@@ -814,6 +786,30 @@
                                 &nbsp;
                                 <label for="almacen" class="control-label">Almacén: </label>
                                 <select id="almacen" name="almacen" tabindex="4" style="width: 130px;">
+                                </select>
+                            </div>
+                            &nbsp;
+                            <div>
+                                <label for="tipomovimiento" class="control-label">Tipo Movimiento: </label>
+                                <select id="tipomovimiento" name="tipomovimiento" tabindex="3" style="width: 140px;">
+                                    <option value="T" selected="selected">TODOS</option>
+                                    <option value="I">INGRESO</option>
+                                    <option value="E">EGRESO</option>
+                                </select>
+                            </div>
+                            &nbsp;
+                            <div>
+                                <label for="producto" class="control-label" style="width: 80px;">Producto:</label>
+                                <select class="chosen-select" id="producto" tabindex="18" style="width: 400px;">
+                                    <option value="0" selected="selected">TODOS</option>
+                                    <%
+                                        DaoProductoImpl daoProducto = new DaoProductoImpl();
+                                        List<BeanProducto> producto = daoProducto.accionListarActivo();
+                                        for (int i = 0; i < producto.size(); i++) {%>
+                                    <option value="<%= producto.get(i).getIdproducto()%>"><%= producto.get(i).getCodigo() + " | " + producto.get(i).getDescripcion()%></option>
+                                    <%
+                                        }
+                                    %>
                                 </select>
                             </div>
                         </div>
@@ -849,6 +845,7 @@
     <!--[if IE]>
     <script src="../assets/js/jquery-1.11.3.min.js"></script>
     <![endif]-->
+    <script src="../assets/js/chosen.jquery.min.js"></script>
     <script type="text/javascript">
                     if ('ontouchstart' in document.documentElement)
                         document.write("<script src='../assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
@@ -903,12 +900,12 @@
                             event.preventDefault();
                             var fdesde = $('#fecha_desde').val();
                             var fhasta = $('#fecha_hasta').val();
-                            var idvendedor = $('#vendedor').val();
+                            var tipomovimiento = $('#tipomovimiento').val();
                             var idsucursal = $('#sucursal').val();
                             var idalmacen = $('#almacen').val();
-                            var busqueda = $('#busqueda').val();
+                            var idproducto = $('#producto').val();
                             var fileType = $(this).prop('name');
-                            window.open('../Reporte?opcion=VE&busqueda=' + busqueda + '&fileType=' + fileType + '&fdesde=' + fdesde + '&fhasta=' + fhasta + '&idvendedor=' + idvendedor + '&idsucursal=' + idsucursal + '&idalmacen=' + idalmacen, '_blank');
+                            window.open('../Reporte?opcion=MOVINV&idproducto=' + idproducto + '&fileType=' + fileType + '&fdesde=' + fdesde + '&fhasta=' + fhasta + '&tipomovimiento=' + tipomovimiento + '&idsucursal=' + idsucursal + '&idalmacen=' + idalmacen, '_blank');
                         });
 
                         $(".datepicker").datepicker({
@@ -939,17 +936,28 @@
                         };
                         $.datepicker.setDefaults($.datepicker.regional['es']);
 
-                        $("input[type='radio']").change(function () {
-                            var opcion = $(this).attr('id');
-                            if (opcion === "rbvendedor") {
-                                $('#porVendedor').removeClass('hide');
-                                $('#porAlmacen').addClass('hide');
-                            } else {
-                                $('#porAlmacen').removeClass('hide');
-                                $('#porVendedor').addClass('hide');
-                            }
-                            $('#busqueda').val(opcion);
-                        });
+                        if (!ace.vars['touch']) {
+                            $('.chosen-select').chosen({allow_single_deselect: true});
+                            //resize the chosen on window resize
+
+                            $(window)
+                                    .off('resize.chosen')
+                                    .on('resize.chosen', function () {
+                                        $('.chosen-select').each(function () {
+                                            var $this = $(this);
+                                            $this.next().css({'width': 540});
+                                        });
+                                    }).trigger('resize.chosen');
+                            //resize chosen on sidebar collapse/expand
+                            $(document).on('settings.ace.chosen', function (e, event_name, event_val) {
+                                if (event_name !== 'sidebar_collapsed')
+                                    return;
+                                $('.chosen-select').each(function () {
+                                    var $this = $(this);
+                                    $this.next().css({'width': 540});
+                                });
+                            });
+                        }
                     });
     </script>
 </body>

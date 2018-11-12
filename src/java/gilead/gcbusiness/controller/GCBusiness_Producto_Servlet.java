@@ -57,7 +57,7 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                             + "<td style='display: none'>" + orden + "</td>" //COLUMNA 01:  #
                             + "<td>" + rsProducto.getString("codigo_interno") + "</td>" //COLUMNA 02:  Código
                             + "<td>" + rsProducto.getString("descripcion") + "</td>" //COLUMNA 03:  Descripción
-                            + "<td> <input class='input_cantidad' id='cantidad_" + orden + "' type='number' value='1' min='1' max='100' style='font-size:10px'></td>" //COLUMNA 04:  Cantidad
+                            + "<td> <input class='input_cantidad' id='cantidad_" + orden + "' type='number' value='1' min='1' style='font-size:10px'></td>" //COLUMNA 04:  Cantidad
                             + "<td>" + rsProducto.getString("medida") + "</td>";     //COLUMNA 05:  Medida
 
                     String flag_lote = rsProducto.getString("flag_lote");
@@ -129,7 +129,7 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                     respuesta += "<td> <input class='monto_descuento' id='descuento_" + orden + "' placeholder='0.00' size='5' type='text' style='font-size:10px'>"
                             + "<select class='select_tipo_dcto' id='dcto_prod_" + orden + "'>"
                             + "<option value='P'>%</option>"
-                            + "<option value='M'>MONTO</option>"
+                            //        + "<option value='M'>MONTO</option>"
                             + "</select>\n"
                             + "</td>";
 
@@ -275,10 +275,10 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                             + "<option value='M'>MONTO</option>"
                             + "</select>\n"
                             + "</td>";
-                    
+
                     //COLUMNA 14:  Descuento Monto
                     respuesta += "<td style='display: none' id='dscto_mont_" + orden + "'>" + 0.00 + "</td>";
-                    
+
                     //COLUMNA 15:  Precio Compra
                     respuesta += "<td> <input class='input_preciocompra' id='precio_compra_" + orden + "' type='text' style='font-size:10px; width:65px;'> </td>";
 
@@ -420,9 +420,6 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                 java.sql.Timestamp ts = new java.sql.Timestamp(sqlDate.getTime());
                 String login_usuario = (String) session.getAttribute("login_usuario");
                 Double valorcompra = preciocompra;
-                if (afectoigv.equals("G")) {
-                    valorcompra = preciocompra * (1 / (1 + 0.18));
-                }
 
                 query = "INSERT INTO gcbusiness.producto (id_producto, id_marca, id_categoriaproducto, id_moneda, id_tipoproducto, id_unidadmedida, codigo_interno,"
                         + " codigo_ean, codigo_sunat, descripcion, afecto_igv, afecto_isc, id_tipoisc, base_isc, factor_isc, valor_compra, precio_compra, flag_lote, imagen,"

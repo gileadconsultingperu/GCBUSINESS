@@ -648,7 +648,7 @@
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-cogs"></i>
+                            <i class="menu-icon fa fa-file-text"></i>
                             <span class="menu-text"> Reportes </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -658,7 +658,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(72)){
+                                if (opciones.contains(72)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteVenta.jsp">
@@ -670,7 +670,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(73)){
+                                if (opciones.contains(73)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteCuentaCobrar.jsp">
@@ -682,12 +682,24 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(74)){
+                                if (opciones.contains(74)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteInventario.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Reporte de Inventario
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if (opciones.contains(75)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteMovimientoInventario.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Movimientos de Inventario
                                 </a>
 
                                 <b class="arrow"></b>
@@ -1048,7 +1060,7 @@
                         $(document).on('click', '.anular', function () {
                             var datos = $(this).attr('id');
                             var array = [];
-                            array = datos.split("|");
+                            array = datos.split(" | ");
                             var idcomprobante = array[0];
                             var codigoSunatComprobante = array[1];
                             $('#idcomprobante').val(idcomprobante);
@@ -1062,19 +1074,16 @@
                         $('body').on('shown.bs.modal', '#modalMotivoAnulacion', function () {
                             $('input:visible:enabled:first', this).focus();
                         });
-                        
+
                         //Imprimir Comprobante
                         $(document).on('click', '.imprimir', function () {
                             var datos = $(this).attr('id');
                             var array = [];
-                            array = datos.split("|");
+                            array = datos.split(" | ");
                             var idcomprobante = array[0];
-                            var codigoSunatComprobante = array[1];
-                            $('#idcomprobante').val(idcomprobante);
-                            $('#codigoSunatComprobante').val(codigoSunatComprobante);
-                            alertify.error("Imprimiendo");
+                            window.open('../ImprimirComprobante?tipo=CO&idcompra=' + idcomprobante, '_blank');
                         });
-                        
+
                         $('#btnGuardar').click(function (event) {
                             var idcomprobante = $('#idcomprobante').val();
                             var codigoSunatComprobante = $('#codigoSunatComprobante').val();

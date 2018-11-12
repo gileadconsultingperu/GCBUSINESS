@@ -677,7 +677,7 @@
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-cogs"></i>
+                            <i class="menu-icon fa fa-file-text"></i>
                             <span class="menu-text"> Reportes </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -687,7 +687,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(72)){
+                                if (opciones.contains(72)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteVenta.jsp">
@@ -699,7 +699,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(73)){
+                                if (opciones.contains(73)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteCuentaCobrar.jsp">
@@ -711,12 +711,24 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(74)){
+                                if (opciones.contains(74)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteInventario.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Reporte de Inventario
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if (opciones.contains(75)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteMovimientoInventario.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Movimientos de Inventario
                                 </a>
 
                                 <b class="arrow"></b>
@@ -775,6 +787,38 @@
                                 </small>
                             </h1>
                         </div><!-- /.page-header -->
+
+                        <div>
+                            <label for="date-label-from" class="control-label">Desde: </label> 
+                            <input type="text" name="fecha_desde" id="fecha_desde" class="datepicker" style="width: 90px;" placeholder="dd/mm/yyyy" disabled/>
+                            &nbsp;
+                            <label for="date-label-to" class="control-label">Hasta: </label>
+                            <input type="text" name="fecha_hasta" id="fecha_hasta" class="datepicker" style="width: 90px;" placeholder="dd/mm/yyyy" disabled/>
+                            &nbsp;
+                            <label for="text-label-voucher" class="control-label">Almacen: </label>
+                            <select id="filtroalmacen" name="filtroalmacen" tabindex="3" style="width: 140px;">
+                                <option value="0" selected="selected">Todos</option>
+                                <%
+                                    DaoAlmacenImpl daoAlmacen = new DaoAlmacenImpl();
+                                    List<BeanAlmacen> almacen = daoAlmacen.accionListar();
+                                    for (int i = 0; i < almacen.size(); i++) {%>
+                                <option value="<%= almacen.get(i).getIdalmacen()%>"><%= almacen.get(i).getDescripcion()%></option>
+                                <%
+                                    }
+                                %>
+                            </select>
+                            &nbsp;
+                            <label for="text-label-voucher" class="control-label">Tipo Movimiento: </label>
+                            <select id="filtrotipomovimiento" name="filtrotipomovimiento" tabindex="3" style="width: 140px;">
+                                <option value="0" selected="selected">Todos</option>
+                                <option value="I">INGRESO</option>
+                                <option value="E">SALIDA</option>
+                            </select>
+                            &nbsp;
+                            &nbsp;&nbsp;&nbsp;
+                            <input type="button" name="buscar" id="buscar" value="Buscar" class="btn btn-info"/>
+                        </div>
+                        <hr>
 
                         <div class="row">
                             <div class="col-xs-12">
@@ -1074,7 +1118,8 @@
         <!--<script type="text/javascript" src="../assets/js/dataTables/jszip.min.js"></script>
         <script type="text/javascript" src="../assets/js/dataTables/pdfmake.min.js"></script>
         <script type="text/javascript" src="../assets/js/dataTables/vfs_fonts.js"></script>-->
-
+        <link rel="stylesheet" href="../assets/css/jquery-ui.min.css" />
+        <script src="../assets/js/jquery-ui.min.js"></script>
         <!-- inline scripts related to this page -->
         <script type="text/javascript">
 
@@ -1088,45 +1133,162 @@
                             $('input:visible:enabled:first', this).focus();
                         });
 
-                        var tablaIngresosSalidas = $('#tablaIngresosSalidas').DataTable({
-                            bAutoWidth: false,
-                            "processing": true,
-                            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
-                            "iDisplayLength": -1,
-                            destroy: true,
-                            responsive: true,
-                            "searching": true,
-                            "order": [[0, 'asc']],
-                            ajax: {
-                                method: "POST",
-                                url: "../IngresoSalida",
-                                data: {"opcion": "listar"},
-                                dataSrc: "data"
-                            },
-                            columns: [
-                                {"data": "fecha"},
-                                {"data": "almacen"},
-                                {"data": "tipomovimiento"},
-                                {"data": "motivomovimiento"},
-                                {"data": "observacion"},
-                                {"data": "acciones"}
-                            ],
-                            dom: '<"row"<"col-xs-12 col-sm-4 col-md-4"l><"col-xs-12 col-sm-4 col-md-4"B><"col-xs-12 col-sm-4 col-md-4"f>>' +
-                                    'tr<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>> ',
-                            'columnDefs': [
-                                {
-                                    'targets': [0, 1, 2, 3, 4],
-                                    'createdCell': function (td, cellData, rowData, row, col) {
-                                        $(td).attr('contenteditable', 'false');
+                        var d = new Date();
+
+                        var month = d.getMonth() + 1;
+                        var day = d.getDate();
+
+                        var output = d.getFullYear() + '/' +
+                                (month < 10 ? '0' : '') + month + '/' +
+                                (day < 10 ? '0' : '') + day;
+
+                        cargarIngresosSalidas("0", "0", output, output);
+
+                        var tablaIngresosSalidas;
+                        function cargarIngresosSalidas(almacen, tipomovimiento, desde, hasta) {
+                            tablaIngresosSalidas = $('#tablaIngresosSalidas').DataTable({
+                                bAutoWidth: false,
+                                "processing": true,
+                                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+                                "iDisplayLength": -1,
+                                destroy: true,
+                                responsive: true,
+                                "searching": true,
+                                "order": [[0, 'asc']],
+                                ajax: {
+                                    method: "POST",
+                                    url: "../IngresoSalida",
+                                    data: {"opcion": "listar", "desde": desde, "hasta": hasta, "almacen": almacen, "tipomovimiento": tipomovimiento},
+                                    dataSrc: "data"
+                                },
+                                columns: [
+                                    {"data": "fecha"},
+                                    {"data": "almacen"},
+                                    {"data": "tipomovimiento"},
+                                    {"data": "motivomovimiento"},
+                                    {"data": "observacion"},
+                                    {"data": "acciones"}
+                                ],
+                                dom: '<"row"<"col-xs-12 col-sm-4 col-md-4"l><"col-xs-12 col-sm-4 col-md-4"B><"col-xs-12 col-sm-4 col-md-4"f>>' +
+                                        'tr<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>> ',
+                                'columnDefs': [
+                                    {
+                                        'targets': [0, 1, 2, 3, 4],
+                                        'createdCell': function (td, cellData, rowData, row, col) {
+                                            $(td).attr('contenteditable', 'false');
+                                        }
                                     }
+                                ],
+                                buttons: [
+                                ],
+                                language: {
+                                    "url": "../assets/util/espanol.txt"
                                 }
-                            ],
-                            buttons: [
-                            ],
-                            language: {
-                                "url": "../assets/util/espanol.txt"
-                            }
+                            });
+
+                            $.fn.dataTable.Buttons.defaults.dom.container.className = 'dt-buttons btn-overlap btn-group btn-overlap';
+                            new $.fn.dataTable.Buttons(tablaIngresosSalidas, {
+                                buttons: [
+                                    {
+                                        "text": "<i class='fa fa-plus bigger-110 blue'></i>",
+                                        "titleAttr": "Nuevo",
+                                        "className": "btn btn-white btn-primary btn-bold",
+                                        "action": function () {
+                                            $('#sucursal').prop('selectedIndex', 0);
+                                            //Obtener almacenes de la sucursal
+                                            $.get('../SucursalAlmacen', {
+                                                "idSucursal": $('#sucursal').val(),
+                                                "accion": "almacen"
+                                            }, function (response) {
+                                                $('#almacen').html(response);
+                                            });
+                                            $('#almacen').prop('selectedIndex', 0);
+                                            $('#tipomovimiento').prop('selectedIndex', 0);
+                                            //Obtener motivo movimiento del tipo movimiento
+                                            $.get('../MotivoMovimiento', {
+                                                "idTipoMovimiento": $('#tipomovimiento').val(),
+                                                "accion": "motivomovimiento"
+                                            }, function (response) {
+                                                $('#motivomovimiento').html(response);
+                                            });
+                                            $('#motivomovimiento').prop('selectedIndex', 0);
+                                            $('#observacion').val('');
+                                            limpiardetalle();
+
+                                            $('#detalleMovimiento tbody').remove();
+
+                                            $('#modalAgregarIngresoSalida').modal('show');
+                                            $('.divError').empty();
+                                        }
+                                    },
+                                    {
+                                        "extend": "copy",
+                                        "text": "<i class='fa fa-copy bigger-110 pink'></i>",
+                                        "titleAttr": "Copiar",
+                                        "className": "btn btn-white btn-primary btn-bold"
+                                    },
+                                    {
+                                        "extend": 'excel',
+                                        "titleAttr": "Excel",
+                                        "text": "<i class='fa fa-file-excel-o bigger-110 green'></i>",
+                                        "className": "btn btn-white btn-primary btn-bold"
+                                    },
+                                    {
+                                        "extend": "pdf",
+                                        "titleAttr": "PDF",
+                                        "text": "<i class='fa fa-file-pdf-o bigger-110 red'></i>",
+                                        "className": "btn btn-white btn-primary btn-bold"
+                                    },
+                                    {
+                                        "extend": "print",
+                                        "titleAttr": "Imprimir",
+                                        "text": "<i class='fa fa-print bigger-110 grey'></i>",
+                                        "className": "btn btn-white btn-primary btn-bold",
+                                        autoPrint: true,
+                                        message: 'This print was produced using the Print button for DataTables'
+                                    }
+                                ]
+                            });
+
+                            tablaIngresosSalidas.buttons().container().appendTo($('.tableTools-container'));
+                        }
+
+                        $('#buscar').click(function () {
+                            var fecha_desde = $('#fecha_desde').val();
+                            var fecha_hasta = $('#fecha_hasta').val();
+                            var almacen = $('#filtroalmacen').val();
+                            var tipomovimiento = $('#filtrotipomovimiento').val();
+                            $('#tablaIngresosSalidas').DataTable().destroy();
+                            cargarIngresosSalidas(almacen, tipomovimiento, fecha_desde, fecha_hasta);
                         });
+
+                        $(".datepicker").datepicker({
+                            showOn: "button",
+                            buttonImage: "../assets/images/gif/calendar.gif",
+                            buttonImageOnly: false,
+                            dateFormat: 'dd/mm/yy',
+                            changeMonth: true,
+                            changeYear: true
+                        }).datepicker("setDate", new Date());
+
+                        $.datepicker.regional['es'] = {
+                            closeText: 'Cerrar',
+                            prevText: '< Ant',
+                            nextText: 'Sig >',
+                            currentText: 'Hoy',
+                            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+                            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+                            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+                            weekHeader: 'Sm',
+                            dateFormat: 'dd/mm/yy',
+                            firstDay: 1,
+                            isRTL: false,
+                            showMonthAfterYear: false,
+                            yearSuffix: ''
+                        };
+                        $.datepicker.setDefaults($.datepicker.regional['es']);
 
                         function limpiardetalle() {
                             $('#producto')
@@ -1140,72 +1302,6 @@
                             $('#lote').empty();
                             $('#lote').prop('disabled', true);
                         }
-
-                        $.fn.dataTable.Buttons.defaults.dom.container.className = 'dt-buttons btn-overlap btn-group btn-overlap';
-                        new $.fn.dataTable.Buttons(tablaIngresosSalidas, {
-                            buttons: [
-                                {
-                                    "text": "<i class='fa fa-plus bigger-110 blue'></i>",
-                                    "titleAttr": "Nuevo",
-                                    "className": "btn btn-white btn-primary btn-bold",
-                                    "action": function () {
-                                        $('#sucursal').prop('selectedIndex', 0);
-                                        //Obtener almacenes de la sucursal
-                                        $.get('../SucursalAlmacen', {
-                                            "idSucursal": $('#sucursal').val(),
-                                            "accion": "almacen"
-                                        }, function (response) {
-                                            $('#almacen').html(response);
-                                        });
-                                        $('#almacen').prop('selectedIndex', 0);
-                                        $('#tipomovimiento').prop('selectedIndex', 0);
-                                        //Obtener motivo movimiento del tipo movimiento
-                                        $.get('../MotivoMovimiento', {
-                                            "idTipoMovimiento": $('#tipomovimiento').val(),
-                                            "accion": "motivomovimiento"
-                                        }, function (response) {
-                                            $('#motivomovimiento').html(response);
-                                        });
-                                        $('#motivomovimiento').prop('selectedIndex', 0);
-                                        $('#observacion').val('');
-                                        limpiardetalle();
-
-                                        $('#detalleMovimiento tbody').remove();
-
-                                        $('#modalAgregarIngresoSalida').modal('show');
-                                        $('.divError').empty();
-                                    }
-                                },
-                                {
-                                    "extend": "copy",
-                                    "text": "<i class='fa fa-copy bigger-110 pink'></i>",
-                                    "titleAttr": "Copiar",
-                                    "className": "btn btn-white btn-primary btn-bold"
-                                },
-                                {
-                                    "extend": 'excel',
-                                    "titleAttr": "Excel",
-                                    "text": "<i class='fa fa-file-excel-o bigger-110 green'></i>",
-                                    "className": "btn btn-white btn-primary btn-bold"
-                                },
-                                {
-                                    "extend": "pdf",
-                                    "titleAttr": "PDF",
-                                    "text": "<i class='fa fa-file-pdf-o bigger-110 red'></i>",
-                                    "className": "btn btn-white btn-primary btn-bold"
-                                },
-                                {
-                                    "extend": "print",
-                                    "titleAttr": "Imprimir",
-                                    "text": "<i class='fa fa-print bigger-110 grey'></i>",
-                                    "className": "btn btn-white btn-primary btn-bold",
-                                    autoPrint: true,
-                                    message: 'This print was produced using the Print button for DataTables'
-                                }
-                            ]
-                        });
-
-                        tablaIngresosSalidas.buttons().container().appendTo($('.tableTools-container'));
 
                         function tableToJSON(tblObj) {
                             var data = [];
@@ -1532,6 +1628,12 @@
                                     $('#madstockactual').val(response);
                                 });
                             }
+                        });
+
+                        //Imprimir movimiento inventario
+                        $(document).on('click', '.imprimir', function () {
+                            var idmovimientoinventario = $(this).attr('id');
+                            window.open('../ImprimirComprobante?tipo=MI&idmovimientoinventario=' + idmovimientoinventario, '_blank');
                         });
 
                         //another option is using modals

@@ -49,7 +49,7 @@ public class GCBusiness_Compra_Servlet extends HttpServlet {
 
                 for (int i = 0; i < listCompras.size(); i++) {
                     String acciones = "";
-                    
+
                     if (listCompras.get(i).getEstado().equals("E") && dateFormat.format(listCompras.get(i).getFecha_emision().getTime()).equals(dateFormat.format(ts.getTime()))) {
                         acciones = "<div class=\"hidden-sm hidden-xs btn-group\">"
                                 + "<button type='button' name='imprimir' id='" + listCompras.get(i).getIdcompra() + " | " + listCompras.get(i).getCodigoSunatcomprobante() + "' class='btn btn-xs btn-info imprimir' title='Imprimir'><span class='glyphicon glyphicon-print'></span></button>"
@@ -72,7 +72,7 @@ public class GCBusiness_Compra_Servlet extends HttpServlet {
                     obj.put("proveedor", listCompras.get(i).getNombreproveedor());
                     obj.put("moneda", listCompras.get(i).getCodigoSunatMoneda());
                     obj.put("total", listCompras.get(i).getTotal_compra());
-                    obj.put("estado", listCompras.get(i).getEstado().equals("E")?"EMITIDO":"ANULADO");
+                    obj.put("estado", listCompras.get(i).getEstado().equals("E") ? "EMITIDO" : "ANULADO");
                     obj.put("acciones", acciones);
                     datos.add(obj);
                 }
@@ -142,7 +142,7 @@ public class GCBusiness_Compra_Servlet extends HttpServlet {
                 Double total_valorcompra = Double.parseDouble(request.getParameter("total_valorcompra"));
                 Double total_preciocompra = Double.parseDouble(request.getParameter("total_preciocompra"));
                 Double total_descuento = Double.parseDouble(request.getParameter("total_descuento"));
-                Double total_otrocargo = request.getParameter("total_otrocargo") == "" ? 0.00 : Double.parseDouble(request.getParameter("total_otrocargo"));
+                Double total_otrocargo = request.getParameter("total_otrocargo").equals("") ? 0.00 : Double.parseDouble(request.getParameter("total_otrocargo"));
                 Double total_compra = Double.parseDouble(request.getParameter("total_compra"));
 
                 //INICIO LOGICA PARA ANTICIPO
@@ -200,7 +200,7 @@ public class GCBusiness_Compra_Servlet extends HttpServlet {
                 Integer idProducto = 0;
                 Double cantidad = 0.00, pctoIGV = 0.00, valor_unitario_compra = 0.00, precio_unitario_compra = 0.00, valor_compra = 0.00, precio_compra = 0.00, monto_igv = 0.00, monto_isc = 0.00,
                         monto_descuento = 0.00, pcto_descuento = 0.00, valor_compra_descuento = 0.00, precio_compra_descuento = 0.00, monto_igv_descuento = 0.00,
-                        stock_actual = 0.000;
+                        stock_actual = 0.000, precio_unitario_compra_descuento = 0.00;
                 String tipoIGV = "", tipoISC = "", flag_bonificacion = "", descuento = "", tipo_descuento = "", afectoIGV = "";
                 for (int i = 0; i < arrayDetalleCompra.length(); i++) {
                     JSONObject fila1 = null;
@@ -211,14 +211,19 @@ public class GCBusiness_Compra_Servlet extends HttpServlet {
                     cantidad = Double.parseDouble((String) fila1.get("Cantidad"));
 
                     valor_unitario_compra = Double.parseDouble((String) fila1.get("Valor Unitario"));
-                    valor_compra = valor_unitario_compra * cantidad;
-                    valor_compra = Math.round(valor_compra * Math.pow(10, 2)) / Math.pow(10, 2);
+                    //valor_compra = valor_unitario_compra * cantidad;
+                    //valor_compra = Math.round(valor_compra * Math.pow(10, 2)) / Math.pow(10, 2);
 
                     precio_unitario_compra = Double.parseDouble((String) fila1.get("Precio Unitario"));
                     precio_compra = precio_unitario_compra * cantidad;
                     precio_compra = Math.round(precio_compra * Math.pow(10, 2)) / Math.pow(10, 2);
 
-                    monto_igv = Double.parseDouble((String) fila1.get("IGV"));
+                    valor_compra = precio_compra / 1.18;
+                    valor_compra = Math.round(valor_compra * Math.pow(10, 2)) / Math.pow(10, 2);
+
+                    //monto_igv = Double.parseDouble((String) fila1.get("IGV"));
+                    monto_igv = precio_compra - valor_compra;
+                    monto_igv = Math.round(monto_igv * Math.pow(10, 2)) / Math.pow(10, 2);
 
                     //FALTA TIPO ISC
                     monto_isc = Double.parseDouble((String) fila1.get("ISC"));
@@ -229,29 +234,35 @@ public class GCBusiness_Compra_Servlet extends HttpServlet {
                     //TIPO IGV Y PCTO IGV
                     if (flag_bonificacion.equals("S")) {
                         if (afectoIGV.trim().equals("G")) {
-                            tipoIGV = "15"; //Gravado – Bonificaciones
+                            //tipoIGV = "15"; //Gravado – Bonificaciones
+                            tipoIGV = "G";
                             pctoIGV = (precio_compra - valor_compra) / valor_compra;
                             pctoIGV *= 100;
                             pctoIGV = Math.round(pctoIGV * Math.pow(10, 2)) / Math.pow(10, 2);
                         }
                         if (afectoIGV.trim().equals("E")) {
-                            tipoIGV = "21"; //Exonerado – Transferencia Gratuita
+                            //tipoIGV = "21"; //Exonerado – Transferencia Gratuita
+                            tipoIGV = "E";
                         }
                         if (afectoIGV.trim().equals("I")) {
-                            tipoIGV = "31"; //Inafecto – Retiro por Bonificación
+                            //tipoIGV = "31"; //Inafecto – Retiro por Bonificación
+                            tipoIGV = "I";
                         }
                     } else {
                         if (afectoIGV.trim().equals("G")) {
-                            tipoIGV = "10"; //Gravado – Operación Onerosa
+                            //tipoIGV = "10"; //Gravado – Operación Onerosa
+                            tipoIGV = "G";
                             pctoIGV = (precio_compra - valor_compra) / valor_compra;
                             pctoIGV *= 100;
                             pctoIGV = Math.round(pctoIGV * Math.pow(10, 2)) / Math.pow(10, 2);
                         }
                         if (afectoIGV.trim().equals("E")) {
-                            tipoIGV = "20"; //Exonerado – Operación Onerosa
+                            //tipoIGV = "20"; //Exonerado – Operación Onerosa
+                            tipoIGV = "E";
                         }
                         if (afectoIGV.trim().equals("I")) {
-                            tipoIGV = "30"; //Inafecto – Operación Onerosa
+                            //tipoIGV = "30"; //Inafecto – Operación Onerosa
+                            tipoIGV = "I";
                         }
                     }
 
@@ -281,6 +292,9 @@ public class GCBusiness_Compra_Servlet extends HttpServlet {
                     precio_compra_descuento = Double.parseDouble((String) fila1.get("Precio Compra"));
                     precio_compra_descuento = Math.round(precio_compra_descuento * Math.pow(10, 2)) / Math.pow(10, 2);
 
+                    precio_unitario_compra_descuento = precio_compra_descuento / cantidad;
+                    precio_unitario_compra_descuento = Math.round(precio_unitario_compra_descuento * Math.pow(10, 2)) / Math.pow(10, 2);
+
                     monto_igv_descuento = precio_compra_descuento - valor_compra_descuento;
                     monto_igv_descuento = Math.round(monto_igv_descuento * Math.pow(10, 2)) / Math.pow(10, 2);
 
@@ -300,6 +314,21 @@ public class GCBusiness_Compra_Servlet extends HttpServlet {
                     if (columnaLote.contains("|")) {
                         String[] detalleLote = columnaLote.split("|");
                         idlote = Integer.parseInt(detalleLote[0].trim());
+                    }
+
+                    //OBTENER STOCK ACTUAL
+                    if (idlote != null) {
+                        query = "SELECT stock_actual FROM gcbusiness.almacenproductolote WHERE id_producto=" + idProducto + " AND id_lote=" + idlote + " AND id_almacen=" + idalmacen;
+                    } else {
+                        query = "SELECT stock_actual FROM gcbusiness.almacenproductolote WHERE id_producto=" + idProducto + " AND id_almacen=" + idalmacen;
+                        idlote = null;
+                    }
+
+                    sqlEjecucion = query;
+
+                    rs = st.executeQuery(sqlEjecucion);
+                    if (rs.next()) {
+                        stock_actual = rs.getDouble("stock_actual");
                     }
 
                     Double nuevostock = stock_actual + cantidad;
@@ -324,8 +353,17 @@ public class GCBusiness_Compra_Servlet extends HttpServlet {
                     sqlEjecucion = query;
                     st.executeUpdate(query);
 
+                    //INSERTAR COSTO A HISTORICO
+                    query = "INSERT INTO gcbusiness.producto_costo (id_producto, id_compra, fecha, costo, estado,"
+                            + " fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion)"
+                            + " VALUES (" + idProducto + ", " + idCompra + ", '" + ts + "', " + precio_unitario_compra_descuento + ",'A',"
+                            + " '" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
+
+                    sqlEjecucion = query;
+                    st.executeUpdate(query);
+
                     //ACTUALIZAR PRECIO COMPRA EN PRODUCTO
-                    query = "UPDATE gcbusiness.producto SET precio_compra = " + precio_unitario_compra + " WHERE id_producto = " + idProducto;
+                    query = "UPDATE gcbusiness.producto SET precio_compra = " + precio_unitario_compra_descuento + " WHERE id_producto = " + idProducto;
 
                     sqlEjecucion = query;
                     st.executeUpdate(query);
@@ -364,6 +402,8 @@ public class GCBusiness_Compra_Servlet extends HttpServlet {
                     }
                 }
                 json = "{ \"mensaje\":\"<em>SE GENERÓ CORRECTAMENTE LA COMPRA</em>\" ";
+                json += ",";
+                json += " \"idcompra\":\"" + idCompra + "\" ";
 
                 cn.commit();
 

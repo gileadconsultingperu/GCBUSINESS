@@ -349,7 +349,7 @@ public class GCBusiness_Cotizacion_Servlet extends HttpServlet {
                             + "<td style='display: none'>" + orden + "</td>" //COLUMNA 01:  #
                             + "<td>" + lstDetalleCotizacion.get(i).getCodigoproducto() + "</td>" //COLUMNA 02:  Código
                             + "<td>" + lstDetalleCotizacion.get(i).getNombreproducto() + "</td>" //COLUMNA 03:  Descripción
-                            + "<td> <input class='input_cantidad' id='cantidad_" + orden + "' type='number' value='" + lstDetalleCotizacion.get(i).getCantidad() + "' min='1' max='100' style='font-size:10px'></td>" //COLUMNA 04:  Cantidad
+                            + "<td> <input class='input_cantidad' id='cantidad_" + orden + "' type='number' value='" + lstDetalleCotizacion.get(i).getCantidad() + "' min='1' style='font-size:10px'></td>" //COLUMNA 04:  Cantidad
                             + "<td>" + lstDetalleCotizacion.get(i).getUnidadmedida() + "</td>";     //COLUMNA 05:  Medida
 
                     String comboTarifas = "<td> <select class='select_tarifa' id='tarifa_" + orden + "'>";
@@ -398,14 +398,14 @@ public class GCBusiness_Cotizacion_Servlet extends HttpServlet {
                             respuesta += "<td> <input class='monto_descuento' id='descuento_" + orden + "' placeholder='0.00' size='5' type='text' style='font-size:10px'>"
                                     + "<select class='select_tipo_dcto' id='dcto_prod_" + orden + "'>"
                                     + "<option value='P' selected>%</option>"
-                                    + "<option value='M'>MONTO</option>"
+                        //            + "<option value='M'>MONTO</option>"
                                     + "</select>\n"
                                     + "</td>";
                         } else {
                             respuesta += "<td> <input class='monto_descuento' id='descuento_" + orden + "' placeholder='0.00' size='5' type='text' style='font-size:10px' value='" + Math.round(lstDetalleCotizacion.get(i).getPctodescuento() * Math.pow(10, 2)) / Math.pow(10, 2) + "'>"
                                     + "<select class='select_tipo_dcto' id='dcto_prod_" + orden + "'>"
                                     + "<option value='P' selected>%</option>"
-                                    + "<option value='M'>MONTO</option>"
+                        //            + "<option value='M'>MONTO</option>"
                                     + "</select>\n"
                                     + "</td>";
                         }

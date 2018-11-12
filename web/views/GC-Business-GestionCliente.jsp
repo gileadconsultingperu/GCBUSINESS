@@ -647,7 +647,7 @@
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-cogs"></i>
+                            <i class="menu-icon fa fa-file-text"></i>
                             <span class="menu-text"> Reportes </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -657,7 +657,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(72)){
+                                if (opciones.contains(72)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteVenta.jsp">
@@ -669,7 +669,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(73)){
+                                if (opciones.contains(73)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteCuentaCobrar.jsp">
@@ -681,12 +681,24 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(74)){
+                                if (opciones.contains(74)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteInventario.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Reporte de Inventario
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if (opciones.contains(75)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteMovimientoInventario.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Movimientos de Inventario
                                 </a>
 
                                 <b class="arrow"></b>
@@ -745,6 +757,35 @@
                                 </small>
                             </h1>
                         </div><!-- /.page-header -->
+
+                        <div>
+                            <label for="text-label-voucher" class="control-label">Tipo Persona: </label>
+                            <select id="filtrotipopersona" name="filtrotipopersona" tabindex="3" style="width: 140px;">
+                                <option value="0">Todos</option>
+                                <option value="1">NATURAL</option>
+                                <option value="2" selected="selected">JURIDICA</option>
+                            </select>
+                            &nbsp;
+                            <label for="text-label-voucher" class="control-label">Vendedor: </label>
+                            <select id="filtrovendedor" name="filtrovendedor" tabindex="3" style="width: 140px;">
+                                <option value="0" selected="selected">Todos</option>
+                                <%
+                                    DaoVendedorImpl daoVendedor = new DaoVendedorImpl();
+                                    List<BeanVendedor> vendedor = daoVendedor.accionListar();
+
+                                    for (int i = 0; i < vendedor.size(); i++) {
+                                %>
+                                <option value="<%= vendedor.get(i).getIdvendedor()%>">
+                                    <%= vendedor.get(i).getDescripcion()%>
+                                </option>
+                                <%
+                                    }
+                                %>
+                            </select>
+                            &nbsp;&nbsp;&nbsp;
+                            <input type="button" name="buscar" id="buscar" value="Buscar" class="btn btn-info"/>
+                        </div>
+                        <hr>
 
                         <div class="row">
                             <div class="col-xs-12">
@@ -897,8 +938,8 @@
                                         <div class="col-sm-8">
                                             <select id="vendedor" name="vendedor" class="col-xs-10 col-sm-6" tabindex="8">
                                                 <%
-                                                    DaoVendedorImpl daoVendedor = new DaoVendedorImpl();
-                                                    List<BeanVendedor> vendedor = daoVendedor.accionListar();
+                                                    daoVendedor = new DaoVendedorImpl();
+                                                    vendedor = daoVendedor.accionListar();
 
                                                     for (int i = 0; i < vendedor.size(); i++) {
                                                 %>
@@ -906,7 +947,6 @@
                                                     <%= vendedor.get(i).getDescripcion()%> 
                                                 </option>
                                                 <%
-
                                                     }
                                                 %>
                                             </select>   
@@ -1052,123 +1092,135 @@
                             $('input:visible:enabled:first', this).focus();
                         });
 
-                        var tablaClientes = $('#tablaClientes').DataTable({
-                            bAutoWidth: false,
-                            "processing": true,
-                            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
-                            "iDisplayLength": 10,
-                            destroy: true,
-                            responsive: true,
-                            "searching": true,
-                            "order": [[0, 'asc']],
-                            ajax: {
-                                method: "POST",
-                                url: "../Cliente",
-                                data: {"opcion": "listar"},
-                                dataSrc: "data"
-                            },
-                            columns: [
-                                {"data": "nro"},
-                                {"data": "nombre"},
-                                {"data": "tipodocumento"},
-                                {"data": "numerodocumento"},
-                                {"data": "direccion"},
-                                {"data": "telefono"},
-                                {"data": "correo"},
-                                {"data": "tipopersona"},
-                                {"data": "vendedor"},
-                                {"data": "estado"},
-                                {"data": "acciones"}
-                            ],
-                            dom: '<"row"<"col-xs-12 col-sm-4 col-md-4"l><"col-xs-12 col-sm-4 col-md-4"B><"col-xs-12 col-sm-4 col-md-4"f>>' +
-                                    'tr<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>> ',
-                            'columnDefs': [
-                                {
-                                    'targets': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-                                    'createdCell': function (td, cellData, rowData, row, col) {
-                                        $(td).attr('contenteditable', 'false');
+                        cargarClientes("2", "0");
+
+                        var tablaClientes;
+                        function cargarClientes(tipopersona, vendedor) {
+                            tablaClientes = $('#tablaClientes').DataTable({
+                                bAutoWidth: false,
+                                "processing": true,
+                                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+                                "iDisplayLength": 10,
+                                destroy: true,
+                                responsive: true,
+                                "searching": true,
+                                "order": [[0, 'asc']],
+                                ajax: {
+                                    method: "POST",
+                                    url: "../Cliente",
+                                    data: {"opcion": "listar", "tipopersona": tipopersona, "vendedor": vendedor},
+                                    dataSrc: "data"
+                                },
+                                columns: [
+                                    {"data": "nro"},
+                                    {"data": "nombre"},
+                                    {"data": "tipodocumento"},
+                                    {"data": "numerodocumento"},
+                                    {"data": "direccion"},
+                                    {"data": "telefono"},
+                                    {"data": "correo"},
+                                    {"data": "tipopersona"},
+                                    {"data": "vendedor"},
+                                    {"data": "estado"},
+                                    {"data": "acciones"}
+                                ],
+                                dom: '<"row"<"col-xs-12 col-sm-4 col-md-4"l><"col-xs-12 col-sm-4 col-md-4"B><"col-xs-12 col-sm-4 col-md-4"f>>' +
+                                        'tr<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>> ',
+                                'columnDefs': [
+                                    {
+                                        'targets': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                                        'createdCell': function (td, cellData, rowData, row, col) {
+                                            $(td).attr('contenteditable', 'false');
+                                        }
                                     }
+                                ],
+                                buttons: [
+                                ],
+                                language: {
+                                    "url": "../assets/util/espanol.txt"
                                 }
-                            ],
-                            buttons: [
-                            ],
-                            language: {
-                                "url": "../assets/util/espanol.txt"
-                            }
-                        });
+                            });
 
-                        $.fn.dataTable.Buttons.defaults.dom.container.className = 'dt-buttons btn-overlap btn-group btn-overlap';
-                        new $.fn.dataTable.Buttons(tablaClientes, {
-                            buttons: [
-                                {
-                                    "text": "<i class='fa fa-plus bigger-110 blue'></i>",
-                                    "titleAttr": "Nuevo",
-                                    "className": "btn btn-white btn-primary btn-bold",
-                                    "action": function () {
-                                        $('#opcion').val('insertar');
-                                        $('#nombre').val('');
-                                        $('#tipodocumento').val('1');
-                                        $('#numerodocumento').val('');
-                                        $('#direccion').val('');
-                                        $('#telefono').val('');
-                                        $('#correo').val('');
-                                        $('#tipopersona').val('1');
-                                        $('#vendedor').val('1');
-                                        $('#estado').val('A');
-                                        $('#divestado').hide();
-                                        $('#tipodocumento').prop('disabled', false);
-                                        //$("#departamento").val('01');
-                                        var departamentoActual = $("#departamento").val();
-
-                                        $.get('../Ubigeo', {
-                                            "codigo_ubidepartamento": departamentoActual
-                                        }, function (response) {
-                                            $('#provincia').html(response);
-
-                                            var provinciaActual = $("#provincia").val();
+                            $.fn.dataTable.Buttons.defaults.dom.container.className = 'dt-buttons btn-overlap btn-group btn-overlap';
+                            new $.fn.dataTable.Buttons(tablaClientes, {
+                                buttons: [
+                                    {
+                                        "text": "<i class='fa fa-plus bigger-110 blue'></i>",
+                                        "titleAttr": "Nuevo",
+                                        "className": "btn btn-white btn-primary btn-bold",
+                                        "action": function () {
+                                            $('#opcion').val('insertar');
+                                            $('#nombre').val('');
+                                            $('#tipodocumento').val('1');
+                                            $('#numerodocumento').val('');
+                                            $('#direccion').val('');
+                                            $('#telefono').val('');
+                                            $('#correo').val('');
+                                            $('#tipopersona').val('1');
+                                            $('#vendedor').val('1');
+                                            $('#estado').val('A');
+                                            $('#divestado').hide();
+                                            $('#tipodocumento').prop('disabled', false);
+                                            //$("#departamento").val('01');
+                                            var departamentoActual = $("#departamento").val();
 
                                             $.get('../Ubigeo', {
-                                                "codigo_ubiprovincia": provinciaActual
+                                                "codigo_ubidepartamento": departamentoActual
                                             }, function (response) {
-                                                $('#distrito').html(response);
+                                                $('#provincia').html(response);
+
+                                                var provinciaActual = $("#provincia").val();
+
+                                                $.get('../Ubigeo', {
+                                                    "codigo_ubiprovincia": provinciaActual
+                                                }, function (response) {
+                                                    $('#distrito').html(response);
+                                                });
                                             });
-                                        });
 
-                                        $('#modalAgregarCliente .blue').text('Registrar Nuevo Cliente');
-                                        $('#modalAgregarCliente').modal('show');
-                                        $('.divError').empty();
+                                            $('#modalAgregarCliente .blue').text('Registrar Nuevo Cliente');
+                                            $('#modalAgregarCliente').modal('show');
+                                            $('.divError').empty();
+                                        }
+                                    },
+                                    {
+                                        "extend": "copy",
+                                        "text": "<i class='fa fa-copy bigger-110 pink'></i>",
+                                        "titleAttr": "Copiar",
+                                        "className": "btn btn-white btn-primary btn-bold"
+                                    },
+                                    {
+                                        "extend": 'excel',
+                                        "titleAttr": "Excel",
+                                        "text": "<i class='fa fa-file-excel-o bigger-110 green'></i>",
+                                        "className": "btn btn-white btn-primary btn-bold"
+                                    },
+                                    {
+                                        "extend": "pdf",
+                                        "titleAttr": "PDF",
+                                        "text": "<i class='fa fa-file-pdf-o bigger-110 red'></i>",
+                                        "className": "btn btn-white btn-primary btn-bold"
+                                    },
+                                    {
+                                        "extend": "print",
+                                        "titleAttr": "Imprimir",
+                                        "text": "<i class='fa fa-print bigger-110 grey'></i>",
+                                        "className": "btn btn-white btn-primary btn-bold",
+                                        autoPrint: true,
+                                        message: 'This print was produced using the Print button for DataTables'
                                     }
-                                },
-                                {
-                                    "extend": "copy",
-                                    "text": "<i class='fa fa-copy bigger-110 pink'></i>",
-                                    "titleAttr": "Copiar",
-                                    "className": "btn btn-white btn-primary btn-bold"
-                                },
-                                {
-                                    "extend": 'excel',
-                                    "titleAttr": "Excel",
-                                    "text": "<i class='fa fa-file-excel-o bigger-110 green'></i>",
-                                    "className": "btn btn-white btn-primary btn-bold"
-                                },
-                                {
-                                    "extend": "pdf",
-                                    "titleAttr": "PDF",
-                                    "text": "<i class='fa fa-file-pdf-o bigger-110 red'></i>",
-                                    "className": "btn btn-white btn-primary btn-bold"
-                                },
-                                {
-                                    "extend": "print",
-                                    "titleAttr": "Imprimir",
-                                    "text": "<i class='fa fa-print bigger-110 grey'></i>",
-                                    "className": "btn btn-white btn-primary btn-bold",
-                                    autoPrint: true,
-                                    message: 'This print was produced using the Print button for DataTables'
-                                }
-                            ]
-                        });
+                                ]
+                            });
 
-                        tablaClientes.buttons().container().appendTo($('.tableTools-container'));
+                            tablaClientes.buttons().container().appendTo($('.tableTools-container'));
+                        }
+
+                        $('#buscar').click(function () {
+                            var tipopersona = $('#filtrotipopersona').val();
+                            var vendedor = $('#filtrovendedor').val();
+                            $('#tablaClientes').DataTable().destroy();
+                            cargarClientes(tipopersona, vendedor);
+                        });
 
                         $('#btnGuardar').click(function (event) {
                             var idtipodocumento = $('#tipodocumento').val();

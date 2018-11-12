@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +21,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 
 public class GCBusiness_Cliente_Servlet extends HttpServlet {
 
@@ -36,11 +35,14 @@ public class GCBusiness_Cliente_Servlet extends HttpServlet {
         System.out.println("Entro GESTION CLIENTE");
         if (opcion.equals("listar")) {
             try (PrintWriter out = response.getWriter()) {
+                String tipoPersona = request.getParameter("tipopersona") != null ? (String) request.getParameter("tipopersona") : "0";
+                String tipoVendedor = request.getParameter("vendedor") != null ? (String) request.getParameter("vendedor") : "0";
+
                 DaoClienteImpl daoClienteImpl = new DaoClienteImpl();
                 DaoTipoDocumentoImpl daoTipoDocumentoImpl = new DaoTipoDocumentoImpl();
                 DaoTipoPersonaImpl daoTipoPersonaImpl = new DaoTipoPersonaImpl();
                 DaoVendedorImpl daoVendedorImpl = new DaoVendedorImpl();
-                List<BeanCliente> listClientes = daoClienteImpl.accionListar();
+                List<BeanCliente> listClientes = daoClienteImpl.accionListarClientes(tipoPersona, tipoVendedor);
 
                 org.json.simple.JSONArray datos = new org.json.simple.JSONArray();
 
@@ -221,7 +223,7 @@ public class GCBusiness_Cliente_Servlet extends HttpServlet {
                                 + httpResponse.getStatusLine().getStatusCode());
                     }
                     BufferedReader br = new BufferedReader(new InputStreamReader(
-                            (httpResponse.getEntity().getContent())));
+                            (httpResponse.getEntity().getContent()), "UTF-8"));
 
                     String output;
                     while ((output = br.readLine()) != null) {

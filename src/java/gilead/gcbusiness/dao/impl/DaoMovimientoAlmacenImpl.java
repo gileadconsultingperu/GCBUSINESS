@@ -22,7 +22,7 @@ import java.util.List;
 
 public class DaoMovimientoAlmacenImpl implements DaoAccion {
 
-    public List<DTOMovimientoAlmacen> listarMovimientoAlmacen() {
+    public List<DTOMovimientoAlmacen> listarMovimientoAlmacen(String fecha_desde, String fecha_hasta) {
         DTOMovimientoAlmacen movimientoAlmacen = null;
 
         ConectaDb db = new ConectaDb();
@@ -38,6 +38,9 @@ public class DaoMovimientoAlmacenImpl implements DaoAccion {
                         + " FROM gcbusiness.movimientoalmacen ma"
                         + " INNER JOIN gcbusiness.almacen o ON ma.id_almacen_origen = o.id_almacen"
                         + " INNER JOIN gcbusiness.almacen d ON ma.id_almacen_destino = d.id_almacen";
+
+                qry += " WHERE date(ma.fecha) BETWEEN '" + fecha_desde + "' AND '" + fecha_hasta + "'"
+                        + " ORDER BY ma.fecha DESC";
 
                 st = cn.prepareStatement(qry);
 

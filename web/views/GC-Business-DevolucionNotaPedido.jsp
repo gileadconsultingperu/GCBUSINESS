@@ -30,8 +30,7 @@
     //String ID = (String) session.getAttribute("ID");
     List opciones = (List) session.getAttribute("accesos");
     BeanUsuario usuario = (BeanUsuario) session.getAttribute("usuario");
-    String idalmacen = (String) session.getAttribute("idAlmacen");
-    String descripcionalmacen = (String) session.getAttribute("descripcionAlmacen");
+    Integer idalmacen = Integer.parseInt(session.getAttribute("idAlmacen").toString());
     String idventa = request.getParameter("idventa");
 %>
 <html>
@@ -660,7 +659,7 @@
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-cogs"></i>
+                            <i class="menu-icon fa fa-file-text"></i>
                             <span class="menu-text"> Reportes </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -670,7 +669,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(72)){
+                                if (opciones.contains(72)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteVenta.jsp">
@@ -682,7 +681,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(73)){
+                                if (opciones.contains(73)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteCuentaCobrar.jsp">
@@ -694,12 +693,24 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(74)){
+                                if (opciones.contains(74)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteInventario.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Reporte de Inventario
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if (opciones.contains(75)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteMovimientoInventario.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Movimientos de Inventario
                                 </a>
 
                                 <b class="arrow"></b>
@@ -775,7 +786,7 @@
                                                 <select id="serie" name="serie" class="styled-select tipo_comprobante" style="width: 70px;" tabindex="1" >
                                                     <%
                                                         DaoSerieImpl daoSerie = new DaoSerieImpl();
-                                                        List<BeanSerie> serie = daoSerie.listarSerieTipoComprobante("99");
+                                                        List<BeanSerie> serie = daoSerie.listarSerieTipoComprobanteAlmacen("99", idalmacen);
 
                                                         for (int i = 0; i < serie.size(); i++) {
                                                     %>
@@ -873,9 +884,9 @@
                                         <input type="hidden" id="rowdetalle" value="0">
 
                                         <div class="row col-md-12">
-                                            <div class="form-group">
-                                                <label for="producto" class="control-label" style="width: 80px;">Producto:</label>
-                                                <select class="chosen-select" id="producto" tabindex="18" style="width: 400px;" data-placeholder="Seleccione producto...">
+                                            <div class="form-group hidden">
+                                                <label for="producto" class="control-label hidden" style="width: 80px;">Producto:</label>
+                                                <select class="chosen-select hidden" id="producto" tabindex="18" style="width: 400px;" data-placeholder="Seleccione producto...">
                                                     <option value="" selected="selected"></option>
                                                     <%
                                                         DaoProductoImpl daoProducto = new DaoProductoImpl();
@@ -891,7 +902,7 @@
                                                 <select id="lote" name="lote" class="hide"  style="width: 200px;" tabindex="20">
                                                 </select>
                                                 &nbsp;
-                                                <button class="btn btn-sm btn-primary" id="btnAgregarDetalle" tabindex="21" title="Agregar Producto">
+                                                <button class="btn btn-sm btn-primary hidden" id="btnAgregarDetalle" tabindex="21" title="Agregar Producto">
                                                     <i class="ace-icon fa fa-plus"></i>
                                                 </button>
                                             </div>
@@ -1075,12 +1086,14 @@
                         <div class="row">
                             <div class="col-md-3">
                             </div>
-                            <div class="col-md-6" style="margin-top: 5px;">
+                            <div class="col-md-6 center" style="margin-top: 5px;">
                                 <button class="btn btn-xs btn-primary registrar_venta" style="font-size: 1.2em;"> <span><i class="fa fa-save"></i></span> Registrar Nota</button>
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <button type="button" class="btn btn-xs btn-primary imprimir" style="font-size: 1.2em;"> <span><i class="fa fa-print"></i></span> Imprimir</button>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <button class="btn btn-xs btn-primary limpiar" style="font-size: 1.2em;"> <span><i class="fa fa-trash"></i></span> Limpiar</button>
+                                <a href="#" id="imprimir" class="btn btn-xs btn-primary imprimir" target="_blank" style="font-size: 1.2em;">
+                                    <span><i class="fa fa-print"></i></span> Imprimir
+                                </a> 
+                                <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button class="btn btn-xs btn-primary limpiar" style="font-size: 1.2em;"> <span><i class="fa fa-trash"></i></span> Limpiar</button>-->
                             </div>
                             <div class="col-md-3">
                             </div>
@@ -1139,7 +1152,6 @@
         <script type="text/javascript">
                     $(document).ready(function () {
                         $(window).load(function () {
-                            //alert('<%=idventa%>');
                             var idventa = '<%=idventa%>';
                             $.ajax({
                                 url: "../Comprobante",
@@ -1269,7 +1281,7 @@
                             var cantidad = $('#cantidad_' + orden).val();
                             var stockActual = Number($('#stock_' + orden).html());
                             if (cantidad > stockActual) {
-                                alertify.error("Alerta! El stock disponible es de " + stockActual);
+                                alertify.error("Alerta! El stock debe ser menor o igual a " + stockActual);
                                 $('#stock_' + orden).css({"background-color": "red", "color": "white"});
                                 $('#cantidad_' + orden).focus();
                                 return;
@@ -1623,7 +1635,7 @@
                                 method: "POST",
                                 url: "../Nota",
                                 data: {"opcion": "insertar", "idsucursalmodifica": $('#idsucursalmodifica').val(), "idalmacenmodifica": $('#idalmacenmodifica').val(), "detalleventa": JSON.stringify(table), "idcliente": $('#idcliente').val(), "idtipoComprobante": 8, "idvendedor": $('#vendedor').val(),
-                                    "idserie": $('#serie').val(), "idmoneda": $('#moneda').val(), "idtipocomprobantemodifica": $('#idtipocomprobantemodifica').val(), "idseriemodifica": $('#idseriemodifica').val(), "correlativoseriemodifica": $('#correlativomodifica').val(),
+                                    "idserie": $('#serie').val(), "idmoneda": $('#moneda').val(), "idcomprobantemodifica": '<%=idventa%>', "idtipocomprobantemodifica": $('#idtipocomprobantemodifica').val(), "idseriemodifica": $('#idseriemodifica').val(), "correlativoseriemodifica": $('#correlativomodifica').val(),
                                     "idtiponota": 12, "motivo": "DEVOLUCION", "tipo_dctoglobal": tipo_dctoglobal, "pcto_dctoglobal": $('#dcto_global_pcto').val(),
                                     "monto_dctoglobal": $('#dcto_global_monto').val(), "flag_gravada": flag_gravada, "total_gravada": $('#total_gravadas').val(), "total_inafecta": $('#total_inafectas').val(),
                                     "total_exonerada": $('#total_exoneradas').val(), "total_gratuita": $('#total_gratuitas').val(), "total_impuesto": $('#total_impuestos').val(), "total_igv": $('#total_igv').val(),
@@ -1638,84 +1650,86 @@
                                         $('.divError').removeClass('tada animated');
                                     });
                                 } else {
+                                    $('#imprimir').attr('href', '../ImprimirComprobante?tipo=DE&idnota=' + obj.idnota + '&total=' + $('#total_venta').val());
+                                    window.open('../ImprimirComprobante?tipo=DE&idnota=' + obj.idnota + '&total=' + $('#total_venta').val(), '_blank');
                                     alertify.success(obj.mensaje);
                                 }
                             });
 
                         });
 
-                        $('.limpiar').click(function () {
-                            $('#cliente')
-                                    .find('option:first-child').prop('selected', true)
-                                    .end().trigger('chosen:updated');
-                            $('#idcliente').val('0');
-                            $('#producto')
-                                    .find('option:first-child').prop('selected', true)
-                                    .end().trigger('chosen:updated');
-                            $('#ruc').val('');
-                            $('#direccion').val('');
-                            $('#vendedor').val('0');
-                            $('#vendedor').attr('disabled', true);
-                            $('#nuevocliente').val('');
-                            $('#nuevocliente').addClass('hide');
-                            $('#lblnuevocliente').addClass('hide');
-                            $('#ubigeocliente').val('');
-                            $('#dcto_global_pcto').val('0');
-                            $('#dcto_global_monto').val('0');
-                            $('#total_valorventa').val('0');
-                            $('#total_precioventa').val('0');
-
-                            $('#total_igv').val('0.00');
-                            $('#total_impuestos').val('0.00');
-                            $('#input_dcto_global').val('');
-                            $('#select_dcto_total').prop('selectedIndex', 0);
-                            $('#total_gravadas').val('0.00');
-                            $('#total_inafectas').val('0.00');
-                            $('#total_exoneradas').val('0.00');
-                            $('#total_gratuitas').val('0.00');
-                            $('#total_otros_cargos').val('');
-                            $('#total_descuentos').val('0.00');
-                            $('#total_venta').val('0.00');
-
-                            $('#serie').prop('selectedIndex', 0);
-                            cargarCorrelativo();
-                            $('#moneda').prop('selectedIndex', 0);
-
-                            $('#formapago').prop('selectedIndex', 0);
-                            $('#lblnumeroletra').addClass('hide');
-                            $('#numeroletra').addClass('hide');
-                            $('#lblmontoletra').addClass('hide');
-                            $('#montoletra').addClass('hide');
-                            $('#fechavencimientoletra').addClass('hide');
-                            $('#lblfechavencimientoletra').addClass('hide');
-                            $('#iconfechavencimientoletra').addClass('hide');
-
-                            $('#estadopago').prop('selectedIndex', 0);
-                            $('#lblmontopagado').addClass('hide');
-                            $('#montopagado').addClass('hide');
-                            $('#montopagado').val('');
-
-                            $('#switch-negociable').prop('checked', false);
-                            $('#fechavencimiento').addClass('hide');
-                            $('#lblfechavencimiento').addClass('hide');
-                            $('#iconfechavencimiento').addClass('hide');
-                            $('#lbldepartamento').addClass('hide');
-                            $('#departamento').addClass('hide');
-                            $('#lblprovincia').addClass('hide');
-                            $('#provincia').addClass('hide');
-                            $('#lbldistrito').addClass('hide');
-                            $('#distrito').addClass('hide');
-                            $("#fechavencimiento").datepicker({
-                                dateFormat: 'dd/mm/yy',
-                                minDate: '+1d'
-                            }).datepicker("setDate", new Date());
-                            $("#fechavencimientoletra").datepicker({
-                                dateFormat: 'dd/mm/yy',
-                                minDate: '+1d'
-                            }).datepicker("setDate", new Date());
-                            $('#detalleVenta tbody').remove();
-                            $('.registrar_venta').prop('disabled', false);
-                        });
+                        /*$('.limpiar').click(function () {
+                         $('#cliente')
+                         .find('option:first-child').prop('selected', true)
+                         .end().trigger('chosen:updated');
+                         $('#idcliente').val('0');
+                         $('#producto')
+                         .find('option:first-child').prop('selected', true)
+                         .end().trigger('chosen:updated');
+                         $('#ruc').val('');
+                         $('#direccion').val('');
+                         $('#vendedor').val('0');
+                         $('#vendedor').attr('disabled', true);
+                         $('#nuevocliente').val('');
+                         $('#nuevocliente').addClass('hide');
+                         $('#lblnuevocliente').addClass('hide');
+                         $('#ubigeocliente').val('');
+                         $('#dcto_global_pcto').val('0');
+                         $('#dcto_global_monto').val('0');
+                         $('#total_valorventa').val('0');
+                         $('#total_precioventa').val('0');
+                         
+                         $('#total_igv').val('0.00');
+                         $('#total_impuestos').val('0.00');
+                         $('#input_dcto_global').val('');
+                         $('#select_dcto_total').prop('selectedIndex', 0);
+                         $('#total_gravadas').val('0.00');
+                         $('#total_inafectas').val('0.00');
+                         $('#total_exoneradas').val('0.00');
+                         $('#total_gratuitas').val('0.00');
+                         $('#total_otros_cargos').val('');
+                         $('#total_descuentos').val('0.00');
+                         $('#total_venta').val('0.00');
+                         
+                         $('#serie').prop('selectedIndex', 0);
+                         cargarCorrelativo();
+                         $('#moneda').prop('selectedIndex', 0);
+                         
+                         $('#formapago').prop('selectedIndex', 0);
+                         $('#lblnumeroletra').addClass('hide');
+                         $('#numeroletra').addClass('hide');
+                         $('#lblmontoletra').addClass('hide');
+                         $('#montoletra').addClass('hide');
+                         $('#fechavencimientoletra').addClass('hide');
+                         $('#lblfechavencimientoletra').addClass('hide');
+                         $('#iconfechavencimientoletra').addClass('hide');
+                         
+                         $('#estadopago').prop('selectedIndex', 0);
+                         $('#lblmontopagado').addClass('hide');
+                         $('#montopagado').addClass('hide');
+                         $('#montopagado').val('');
+                         
+                         $('#switch-negociable').prop('checked', false);
+                         $('#fechavencimiento').addClass('hide');
+                         $('#lblfechavencimiento').addClass('hide');
+                         $('#iconfechavencimiento').addClass('hide');
+                         $('#lbldepartamento').addClass('hide');
+                         $('#departamento').addClass('hide');
+                         $('#lblprovincia').addClass('hide');
+                         $('#provincia').addClass('hide');
+                         $('#lbldistrito').addClass('hide');
+                         $('#distrito').addClass('hide');
+                         $("#fechavencimiento").datepicker({
+                         dateFormat: 'dd/mm/yy',
+                         minDate: '+1d'
+                         }).datepicker("setDate", new Date());
+                         $("#fechavencimientoletra").datepicker({
+                         dateFormat: 'dd/mm/yy',
+                         minDate: '+1d'
+                         }).datepicker("setDate", new Date());
+                         $('#detalleVenta tbody').remove();
+                         $('.registrar_venta').prop('disabled', false);
+                         });*/
 
                         $('#buscarsunat').click(function (event) {
                             var idtipodocumento = '2';

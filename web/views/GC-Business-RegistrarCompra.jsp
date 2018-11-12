@@ -654,7 +654,7 @@
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-cogs"></i>
+                            <i class="menu-icon fa fa-file-text"></i>
                             <span class="menu-text"> Reportes </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -664,7 +664,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(72)){
+                                if (opciones.contains(72)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteVenta.jsp">
@@ -676,7 +676,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(73)){
+                                if (opciones.contains(73)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteCuentaCobrar.jsp">
@@ -688,12 +688,24 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(74)){
+                                if (opciones.contains(74)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteInventario.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Reporte de Inventario
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if (opciones.contains(75)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteMovimientoInventario.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Movimientos de Inventario
                                 </a>
 
                                 <b class="arrow"></b>
@@ -1421,7 +1433,7 @@
                                     valor_unitario = valor_unitario_dcto / (1 - dcto / 100);
                                     precio_unitario = precio_unitario_dcto / (1 - dcto / 100);
                                     var valorTot = cantidad * parseFloat(valor_unitario).toFixed(2);
-                                    var montDscto =  valorTot * (dcto / 100);
+                                    var montDscto = valorTot * (dcto / 100);
                                     $('#dscto_mont_' + orden).html(parseFloat(montDscto).toFixed(2));
                                 } else {
                                     valor_unitario = valor_unitario_dcto + (dcto / cantidad);
@@ -1794,8 +1806,9 @@
                                         $('.divError').removeClass('tada animated');
                                     });
                                 } else {
+                                    $('#imprimir').attr('href', '../ImprimirComprobante?tipo=CO&idcompra=' + obj.idcompra);
+                                    window.open('../ImprimirComprobante?tipo=CO&idcompra=' + obj.idcompra, '_blank');
                                     alertify.success(obj.mensaje);
-                                    //$('.imprimir').attr('href', 'Print?linkpdf=' + obj.linkpdf);
                                 }
                             });
 

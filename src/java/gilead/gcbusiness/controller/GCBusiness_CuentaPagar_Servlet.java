@@ -24,13 +24,12 @@ import javax.servlet.http.HttpSession;
 public class GCBusiness_CuentaPagar_Servlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        
-        
+
         // Obtengo la sesion activa
         HttpSession session = request.getSession(false);
 
         String opcion = request.getParameter("opcion");
-        System.out.println("opcion: "+opcion);
+        System.out.println("opcion: " + opcion);
         System.out.println("Entro CUENTA PAGAR");
         if (opcion.equals("listar")) {
             try (PrintWriter out = response.getWriter()) {
@@ -47,17 +46,17 @@ public class GCBusiness_CuentaPagar_Servlet extends HttpServlet {
                     String acciones = "";
 
                     acciones = "<div class=\"hidden-sm hidden-xs btn-group\">"
-                            + "<button type='button' name='pagar' id='"+listCuentaPagar.get(i).getIdcuentapagar()+"' class='btn btn-info btn-xs pagar' title='Registrar Pago'><i class=\"ace-icon fa fa-check-square bigger-120\"></i></span></button>" 
-                            + "<button type='button' name='detallar' id='"+listCuentaPagar.get(i).getIdcuentapagar()+"' class='btn btn-info btn-xs detallar' title='Imprimir'><i class=\"ace-icon fa fa-print bigger-120\"></i></span></button>"
+                            + "<button type='button' name='pagar' id='" + listCuentaPagar.get(i).getIdcuentapagar() + "' class='btn btn-info btn-xs pagar' title='Registrar Pago'><i class=\"ace-icon fa fa-check-square bigger-120\"></i></span></button>"
+                            + "<button type='button' name='detallar' id='" + listCuentaPagar.get(i).getIdcuentapagar() + "' class='btn btn-info btn-xs detallar' title='Imprimir'><i class=\"ace-icon fa fa-print bigger-120\"></i></span></button>"
                             + "</div>";
 
                     org.json.simple.JSONObject obj = new org.json.simple.JSONObject();
                     obj.put("fechacompra", dateFormat.format(listCuentaPagar.get(i).getFechaemision().getTime()));
-                    obj.put("comprobante", listCuentaPagar.get(i).getSerie() +" - "+ listCuentaPagar.get(i).getCorrelativoserie());
+                    obj.put("comprobante", listCuentaPagar.get(i).getSerie() + " - " + listCuentaPagar.get(i).getCorrelativoserie());
                     obj.put("totalcompra", listCuentaPagar.get(i).getTotal_compra());
-                    obj.put("saldo", listCuentaPagar.get(i).getSaldo());    
+                    obj.put("saldo", listCuentaPagar.get(i).getSaldo());
                     obj.put("idcompra", listCuentaPagar.get(i).getIdcompra());
-                    obj.put("acciones", acciones);       
+                    obj.put("acciones", acciones);
                     datos.add(obj);
                 }
                 out.print(" {\"dataCuentaPagar\":" + datos.toJSONString() + "} ");
@@ -65,7 +64,7 @@ public class GCBusiness_CuentaPagar_Servlet extends HttpServlet {
         } else if (opcion.equals("listarmovimientos")) {
             try (PrintWriter out = response.getWriter()) {
                 Integer idcuentapagar = Integer.parseInt(request.getParameter("idcuentapagar"));
-                System.out.println("idcc: "+idcuentapagar);
+                System.out.println("idcc: " + idcuentapagar);
                 DaoCuentaPagarImpl daoCuentaPagarImpl = new DaoCuentaPagarImpl();
                 List<BeanMovimientoCuentaPagar> listCuentaPagar = daoCuentaPagarImpl.listarMovimientosCuentaPagar(idcuentapagar);
 
@@ -74,14 +73,14 @@ public class GCBusiness_CuentaPagar_Servlet extends HttpServlet {
                 DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.DATE_FIELD, Locale.UK);
 
                 for (int i = 0; i < listCuentaPagar.size(); i++) {
-                    org.json.simple.JSONObject obj = new org.json.simple.JSONObject();                   
+                    org.json.simple.JSONObject obj = new org.json.simple.JSONObject();
                     obj.put("idMovimientoCC", listCuentaPagar.get(i).getIdmovimientocuentapagar());
-                    obj.put("nroPago", (i+1));
+                    obj.put("nroPago", (i + 1));
                     obj.put("fecha", dateFormat.format(listCuentaPagar.get(i).getFecha().getTime()));
-                    obj.put("monto", listCuentaPagar.get(i).getMonto());    
+                    obj.put("monto", listCuentaPagar.get(i).getMonto());
                     obj.put("saldoAnt", listCuentaPagar.get(i).getSaldoanterior());
                     obj.put("saldoAct", listCuentaPagar.get(i).getSaldoactual());
-                    obj.put("acciones", "<button type='button' name='imprimir' id='"+listCuentaPagar.get(i).getIdmovimientocuentapagar()+"' class='btn btn-info btn-xs imprimir' title='Imprimir comprobante' ><span class='glyphicon glyphicon-print'></span></button>");      
+                    obj.put("acciones", "<button type='button' name='imprimir' id='" + listCuentaPagar.get(i).getIdmovimientocuentapagar() + "' class='btn btn-info btn-xs imprimir' title='Imprimir comprobante' ><span class='glyphicon glyphicon-print'></span></button>");
                     datos.add(obj);
                 }
                 out.print(" {\"dataMovimientosCuentaPagar\":" + datos.toJSONString() + "} ");
@@ -110,34 +109,34 @@ public class GCBusiness_CuentaPagar_Servlet extends HttpServlet {
                 if (rs.next()) {
                     idNovimientoCuentaPagar = rs.getInt(1);
                 }
-                
+
                 Integer idcuentapagar = Integer.parseInt(request.getParameter("idcuentaPagar"));
                 Double saldoAnterior = Double.parseDouble(request.getParameter("saldoTotal"));
-                Double montoPagar = Double.parseDouble(request.getParameter("montoPagar")); 
-                Double saldoActual = saldoAnterior-montoPagar;
-                String referencia  = request.getParameter("referencia");
+                Double montoPagar = Double.parseDouble(request.getParameter("montoPagar"));
+                Double saldoActual = saldoAnterior - montoPagar;
+                String referencia = request.getParameter("referencia");
                 java.util.Date utilDate = new java.util.Date(System.currentTimeMillis());
                 java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
                 java.sql.Timestamp ts = new java.sql.Timestamp(sqlDate.getTime());
                 String login_usuario = (String) session.getAttribute("login_usuario");
-                
+
                 query = "INSERT INTO gcbusiness.movimiento_cuentapagar (id_movimiento_cuentapagar, id_cuentapagar,fecha,monto,saldo_anterior,saldo_actual,documento_referencia"
                         + ",estado,fecha_insercion,usuario_insercion,terminal_insercion,ip_insercion) "
-                        + "VALUES ("+ idNovimientoCuentaPagar + ", " + idcuentapagar + ",'" + ts + "',"+ montoPagar +", "+ saldoAnterior +", "+ saldoActual +", '"+ referencia
-                        +"', 'A', '"+ ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
+                        + "VALUES (" + idNovimientoCuentaPagar + ", " + idcuentapagar + ",'" + ts + "'," + montoPagar + ", " + saldoAnterior + ", " + saldoActual + ", '" + referencia.toUpperCase()
+                        + "', 'A', '" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
 
                 sqlEjecucion = query;
                 st.executeUpdate(query);
-                
+
                 String nuevoEstado = "P";
-                if(saldoActual==0){
-                    nuevoEstado="C";
+                if (saldoActual == 0) {
+                    nuevoEstado = "C";
                 }
-                
-                query = "UPDATE gcbusiness.cuentapagar SET saldo="+saldoActual+", estado='"+nuevoEstado+"' WHERE id_cuentapagar="+idcuentapagar;                            
+
+                query = "UPDATE gcbusiness.cuentapagar SET saldo=" + saldoActual + ", estado='" + nuevoEstado + "' WHERE id_cuentapagar=" + idcuentapagar;
                 sqlEjecucion = query;
-                st.executeUpdate(query); 
-  
+                st.executeUpdate(query);
+
                 json = "{ \"mensaje\":\"<em>SE REGISTRÓ CORRECTAMENTE EL PAGO</em>\" ";
 
                 cn.commit();
@@ -176,7 +175,7 @@ public class GCBusiness_CuentaPagar_Servlet extends HttpServlet {
                 } catch (SQLException ex) {
                     Logger.getLogger(GCBusiness_CuentaPagar_Servlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }           
+            }
         }
     }
 

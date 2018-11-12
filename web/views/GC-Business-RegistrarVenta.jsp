@@ -631,7 +631,7 @@
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-cogs"></i>
+                            <i class="menu-icon fa fa-file-text"></i>
                             <span class="menu-text"> Reportes </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -641,7 +641,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(72)){
+                                if (opciones.contains(72)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteVenta.jsp">
@@ -653,7 +653,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(73)){
+                                if (opciones.contains(73)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteCuentaCobrar.jsp">
@@ -665,12 +665,24 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(74)){
+                                if (opciones.contains(74)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteInventario.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Reporte de Inventario
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if (opciones.contains(75)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteMovimientoInventario.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Movimientos de Inventario
                                 </a>
 
                                 <b class="arrow"></b>
@@ -734,10 +746,10 @@
                             <div class="col-xs-12">
                                 <!-- PAGE CONTENT BEGINS -->
                                 <div class="alert alert-block alert-success">
-                                    <div class="container">
+                                    <div class="form-group">
                                         <h2>COMPROBANTES</h2>
                                         <a href="GC-Business-Factura.jsp?" class="btn btn-info btn-lg" role="button">FACTURA</a>
-                                        <a href="GC-Business-Boleta.jsp?" class="btn btn-info btn-lg" role="button">BOLETA</a>
+                                        <a href="GC-Business-Boleta.jsp?" class="btn btn-info btn-lg" role="button">BOLETA</a>                                   
                                         <a href="GC-Business-NotaPedido.jsp?" class="btn btn-info btn-lg" role="button">NOTA PEDIDO</a>
                                     </div>
                                 </div>

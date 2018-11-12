@@ -53,8 +53,11 @@ public class GCBusiness_TrasladoAlmacenes_Servlet extends HttpServlet {
         System.out.println("Entro TRASLADO ALMACEN");
         if (opcion.equals("listar")) {
             try (PrintWriter out = response.getWriter()) {
+                String fecha_desde = !request.getParameter("desde").equals("") ? (String) request.getParameter("desde") : "01/01/1990";
+                String fecha_hasta = !request.getParameter("hasta").equals("") ? (String) request.getParameter("hasta") : "12/12/9999";
+                
                 DaoMovimientoAlmacenImpl daoMovimientoAlmacenImpl = new DaoMovimientoAlmacenImpl();
-                List<DTOMovimientoAlmacen> listMovimientoAlmacen = daoMovimientoAlmacenImpl.listarMovimientoAlmacen();
+                List<DTOMovimientoAlmacen> listMovimientoAlmacen = daoMovimientoAlmacenImpl.listarMovimientoAlmacen(fecha_desde, fecha_hasta);
 
                 org.json.simple.JSONArray datos = new org.json.simple.JSONArray();
 

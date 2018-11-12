@@ -22,7 +22,7 @@ import java.util.List;
 
 public class DaoMovimientoInventarioImpl implements DaoAccion {
 
-    public List<DTOIngresoSalida> listarIngresoSalida() {
+    public List<DTOIngresoSalida> listarIngresoSalida(String almacen, String tipomovimiento, String fecha_desde, String fecha_hasta) {
         DTOIngresoSalida ingresoSalida = null;
 
         ConectaDb db = new ConectaDb();
@@ -34,11 +34,21 @@ public class DaoMovimientoInventarioImpl implements DaoAccion {
 
         if (cn != null) {
             try {
-                String qry = "select mi.id_movimientoinventario,mi.fecha,a.descripcion almacen,case mm.tipomovimiento when 'I' then 'INGRESO' when 'E' then 'SALIDA' end tipomovimiento,mm.descripcion motivomovimiento, mi.observacion\n"
-                        + "from gcbusiness.movimientoinventario mi\n"
-                        + "left join gcbusiness.motivomovimiento mm on mm.id_motivomovimiento=mi.id_motivomovimiento\n"
-                        + "left join gcbusiness.almacen a on a.id_almacen=mi.id_almacen\n"
-                        + "where mm.flag_proceso='N'";
+                String qry = "SELECT mi.id_movimientoinventario,mi.fecha,a.descripcion almacen,CASE mm.tipomovimiento WHEN 'I' THEN 'INGRESO' WHEN 'E' THEN 'SALIDA' END tipomovimiento,mm.descripcion motivomovimiento, mi.observacion\n"
+                        + "FROM gcbusiness.movimientoinventario mi\n"
+                        + "LEFT JOIN gcbusiness.motivomovimiento mm ON mm.id_motivomovimiento=mi.id_motivomovimiento\n"
+                        + "LEFT JOIN gcbusiness.almacen a ON a.id_almacen=mi.id_almacen\n"
+                        + "WHERE mm.flag_proceso='N'";
+
+                if (!almacen.equals("0")) {
+                    qry += "AND mi.id_almacen = " + almacen + " ";
+                }
+                if (!tipomovimiento.equals("0")) {
+                    qry += "AND mm.tipomovimiento = '" + tipomovimiento + "' ";
+                }
+
+                qry += "AND date(mi.fecha) BETWEEN '" + fecha_desde + "' AND '" + fecha_hasta + "' "
+                        + "ORDER BY mi.fecha DESC";
 
                 st = cn.prepareStatement(qry);
 

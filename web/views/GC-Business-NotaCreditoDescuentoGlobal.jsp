@@ -1,19 +1,27 @@
-<%-- 
+<%--
     Compañia            : Gilead Consulting S.A.C.
     Sistema             : GC-Business
-    Módulo              : Reportes
-    Nombre              : GC-Business-ReporteVenta.jsp
+    Módulo              : Ventas
+    Nombre              : GC-Business-RegistrarVenta.jsp
     Versión             : 1.0
-    Fecha Creación      : 01-11-2018
+    Fecha Creación      : 21-08-2018
     Autor Creación      : Pablo Jimenez Aguado
-    Uso                 : Exportar Reporte de Ventas
+    Uso                 : Vista Inicial al acceder al sistema
 --%>
-<%@page import="gilead.gcbusiness.dao.impl.DaoSucursalImpl"%>
-<%@page import="gilead.gcbusiness.model.BeanSucursal"%>
-<%@page import="gilead.gcbusiness.model.BeanAlmacen"%>
-<%@page import="gilead.gcbusiness.dao.impl.DaoAlmacenImpl"%>
+<%@page import="gilead.gcbusiness.model.BeanMotivoNota"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoMotivoNotaImpl"%>
 <%@page import="gilead.gcbusiness.model.BeanVendedor"%>
 <%@page import="gilead.gcbusiness.dao.impl.DaoVendedorImpl"%>
+<%@page import="gilead.gcbusiness.model.BeanCliente"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoClienteImpl"%>
+<%@page import="gilead.gcbusiness.model.BeanProducto"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoProductoImpl"%>
+<%@page import="gilead.gcbusiness.model.BeanUbigeo"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoUbigeoImpl"%>
+<%@page import="gilead.gcbusiness.model.BeanMoneda"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoMonedaImpl"%>
+<%@page import="gilead.gcbusiness.model.BeanSerie"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoSerieImpl"%>
 <%@page import="java.util.List"%>
 <%@page import="gilead.gcbusiness.model.BeanUsuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -22,12 +30,16 @@
     //String ID = (String) session.getAttribute("ID");
     List opciones = (List) session.getAttribute("accesos");
     BeanUsuario usuario = (BeanUsuario) session.getAttribute("usuario");
+    Integer idalmacen = Integer.parseInt(session.getAttribute("idAlmacen").toString());
+    String descripcionalmacen = (String) session.getAttribute("descripcionAlmacen");
+    String idventa = request.getParameter("idventa");
+    String idmotivonota = request.getParameter("idtiponota");
 %>
 <html>
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <meta charset="utf-8" />
-        <title>GC BUSINESS - Reporte de Ventas</title>
+        <title>GC BUSINESS - Registrar Venta</title>
 
         <meta name="description" content="Common form elements and layouts" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
@@ -44,6 +56,7 @@
         <link rel="stylesheet" href="../assets/css/daterangepicker.min.css" />
         <link rel="stylesheet" href="../assets/css/bootstrap-datetimepicker.min.css" />
         <link rel="stylesheet" href="../assets/css/bootstrap-colorpicker.min.css" />
+        <link rel="stylesheet" href="../assets/css/ui.jqgrid.min.css" />
 
         <!-- text fonts -->
         <link rel="stylesheet" href="../assets/css/fonts.googleapis.com.css" />
@@ -51,15 +64,18 @@
         <!-- ace styles -->
         <link rel="stylesheet" href="../assets/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
 
-
-        <!-- Alertify Version Nueva-->
-        <link rel="stylesheet" href="../assets/css/alertify/alertify.css">  
-
         <!--[if lte IE 9]>
                 <link rel="stylesheet" href="../assets/css/ace-part2.min.css" class="ace-main-stylesheet" />
         <![endif]-->
+
+        <!-- Alertify Version Nueva-->
+        <link rel="stylesheet" href="../assets/css/alertify/alertify.css">
+
         <link rel="stylesheet" href="../assets/css/ace-skins.min.css" />
         <link rel="stylesheet" href="../assets/css/ace-rtl.min.css" />
+
+        <!-- page specific plugin styles -->
+        <link rel="stylesheet" href="../assets/css/jquery-ui.min.css" />
 
         <!--[if lte IE 9]>
           <link rel="stylesheet" href="../assets/css/ace-ie.min.css" />
@@ -79,6 +95,7 @@
 
         <!-- Alertas Version Nueva -->
         <script src="../assets/js/alertify/alertify.js"></script>
+
     </head>
     <body class="no-skin">
         <%
@@ -113,7 +130,7 @@
                                 <img class="nav-user-photo" src="../assets/images/avatars/avatar2.png" alt="Jason's Photo" />
                                 <span class="user-info">
                                     <small>Bienvenido,</small>
-                                    <%= usuario.getUsuario()%>                                    
+                                    <%= usuario.getUsuario()%>
                                 </span>
 
                                 <i class="ace-icon fa fa-caret-down"></i>
@@ -145,7 +162,7 @@
         <div class="main-container ace-save-state" id="main-container">
             <script type="text/javascript">
                 try {
-                    ace.settings.loadState('main-container')
+                    ace.settings.loadState('main-container');
                 } catch (e) {
                 }
             </script>
@@ -736,9 +753,12 @@
                                 <a href="#">Inicio</a>
                             </li>
                             <li>
-                                <a href="#">Reportes</a>
+                                <a href="#">Ventas</a>
                             </li>
-                            <li class="active">Reporte de Ventas</li>
+                            <li>
+                                <a href="GC-Business-GestionNota.jsp">Notas</a>
+                            </li>
+                            <li class="active">Nota Crédito Electónica</li>
                         </ul><!-- /.breadcrumb -->
 
                     </div>
@@ -747,215 +767,395 @@
 
                         <div class="page-header">
                             <h1>
-                                Reporte de Ventas
-                                <small>
-                                    <i class="ace-icon fa fa-angle-double-right"></i>
-                                    Exportar reporte de ventas
-                                </small>
+                                <%if (idmotivonota.equals("7")) {%>
+                                Emitir nota crédito - DEVOLUCIÓN PARCIAL
+                                <%} else if (idmotivonota.equals("6")) {%>
+                                Emitir nota crédito - DEVOLUCIÓN TOTAL
+                                <%} else if (idmotivonota.equals("1")) {%>
+                                Emitir nota crédito - ANULACIÓN DE LA OPERACIÓN
+                                <%} else if (idmotivonota.equals("4")) {%>
+                                Emitir nota crédito - DESCUENTO GLOBAL
+                                <%}%> 
                             </h1>
                         </div><!-- /.page-header -->
 
-                        <div style="text-align: center;">
-                            <input type="hidden" id="busqueda" value="rbvendedor">
-                            <label for="date-label-from" class="control-label">Desde: </label> 
-                            <input type="text" name="fecha_desde" id="fecha_desde" class="datepicker" style="width: 90px;" placeholder="dd/mm/yyyy" disabled/>
-                            &nbsp;
-                            <label for="date-label-to" class="control-label">Hasta: </label>
-                            <input type="text" name="fecha_hasta" id="fecha_hasta" class="datepicker" style="width: 90px;" placeholder="dd/mm/yyyy" disabled/>
-                            &nbsp;
-                            <div class="control-group" style="margin-top: 20px;">
-                                <div class="radio">
-                                    <label>
-                                        <input id="rbvendedor" name="form-field-radio" type="radio" class="ace" checked/>
-                                        <span class="lbl"> Por Vendedor</span>
-                                    </label>
-                                    <label>
-                                        <input id="rbalmacen" name="form-field-radio" type="radio" class="ace" />
-                                        <span class="lbl"> Por Almacén</span>
-                                    </label>
-                                </div>
-                            </div>
-                            &nbsp;
-                            <div id="porVendedor">
-                                <label for="vendedor" class="control-label">Vendedor: </label>
-                                <select id="vendedor" name="vendedor" tabindex="3" style="width: 140px;">
-                                    <option value="0" selected="selected">TODOS</option>
-                                    <%
-                                        DaoVendedorImpl daoVendedor = new DaoVendedorImpl();
-                                        List<BeanVendedor> vendedor = daoVendedor.accionListar();
+                        <!-- PAGE CONTENT BEGINS -->
+                        <div class="row datos_comprobante">
+                            <div class="col-xs-12">
+                                <input type="hidden" id="idsucursalmodifica" value="">
+                                <input type="hidden" id="idalmacenmodifica" value="">
+                                <input type="hidden" id="idtipocomprobantemodifica" value="">
+                                <input type="hidden" id="idseriemodifica" value="">
+                                <input type="hidden" id="flaggravadamodifica" value="">
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading"> Datos Comprobante </div>
+                                    <div class="panel-body">
+                                        <div class="row col-md-12">
+                                            <div class="form-group">
+                                                <label for="serie" class="control-label" style="width: 40px;">Serie:</label>
+                                                <select id="serie" name="serie" class="styled-select tipo_comprobante" style="width: 70px;" tabindex="1" >
+                                                    <%
+                                                        DaoSerieImpl daoSerie = new DaoSerieImpl();
+                                                        List<BeanSerie> serie = daoSerie.listarSerieTipoComprobanteAlmacen("07", idalmacen);
 
-                                        for (int i = 0; i < vendedor.size(); i++) {
-                                    %>
-                                    <option value="<%=vendedor.get(i).getIdvendedor()%>">
-                                        <%=vendedor.get(i).getDescripcion()%> 
-                                    </option>
-                                    <%
-                                        }
-                                    %>
-                                </select>
-                            </div>
-                            <div id="porAlmacen" class="hide">
-                                <label for="sucursal" class="control-label">Sucursal: </label>
-                                <select id="sucursal" name="sucursal" tabindex="4" style="width: 130px;">
-                                    <option value="0" selected="selected">TODAS</option>
-                                    <%
-                                        DaoSucursalImpl daoSucursal = new DaoSucursalImpl();
-                                        List<BeanSucursal> sucursal = daoSucursal.accionListar();
+                                                        for (int i = 0; i < serie.size(); i++) {
+                                                    %>
+                                                    <option value="<%= serie.get(i).getIdserie()%>">
+                                                        <%= serie.get(i).getSerie()%>
+                                                    </option>
+                                                    <%
+                                                        }
+                                                    %>
+                                                </select>
+                                                &nbsp;
+                                                <label for="correlativo" class="control-label" style="width: 80px;">Correlativo:</label>
+                                                <input type="text" name="correlativo" id="correlativo" tabindex="2" style="width: 80px;" class="styled-select tipo_comprobante" disabled>
+                                                &nbsp;&nbsp;&nbsp;
+                                                <label for="moneda" class="control-label" style="width: 55px;">Moneda:</label>
+                                                <select id="moneda" name="moneda" class="styled-select tipo_comprobante" style="width: 175px;" tabindex="3" disabled>
+                                                    <%
+                                                        DaoMonedaImpl daoMoneda = new DaoMonedaImpl();
+                                                        List<BeanMoneda> moneda = daoMoneda.accionListar();
 
-                                        for (int i = 0; i < sucursal.size(); i++) {
-                                    %>
-                                    <option value="<%=sucursal.get(i).getIdsucursal()%>">
-                                        <%=sucursal.get(i).getDescripcion()%> 
-                                    </option>
-                                    <%
-                                        }
-                                    %>
-                                </select>
-                                &nbsp;
-                                <label for="almacen" class="control-label">Almacén: </label>
-                                <select id="almacen" name="almacen" tabindex="4" style="width: 130px;">
-                                </select>
+                                                        for (int i = 0; i < moneda.size(); i++) {
+                                                    %>
+                                                    <option value="<%= moneda.get(i).getIdmoneda()%>">
+                                                        <%= moneda.get(i).getDescripcion()%>
+                                                    </option>
+                                                    <%
+
+                                                        }
+                                                    %>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group hidden">
+                                                <label for="motivonota" class="control-label" style="width: 110px;">Tipo de Nota:</label>
+                                                <select id="motivonota" name="motivonota" class="styled-select tipo_comprobante" style="width: 320px;" tabindex="6">
+                                                    <%
+                                                        DaoMotivoNotaImpl daoMotivoNota = new DaoMotivoNotaImpl();
+                                                        List<BeanMotivoNota> motivoNota = daoMotivoNota.listarMotivoNotaTipoComprobante("07");
+
+                                                        for (int i = 0; i < motivoNota.size(); i++) {
+                                                    %>
+                                                    <option value="<%= motivoNota.get(i).getIdmotivonota()%>">
+                                                        <%= motivoNota.get(i).getDescripcion()%>
+                                                    </option>
+                                                    <%
+
+                                                        }
+                                                    %>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="comprobantemodifica" class="control-label" style="width: 110px;">Documento que modifica:</label>
+                                                <input type="text" name="tipocomprobantemodifica" id="tipocomprobantemodifica" tabindex="2" style="width: 120px;" class="styled-select tipo_comprobante" disabled>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <input type="text" name="seriemodifica" id="seriemodifica" tabindex="2" style="width: 120px;" class="styled-select tipo_comprobante" disabled>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <input type="text" name="correlativomodifica" id="correlativomodifica" tabindex="2" style="width: 120px;" class="styled-select tipo_comprobante" disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><!-- /.col -->
+                            </div>
+                        </div><!-- /.row -->
+                        <div class="row datos_cliente">
+                            <div class="col-xs-12">
+                                <input type="hidden" id="idcliente" value="0">
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading"> Datos Cliente </div>
+                                    <div class="panel-body">
+                                        <div class="row col-md-12">
+                                            <div class="form-group">
+                                                <label id="lblcliente" for="cliente" class="control-label" style="width: 80px;">Cliente:</label>
+                                                <input type="text" name="cliente" id="cliente" tabindex="16" style="width: 540px;" disabled>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="ruc" class="control-label" style="width: 80px;">RUC:</label>
+                                                <input type="text" name="ruc" id="ruc" tabindex="15" style="width: 433px;" disabled>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="direccion" class="control-label" style="width: 80px;">Dirección:</label>
+                                                <input type="text" name="direccion" id="direccion" tabindex="16" style="width: 540px;" disabled>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="vendedor" class="control-label" style="width: 80px;">Vendedor:</label>
+                                                <select id="vendedor" name="vendedor" style="width: 200px;" tabindex="17" disabled>
+                                                    <option value="0" selected="selected"></option>
+                                                    <%
+                                                        DaoVendedorImpl daoVendedor = new DaoVendedorImpl();
+                                                        List<BeanVendedor> vendedor = daoVendedor.accionListar();
+
+                                                        for (int i = 0; i < vendedor.size(); i++) {
+                                                    %>
+                                                    <option value="<%= vendedor.get(i).getIdvendedor()%>">
+                                                        <%= vendedor.get(i).getDescripcion()%>
+                                                    </option>
+                                                    <%
+
+                                                        }
+                                                    %>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><!-- /.col -->
+                            </div>
+                        </div><!-- /.row -->
+                        <div class="row datos_descuento_global">
+                            <div class="col-xs-12">
+                                <input type="hidden" id="idcliente" value="0">
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading"> Datos Descuento Global </div>
+                                    <div class="panel-body">
+                                        <div class="row col-md-12">
+                                            <div class="form-group">
+                                                <label id="lblsustento" for="sustento" class="control-label" style="width: 80px;">Motivo:</label>
+                                                <input type="text" name="sustento" id="sustento" tabindex="16" style="width: 540px;">
+                                            </div>
+                                            <div class="form-group">
+                                                <label id="lbldescuentoglobal" for="descuentoglobal" class="control-label" style="width: 80px;">Descuento Global:</label>
+                                                <input type="text" name="descuentoglobal" id="descuentoglobal" tabindex="16" style="width: 122px;">
+                                                <label id="lbltipoafecto" for="tipoafecto" class="control-label" style="width: 80px;">Tipo Afectación:</label>
+                                                <select id="tipoafecto" name="tipoafecto" style="width: 122px;" tabindex="17">
+                                                    <option value="G">GRAVADO</option>
+                                                    <option value="E">EXONERADO</option>
+                                                    <option value="I">INAFECTO</option>
+                                                </select>
+                                                <label id="lbligv" for="igv" class="control-label" style="width: 80px;">IGV:</label>
+                                                <input type="text" name="igv" id="igv" tabindex="16" style="width: 122px;" disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><!-- /.col -->
+                            </div>
+                        </div><!-- /.row -->
+                        <div class="row">
+                            <div class="col-md-3">
+                            </div>
+                            <div class="col-md-6 center" style="margin-top: 5px;">
+                                <button class="btn btn-xs btn-primary registrar_venta" style="font-size: 1.2em;"> <span><i class="fa fa-save"></i></span> Registrar Nota</button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <a href="#" id="imprimir" class="btn btn-xs btn-primary imprimir" target="_blank" style="font-size: 1.2em;">
+                                    <span><i class="fa fa-print"></i></span> Imprimir
+                                </a> 
+                                <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button class="btn btn-xs btn-primary limpiar" style="font-size: 1.2em;"> <span><i class="fa fa-trash"></i></span> Limpiar</button>-->
+                            </div>
+                            <div class="col-md-3">
                             </div>
                         </div>
-                        <hr>
-                        <div class="form-group" style="text-align: center; margin-top: 30px">            
-                            <button type="button" id="PDF" name="PDF" class="btn btn-app btn-success btn-sm generar">
-                                <span class="glyphicon glyphicon-export"> PDF</span>
-                            </button> 
-                            &nbsp;
-                            <button type="button" id="EXCEL" name="EXCEL" class="btn btn-app btn-success btn-sm generar">
-                                <span class="glyphicon glyphicon-export"> Excel</span>
-                            </button>  
-                        </div>
-                    </div>
+                        <!-- PAGE CONTENT ENDS -->
+                    </div><!-- /.main-content -->
 
-                </div><!-- /.page-content -->
-            </div>
-        </div><!-- /.main-content -->
+                    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+                        <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+                    </a>
+                </div>
+            </div><!-- /.main-container -->
+        </div>
 
-        <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
-            <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
-        </a>
-    </div><!-- /.main-container -->
+        <!-- basic scripts -->
 
+        <!--[if !IE]> -->
+        <script src="../assets/js/jquery-2.1.4.min.js"></script>
 
-    <!-- basic scripts -->
+        <!-- <![endif]-->
 
-    <!--[if !IE]> -->
-    <script src="../assets/js/jquery-2.1.4.min.js"></script>
+        <script src="../assets/js/jquery.tabletojson.min.js"></script>
 
-    <!-- <![endif]-->
-
-    <!--[if IE]>
-    <script src="../assets/js/jquery-1.11.3.min.js"></script>
-    <![endif]-->
-    <script type="text/javascript">
+        <!--[if IE]>
+        <script src="../assets/js/jquery-1.11.3.min.js"></script>
+        <![endif]-->
+        <script src="../assets/js/chosen.jquery.min.js"></script>
+        <script type="text/javascript">
                     if ('ontouchstart' in document.documentElement)
                         document.write("<script src='../assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
-    </script>
-    <script src="../assets/js/bootstrap.min.js"></script>
+        </script>
+        <script src="../assets/js/bootstrap.min.js"></script>
+        <script src="../assets/js/jquery.maskedinput.min.js"></script>
 
-    <!-- page specific plugin scripts -->
+        <!-- page specific plugin scripts -->
 
-    <!--[if lte IE 8]>
-    <script src="../assets/js/excanvas.min.js"></script>
-    <![endif]-->
-    <script src="../assets/js/jquery-ui.custom.min.js"></script>
-    <script src="../assets/js/jquery.ui.touch-punch.min.js"></script>
-    <script src="../assets/js/jquery.easypiechart.min.js"></script>
-    <script src="../assets/js/jquery.sparkline.index.min.js"></script>
-    <script src="../assets/js/jquery.flot.min.js"></script>
-    <script src="../assets/js/jquery.flot.pie.min.js"></script>
-    <script src="../assets/js/jquery.flot.resize.min.js"></script>
+        <!--[if lte IE 8]>
+        <script src="../assets/js/excanvas.min.js"></script>
+        <![endif]-->
+        <script src="../assets/js/jquery-ui.custom.min.js"></script>
+        <script src="../assets/js/jquery.ui.touch-punch.min.js"></script>
+        <script src="../assets/js/jquery.easypiechart.min.js"></script>
+        <script src="../assets/js/jquery.sparkline.index.min.js"></script>
+        <script src="../assets/js/jquery.flot.min.js"></script>
+        <script src="../assets/js/jquery.flot.pie.min.js"></script>
+        <script src="../assets/js/jquery.flot.resize.min.js"></script>
 
-    <!-- ace scripts -->
-    <script src="../assets/js/ace-elements.min.js"></script>
-    <script src="../assets/js/ace.min.js"></script>
+        <!-- ace scripts -->
+        <script src="../assets/js/ace-elements.min.js"></script>
+        <script src="../assets/js/ace.min.js"></script>
 
-    <link rel="stylesheet" href="../assets/css/jquery-ui.min.css" />
-    <script src="../assets/js/jquery-ui.min.js"></script>
-    <!-- inline scripts related to this page -->
-    <script type="text/javascript">
+        <!-- page specific plugin scripts -->
+        <script src="../assets/js/jquery-ui.min.js"></script>
+        <script src="../assets/js/jquery.ui.touch-punch.min.js"></script>
 
+        <script type="text/javascript">
                     $(document).ready(function () {
                         $(window).load(function () {
-                            cargarAlmacenSucursal();
+                            //alert('<%=idventa%>');
+                            var idventa = '<%=idventa%>';
+                            var idmotivonota = '<%=idmotivonota%>';
+                            $('#motivonota').val(idmotivonota);
+                            $.ajax({
+                                url: "../Comprobante",
+                                method: "GET",
+                                data: {"opcion": "obtenerventa", "idventa": idventa},
+                                success: function (data) {
+                                    var obj = jQuery.parseJSON(data);
+                                    $('#idsucursalmodifica').val(obj.idsucursal);
+                                    $('#idalmacenmodifica').val(obj.idalmacen);
+                                    $('#flaggravadamodifica').val(obj.flaggravada);
+                                    $('#idtipocomprobantemodifica').val(obj.idtipocomprobante);
+                                    $('#tipocomprobantemodifica').val(obj.tipocomprobante);
+                                    $('#idseriemodifica').val(obj.idserie);
+                                    $('#seriemodifica').val(obj.serie);
+                                    $('#correlativomodifica').val(obj.correlativoserie);
+
+                                    var idcliente = obj.idcliente;
+                                    $.ajax({
+                                        url: "../Cliente",
+                                        method: "POST",
+                                        data: {"opcion": "buscar", "idcliente": idcliente},
+                                        success: function (data) {
+                                            var obj = jQuery.parseJSON(data);
+                                            $('#idcliente').val(obj.idcliente);
+                                            $('#cliente').val(obj.nombre);
+                                            $('#ruc').val(obj.numerodocumento);
+                                            $('#direccion').val(obj.direccion);
+                                            $('#vendedor').val(obj.vendedor);
+                                        },
+                                        error: function (error) {
+                                            alertify.error("ERROR AL EJECUTAR AJAX DE OBTENER DATOS USUARIO");
+                                        }
+                                    }).done();
+                                },
+                                error: function (error) {
+                                    alertify.error("ERROR AL EJECUTAR AJAX DE OBTENER DATOS USUARIO");
+                                }
+                            }).done();
+
+                            cargarCorrelativo();
                         });
 
-                        var cargarAlmacenSucursal = function () {
-                            var idSucursal = $('#sucursal').val();
-                            if (idSucursal === "0") {
-                                $('#almacen').html("<option value='0' selected='selected'>TODOS</option>");
-                            } else {
-                                $.get('../SucursalAlmacen', {
-                                    accion: "almacen", idSucursal: idSucursal
-                                }, function (response) {
-                                    $('#almacen').html("<option value='0' selected='selected'>TODOS</option>" + response);
+                        var cargarCorrelativo = function () {
+                            var idSerie = $('#serie').val();
+                            $.get('../Serie', {
+                                idSerie: idSerie
+                            }, function (response) {
+                                $('#correlativo').val(response);
+                            });
+                        };
+
+                        $('#serie').change(function () {
+                            var idSerie = $('#serie').val();
+                            $.get('../Serie', {
+                                idSerie: idSerie
+                            }, function (response) {
+                                $('#correlativo').val(response);
+                            });
+                        });
+
+                        $("#descuentoglobal").keyup(function () {
+                            var tipoafecto = $('#tipoafecto').val();
+                            var descuentoglobal = $('#descuentoglobal').val();
+                            var igv = 0;
+                            if (tipoafecto === 'G') {
+                                igv = descuentoglobal * 0.18;
+                            }
+                            $('#igv').val(parseFloat(igv).toFixed(2));
+                            //$('#descuentoglobal').val(parseFloat(descuentoglobal).toFixed(2));
+                        });
+
+                        $("#descuentoglobal").blur(function () {
+                            var tipoafecto = $('#tipoafecto').val();
+                            var descuentoglobal = $('#descuentoglobal').val();
+                            var igv = 0;
+                            if (tipoafecto === 'G') {
+                                igv = descuentoglobal * 0.18;
+                            }
+                            $('#igv').val(parseFloat(igv).toFixed(2));
+                            $('#descuentoglobal').val(parseFloat(descuentoglobal).toFixed(2));
+                        });
+
+                        $("#tipoafecto").change(function () {
+                            var tipoafecto = $('#tipoafecto').val();
+                            var descuentoglobal = $('#descuentoglobal').val();
+                            var igv = 0;
+                            if (tipoafecto === 'G') {
+                                igv = descuentoglobal * 0.18;
+                            }
+                            $('#igv').val(parseFloat(igv).toFixed(2));
+                            $('#descuentoglobal').val(parseFloat(descuentoglobal).toFixed(2));
+                        });
+
+                        if (!ace.vars['touch']) {
+                            $('.chosen-select').chosen({allow_single_deselect: true});
+                            //resize the chosen on window resize
+
+                            $(window)
+                                    .off('resize.chosen')
+                                    .on('resize.chosen', function () {
+                                        $('.chosen-select').each(function () {
+                                            var $this = $(this);
+                                            $this.next().css({'width': 540});
+                                        });
+                                    }).trigger('resize.chosen');
+                            //resize chosen on sidebar collapse/expand
+                            $(document).on('settings.ace.chosen', function (e, event_name, event_val) {
+                                if (event_name !== 'sidebar_collapsed')
+                                    return;
+                                $('.chosen-select').each(function () {
+                                    var $this = $(this);
+                                    $this.next().css({'width': $this.parent().width()});
                                 });
-                            }
-                        };
+                            });
+                        }
 
-                        $('#sucursal').change(function () {
-                            cargarAlmacenSucursal();
-                        });
 
-                        $('.generar').click(function (event) {
+                        $('.registrar_venta').click(function (event) {
                             event.preventDefault();
-                            var fdesde = $('#fecha_desde').val();
-                            var fhasta = $('#fecha_hasta').val();
-                            var idvendedor = $('#vendedor').val();
-                            var idsucursal = $('#sucursal').val();
-                            var idalmacen = $('#almacen').val();
-                            var busqueda = $('#busqueda').val();
-                            var fileType = $(this).prop('name');
-                            window.open('../Reporte?opcion=VE&busqueda=' + busqueda + '&fileType=' + fileType + '&fdesde=' + fdesde + '&fhasta=' + fhasta + '&idvendedor=' + idvendedor + '&idsucursal=' + idsucursal + '&idalmacen=' + idalmacen, '_blank');
+
+                            $('.registrar_venta').prop('disabled', true);
+                            $.ajax({
+                                method: "POST",
+                                url: "../Nota",
+                                data: {"opcion": "insertardescuentoglobal", "idsucursalmodifica": $('#idsucursalmodifica').val(), "idalmacenmodifica": $('#idalmacenmodifica').val(), "idcliente": $('#idcliente').val(), "idtipoComprobante": 3, "idvendedor": $('#vendedor').val(),
+                                    "idserie": $('#serie').val(), "idmoneda": $('#moneda').val(), "idcomprobantemodifica": '<%=idventa%>', "idtipocomprobantemodifica": $('#idtipocomprobantemodifica').val(), "idseriemodifica": $('#idseriemodifica').val(), "correlativoseriemodifica": $('#correlativomodifica').val(),
+                                    "idtiponota": $('#motivonota').val(), "motivo": $("#sustento").val(), "descuentoglobal": $("#descuentoglobal").val(), "tipoafecto": $("#tipoafecto").val(), "igv": $("#igv").val()
+                                }
+                            }).done(function (data) {
+                                var obj = jQuery.parseJSON(data);
+                                if (obj.mensaje.indexOf('ERROR') !== -1) {
+                                    $('.divError').html(obj.html);
+                                    $('.divError').addClass('tada animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+                                        $('.divError').removeClass('tada animated');
+                                    });
+                                } else {
+                                    $('#imprimir').attr('href', '../ImprimirComprobante?tipo=NC&idnota=' + obj.idnota + '&total=' + $('#total_venta').val());
+                                    window.open('../ImprimirComprobante?tipo=NC&idnota=' + obj.idnota + '&total=' + $('#total_venta').val(), '_blank');
+                                    alertify.success(obj.mensaje);
+                                }
+                            });
+
                         });
 
-                        $(".datepicker").datepicker({
-                            showOn: "button",
-                            buttonImage: "../assets/images/gif/calendar.gif",
-                            buttonImageOnly: false,
-                            dateFormat: 'dd/mm/yy',
-                            changeMonth: true,
-                            changeYear: true
-                        }).datepicker("setDate", new Date());
-
-                        $.datepicker.regional['es'] = {
-                            closeText: 'Cerrar',
-                            prevText: '< Ant',
-                            nextText: 'Sig >',
-                            currentText: 'Hoy',
-                            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-                            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-                            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-                            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
-                            dayNamesMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
-                            weekHeader: 'Sm',
-                            dateFormat: 'dd/mm/yy',
-                            firstDay: 1,
-                            isRTL: false,
-                            showMonthAfterYear: false,
-                            yearSuffix: ''
-                        };
-                        $.datepicker.setDefaults($.datepicker.regional['es']);
-
-                        $("input[type='radio']").change(function () {
-                            var opcion = $(this).attr('id');
-                            if (opcion === "rbvendedor") {
-                                $('#porVendedor').removeClass('hide');
-                                $('#porAlmacen').addClass('hide');
-                            } else {
-                                $('#porAlmacen').removeClass('hide');
-                                $('#porVendedor').addClass('hide');
-                            }
-                            $('#busqueda').val(opcion);
-                        });
+                        /*$('.limpiar').click(function () {
+                         $('.registrar_venta').prop('disabled', false);
+                         });*/
                     });
-    </script>
-</body>
-<%
-    } else {
-        response.sendRedirect("../");
-    }
-%>
+        </script>
+    </body>
+    <%
+        } else {
+            response.sendRedirect("../");
+        }
+    %>
 </html>

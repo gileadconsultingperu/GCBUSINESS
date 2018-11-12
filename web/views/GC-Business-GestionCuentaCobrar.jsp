@@ -649,7 +649,7 @@
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-cogs"></i>
+                            <i class="menu-icon fa fa-file-text"></i>
                             <span class="menu-text"> Reportes </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -659,7 +659,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(72)){
+                                if (opciones.contains(72)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteVenta.jsp">
@@ -671,7 +671,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(73)){
+                                if (opciones.contains(73)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteCuentaCobrar.jsp">
@@ -683,12 +683,24 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(74)){
+                                if (opciones.contains(74)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteInventario.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Reporte de Inventario
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if (opciones.contains(75)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteMovimientoInventario.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Movimientos de Inventario
                                 </a>
 
                                 <b class="arrow"></b>
@@ -803,15 +815,15 @@
                                     </div>          
                                 </div>
 
-                                <div class="page-footer" style="margin-top: 30px; margin-left: 900px;">
-                                    <button class="btn btn-sm btn-primary" id="btnLimpiar">
-                                        <i class="ace-icon fa fa-earser"></i>
-                                        Limpiar
-                                    </button>
-
-                                    <hr style="margin-top: 15px;margin-bottom: 15px;">
-                                    <div class="divErrorCuentaCobrar"></div>
-                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-12 center" style="margin-top: 5px;">
+                                        <button class="btn btn-xs btn-primary" style="font-size: 1.2em;" id="btnLimpiar">
+                                            <i class="fa fa-eraser"></i>
+                                            Limpiar
+                                        </button>
+                                    </div>
+                                </div>                
                                 <!-- PAGE CONTENT ENDS -->
                             </div><!-- /.col -->
                         </div><!-- /.row -->
@@ -872,11 +884,11 @@
                                     <div class="form-group"> 
                                         <label for="montoCobrar" class="col-sm-3 control-label">Monto a cobrar:</label>
                                         <div class="col-sm-2">  
-                                            <input id="montoCobrar" class="form-control" name="montoCobrar"  tabindex="1"/>   
+                                            <input id="montoCobrar" class="form-control" name="montoCobrar"  tabindex="1" style="text-transform: uppercase"/>   
                                         </div>
                                         <label for="referencia" class="col-sm-3 control-label">Referencia:</label>
                                         <div class="col-sm-4">  
-                                            <input id="referencia" class="form-control" name="referencia" tabindex="2"/>    
+                                            <input id="referencia" class="form-control" name="referencia" tabindex="2" style="text-transform: uppercase"/>    
                                         </div>
                                     </div>
                                 </div>
@@ -1083,6 +1095,18 @@
                                                     });
                                                 }
                                                 $("#modalRegistrarPago").modal('show');
+                                            });
+
+                                            //Mostrar detalle cuenta cobrar
+                                            $(document).on('click', '.detallar', function () {
+                                                var idcuentacobrar = $(this).attr('id');
+                                                window.open('../ImprimirComprobante?tipo=CC&idcuentacobrar=' + idcuentacobrar, '_blank');
+                                            });
+
+                                            //Imprimir movimiento cuenta cobrar
+                                            $(document).on('click', '.imprimir', function () {
+                                                var idmovimientocuentacobrar = $(this).attr('id');
+                                                window.open('../ImprimirComprobante?tipo=MCC&idmovimientocuentacobrar=' + idmovimientocuentacobrar, '_blank');
                                             });
 
                                             function cargarPagos(idCuentaCobrar) {

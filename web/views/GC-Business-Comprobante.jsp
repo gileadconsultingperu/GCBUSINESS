@@ -648,7 +648,7 @@
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-cogs"></i>
+                            <i class="menu-icon fa fa-file-text"></i>
                             <span class="menu-text"> Reportes </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -658,7 +658,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(72)){
+                                if (opciones.contains(72)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteVenta.jsp">
@@ -670,7 +670,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(73)){
+                                if (opciones.contains(73)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteCuentaCobrar.jsp">
@@ -682,12 +682,24 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(74)){
+                                if (opciones.contains(74)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteInventario.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Reporte de Inventario
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if (opciones.contains(75)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteMovimientoInventario.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Movimientos de Inventario
                                 </a>
 
                                 <b class="arrow"></b>
@@ -978,41 +990,41 @@
                                     "url": "../assets/util/espanol.txt"
                                 }
                             });
+
+                            $.fn.dataTable.Buttons.defaults.dom.container.className = 'dt-buttons btn-overlap btn-group btn-overlap';
+                            new $.fn.dataTable.Buttons(tablaComprobantes, {
+                                buttons: [
+                                    {
+                                        "extend": "copy",
+                                        "text": "<i class='fa fa-copy bigger-110 pink'></i>",
+                                        "titleAttr": "Copiar",
+                                        "className": "btn btn-white btn-primary btn-bold"
+                                    },
+                                    {
+                                        "extend": 'excel',
+                                        "titleAttr": "Excel",
+                                        "text": "<i class='fa fa-file-excel-o bigger-110 green'></i>",
+                                        "className": "btn btn-white btn-primary btn-bold"
+                                    },
+                                    {
+                                        "extend": "pdf",
+                                        "titleAttr": "PDF",
+                                        "text": "<i class='fa fa-file-pdf-o bigger-110 red'></i>",
+                                        "className": "btn btn-white btn-primary btn-bold"
+                                    },
+                                    {
+                                        "extend": "print",
+                                        "titleAttr": "Imprimir",
+                                        "text": "<i class='fa fa-print bigger-110 grey'></i>",
+                                        "className": "btn btn-white btn-primary btn-bold",
+                                        autoPrint: true,
+                                        message: 'This print was produced using the Print button for DataTables'
+                                    }
+                                ]
+                            });
+
+                            tablaComprobantes.buttons().container().appendTo($('.tableTools-container'));
                         }
-
-                        $.fn.dataTable.Buttons.defaults.dom.container.className = 'dt-buttons btn-overlap btn-group btn-overlap';
-                        new $.fn.dataTable.Buttons(tablaComprobantes, {
-                            buttons: [
-                                {
-                                    "extend": "copy",
-                                    "text": "<i class='fa fa-copy bigger-110 pink'></i>",
-                                    "titleAttr": "Copiar",
-                                    "className": "btn btn-white btn-primary btn-bold"
-                                },
-                                {
-                                    "extend": 'excel',
-                                    "titleAttr": "Excel",
-                                    "text": "<i class='fa fa-file-excel-o bigger-110 green'></i>",
-                                    "className": "btn btn-white btn-primary btn-bold"
-                                },
-                                {
-                                    "extend": "pdf",
-                                    "titleAttr": "PDF",
-                                    "text": "<i class='fa fa-file-pdf-o bigger-110 red'></i>",
-                                    "className": "btn btn-white btn-primary btn-bold"
-                                },
-                                {
-                                    "extend": "print",
-                                    "titleAttr": "Imprimir",
-                                    "text": "<i class='fa fa-print bigger-110 grey'></i>",
-                                    "className": "btn btn-white btn-primary btn-bold",
-                                    autoPrint: true,
-                                    message: 'This print was produced using the Print button for DataTables'
-                                }
-                            ]
-                        });
-
-                        tablaComprobantes.buttons().container().appendTo($('.tableTools-container'));
 
                         $('#buscar').click(function () {
                             var fecha_desde = $('#fecha_desde').val();
@@ -1056,15 +1068,44 @@
                             var datos = $(this).attr('id');
                             var row = $(this).parent().parent();
                             var array = [];
-                            array = datos.split("|");
+                            array = datos.split(" | ");
                             var idcomprobante = array[0];
                             var codigoSunatComprobante = array[1];
                             $('#idcomprobante').val(idcomprobante);
+                            $('#motivo').val('');
                             $('#codigoSunatComprobante').val(codigoSunatComprobante);
                             $('#modalMotivoAnulacion .blue').text('Ingresar Motivo Anulación');
                             $('#modalMotivoAnulacion').modal({backdrop: 'static', keyboard: false});
                             $('#modalMotivoAnulacion').modal('show');
                             $('.divError').empty();
+                        });
+
+                        //Imprimir Comprobante
+                        $(document).on('click', '.imprimir', function () {
+                            var datos = $(this).attr('id');
+                            var array = [];
+                            array = datos.split(" | ");
+                            var idcomprobante = array[0];
+                            var codigoSunatComprobante = array[1];
+                            var total = array[2];
+                            var tipo, parametro;
+                            if (codigoSunatComprobante === '01') {
+                                tipo = 'FA';
+                                parametro = 'idventa';
+                            } else if (codigoSunatComprobante === '03') {
+                                tipo = 'BO';
+                                parametro = 'idventa';
+                            } else if (codigoSunatComprobante === '00') {
+                                tipo = 'NP';
+                                parametro = 'idventa';
+                            } else if (codigoSunatComprobante === '07') {
+                                tipo = 'NC';
+                                parametro = 'idnota';
+                            } else if (codigoSunatComprobante === '99') {
+                                tipo = 'DE';
+                                parametro = 'idnota';
+                            }
+                            window.open('../ImprimirComprobante?tipo=' + tipo + '&' + parametro + '=' + idcomprobante + '&total=' + total, '_blank');
                         });
 
                         $('body').on('shown.bs.modal', '#modalMotivoAnulacion', function () {

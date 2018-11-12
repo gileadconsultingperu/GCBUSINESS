@@ -14,8 +14,10 @@
 */
 package gilead.gcbusiness.controller;
 
+import gilead.gcbusiness.dao.impl.DaoEmpresaImpl;
 import gilead.gcbusiness.dao.impl.DaoUsuarioImpl;
 import gilead.gcbusiness.dao.impl.DaoUsuarioOpcionImpl;
+import gilead.gcbusiness.model.BeanEmpresa;
 import gilead.gcbusiness.model.BeanOpcionMenu;
 import gilead.gcbusiness.model.BeanUsuario;
 import java.io.IOException;
@@ -47,6 +49,8 @@ public class GCBusiness_Login_Servlet extends HttpServlet {
                         if(sucursal!=null && !"".equals(sucursal.trim())){
                             if(almacen!=null && !"".equals(almacen.trim())){
                                 DaoUsuarioOpcionImpl daoUsuarioOpcion = new DaoUsuarioOpcionImpl();
+                                DaoEmpresaImpl daoEmpresa = new DaoEmpresaImpl();
+                                BeanEmpresa beanEmpresa = (BeanEmpresa) daoEmpresa.accionObtener(1);
                                 List<BeanOpcionMenu> list = (List<BeanOpcionMenu>) daoUsuarioOpcion.listarOpcionUsuario(idusuario);
                                 if(list.size() > 0){    
                                     HttpSession sesion = request.getSession(true);
@@ -56,6 +60,7 @@ public class GCBusiness_Login_Servlet extends HttpServlet {
                                     sesion.setAttribute("idSucursal", sucursal);
                                     sesion.setAttribute("idAlmacen", almacen);
                                     sesion.setAttribute("descripcionAlmacen", request.getParameter("descripcionalmacen"));
+                                    sesion.setAttribute("rucEmpresa", beanEmpresa.getRuc());
                                     request.getRequestDispatcher("views/GC-Business-Home.jsp").forward(request, response);
                                 }else{
                                     request.setAttribute("errorSesion", "<div class='alert alert-danger'>El usuario no tiene acceso a ninguna opcion en el sistema. Consulte al Administrador.\n</div>");

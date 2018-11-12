@@ -647,7 +647,7 @@
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-cogs"></i>
+                            <i class="menu-icon fa fa-file-text"></i>
                             <span class="menu-text"> Reportes </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -657,7 +657,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(72)){
+                                if (opciones.contains(72)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteVenta.jsp">
@@ -669,7 +669,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(73)){
+                                if (opciones.contains(73)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteCuentaCobrar.jsp">
@@ -681,12 +681,24 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(74)){
+                                if (opciones.contains(74)) {
                             %>
                             <li class="">
                                 <a href="GC-Business-ReporteInventario.jsp">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Reporte de Inventario
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
+                                if (opciones.contains(75)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteMovimientoInventario.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Movimientos de Inventario
                                 </a>
 
                                 <b class="arrow"></b>
@@ -837,6 +849,34 @@
                 </div>
             </div>
 
+            <div class="modal" id="modalSeleccionarNota" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="blue bigger">Seleccione Tipo de Nota de Crédito</h4>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <a href="#" id="devparcial" class="btn btn-info btn-lg col-xs-12" role="button">DEVOLUCIÓN PARCIAL</a>
+                                        <a href="#" id="devtotal" class="btn btn-info btn-lg col-xs-12" role="button">DEVOLUCIÓN TOTAL</a>                                   
+                                        <a href="#" id="anuoperacion" class="btn btn-info btn-lg col-xs-12" role="button">ANULACIÓN DE LA OPERACIÓN</a>
+                                        <a href="#" id="desglobal" class="btn btn-info btn-lg col-xs-12" role="button">DESCUENTO GLOBAL</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
             <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
                 <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
             </a>
@@ -955,41 +995,41 @@
                                     "url": "../assets/util/espanol.txt"
                                 }
                             });
+
+                            $.fn.dataTable.Buttons.defaults.dom.container.className = 'dt-buttons btn-overlap btn-group btn-overlap';
+                            new $.fn.dataTable.Buttons(tablaClientes, {
+                                buttons: [
+                                    {
+                                        "extend": "copy",
+                                        "text": "<i class='fa fa-copy bigger-110 pink'></i>",
+                                        "titleAttr": "Copiar",
+                                        "className": "btn btn-white btn-primary btn-bold"
+                                    },
+                                    {
+                                        "extend": 'excel',
+                                        "titleAttr": "Excel",
+                                        "text": "<i class='fa fa-file-excel-o bigger-110 green'></i>",
+                                        "className": "btn btn-white btn-primary btn-bold"
+                                    },
+                                    {
+                                        "extend": "pdf",
+                                        "titleAttr": "PDF",
+                                        "text": "<i class='fa fa-file-pdf-o bigger-110 red'></i>",
+                                        "className": "btn btn-white btn-primary btn-bold"
+                                    },
+                                    {
+                                        "extend": "print",
+                                        "titleAttr": "Imprimir",
+                                        "text": "<i class='fa fa-print bigger-110 grey'></i>",
+                                        "className": "btn btn-white btn-primary btn-bold",
+                                        autoPrint: true,
+                                        message: 'This print was produced using the Print button for DataTables'
+                                    }
+                                ]
+                            });
+
+                            tablaClientes.buttons().container().appendTo($('.tableTools-container'));
                         }
-
-                        $.fn.dataTable.Buttons.defaults.dom.container.className = 'dt-buttons btn-overlap btn-group btn-overlap';
-                        new $.fn.dataTable.Buttons(tablaClientes, {
-                            buttons: [
-                                {
-                                    "extend": "copy",
-                                    "text": "<i class='fa fa-copy bigger-110 pink'></i>",
-                                    "titleAttr": "Copiar",
-                                    "className": "btn btn-white btn-primary btn-bold"
-                                },
-                                {
-                                    "extend": 'excel',
-                                    "titleAttr": "Excel",
-                                    "text": "<i class='fa fa-file-excel-o bigger-110 green'></i>",
-                                    "className": "btn btn-white btn-primary btn-bold"
-                                },
-                                {
-                                    "extend": "pdf",
-                                    "titleAttr": "PDF",
-                                    "text": "<i class='fa fa-file-pdf-o bigger-110 red'></i>",
-                                    "className": "btn btn-white btn-primary btn-bold"
-                                },
-                                {
-                                    "extend": "print",
-                                    "titleAttr": "Imprimir",
-                                    "text": "<i class='fa fa-print bigger-110 grey'></i>",
-                                    "className": "btn btn-white btn-primary btn-bold",
-                                    autoPrint: true,
-                                    message: 'This print was produced using the Print button for DataTables'
-                                }
-                            ]
-                        });
-
-                        tablaClientes.buttons().container().appendTo($('.tableTools-container'));
 
                         $('#buscar').click(function () {
                             var fecha_desde = $('#fecha_desde').val();
@@ -1053,6 +1093,16 @@
                                     alertify.error('ERROR AL EJECUTAR EL PROCEDIMIENTO AJAX.');
                                 }
                             }).done();
+                        });
+
+                        //Seleccionar Tipo Nota
+                        $(document).on('click', '.seleccionarnota', function () {
+                            var id = $(this).attr('id');
+                            $('#modalSeleccionarNota').modal('show');
+                            $('#devparcial').attr('href', 'GC-Business-NotaCredito.jsp?idventa=' + id + '&idtiponota=7');
+                            $('#devtotal').attr('href', 'GC-Business-NotaCredito.jsp?idventa=' + id + '&idtiponota=6');
+                            $('#anuoperacion').attr('href', 'GC-Business-NotaCredito.jsp?idventa=' + id + '&idtiponota=1');
+                            $('#desglobal').attr('href', 'GC-Business-NotaCreditoDescuentoGlobal.jsp?idventa=' + id + '&idtiponota=4');
                         });
                     });
         </script>

@@ -123,7 +123,7 @@ public class GCBusiness_CuentaCobrar_Servlet extends HttpServlet {
                 
                 query = "INSERT INTO gcbusiness.movimiento_cuentacobrar (id_movimiento_cuentacobrar, id_cuentacobrar,fecha,monto,saldo_anterior,saldo_actual,documento_referencia"
                         + ",estado,fecha_insercion,usuario_insercion,terminal_insercion,ip_insercion) "
-                        + "VALUES ("+ idNovimientoCuentaCobrar + ", " + idcuentacobrar + ",'" + ts + "',"+ montoCobrar +", "+ saldoAnterior +", "+ saldoActual +", '"+ referencia
+                        + "VALUES ("+ idNovimientoCuentaCobrar + ", " + idcuentacobrar + ",'" + ts + "',"+ montoCobrar +", "+ saldoAnterior +", "+ saldoActual +", '"+ referencia.toUpperCase()
                         +"', 'A', '"+ ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
 
                 sqlEjecucion = query;

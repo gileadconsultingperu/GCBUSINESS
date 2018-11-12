@@ -53,8 +53,13 @@ public class GCBusiness_IngresoSalida_Servlet extends HttpServlet {
         System.out.println("Entro INGRESO SALIDA");
         if (opcion.equals("listar")) {
             try (PrintWriter out = response.getWriter()) {
+                String fecha_desde = !request.getParameter("desde").equals("") ? (String) request.getParameter("desde") : "01/01/1990";
+                String fecha_hasta = !request.getParameter("hasta").equals("") ? (String) request.getParameter("hasta") : "12/12/9999";
+                String almacen = request.getParameter("almacen") != null ? (String) request.getParameter("almacen") : "0";
+                String tipomovimiento = request.getParameter("tipomovimiento") != null ? (String) request.getParameter("tipomovimiento") : "0";
+
                 DaoMovimientoInventarioImpl daoMovimientoInventarioImpl = new DaoMovimientoInventarioImpl();
-                List<DTOIngresoSalida> listIngresoSalida = daoMovimientoInventarioImpl.listarIngresoSalida();
+                List<DTOIngresoSalida> listIngresoSalida = daoMovimientoInventarioImpl.listarIngresoSalida(almacen, tipomovimiento, fecha_desde, fecha_hasta);
 
                 org.json.simple.JSONArray datos = new org.json.simple.JSONArray();
 

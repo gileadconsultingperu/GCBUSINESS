@@ -14,7 +14,7 @@
 <!DOCTYPE html>
 <%
     //String ID = (String) session.getAttribute("ID");
-    List opciones = (List)session.getAttribute("accesos");
+    List opciones = (List) session.getAttribute("accesos");
     BeanUsuario usuario = (BeanUsuario) session.getAttribute("usuario");
 %>
 <html>
@@ -100,7 +100,7 @@
                                 <img class="nav-user-photo" src="assets/images/avatars/avatar2.png" alt="Jason's Photo" />
                                 <span class="user-info">
                                     <small>Bienvenido,</small>
-                                        <%= usuario.getUsuario()%>                                    
+                                    <%= usuario.getUsuario()%>                                    
                                 </span>
 
                                 <i class="ace-icon fa fa-caret-down"></i>
@@ -147,7 +147,7 @@
 
                 <ul class="nav nav-list">
                     <%
-                        if(opciones.contains(1)){
+                        if (opciones.contains(1)) {
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
@@ -161,7 +161,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(2)){
+                                if (opciones.contains(2)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-RegistrarVenta.jsp">
@@ -172,8 +172,8 @@
                                 <b class="arrow"></b>
                             </li>
                             <%
-                                }    
-                                if(opciones.contains(3)){
+                                }
+                                if (opciones.contains(3)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionNota.jsp">
@@ -184,8 +184,8 @@
                                 <b class="arrow"></b>
                             </li>
                             <%
-                                }    
-                                if(opciones.contains(4)){
+                                }
+                                if (opciones.contains(4)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-Comprobante.jsp">
@@ -196,8 +196,8 @@
                                 <b class="arrow"></b>
                             </li>
                             <%
-                                }    
-                                if(opciones.contains(5)){
+                                }
+                                if (opciones.contains(5)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-Comprobante.jsp?accion=anular">
@@ -208,8 +208,8 @@
                                 <b class="arrow"></b>
                             </li>
                             <%
-                                }    
-                                if(opciones.contains(6)){
+                                }
+                                if (opciones.contains(6)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-Cotizacion.jsp">
@@ -220,8 +220,8 @@
                                 <b class="arrow"></b>
                             </li>
                             <%
-                                }    
-                                if(opciones.contains(7)){
+                                }
+                                if (opciones.contains(7)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionCotizacion.jsp">
@@ -232,8 +232,8 @@
                                 <b class="arrow"></b>
                             </li>
                             <%
-                                }    
-                                if(opciones.contains(8)){
+                                }
+                                if (opciones.contains(8)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionOrdenVenta.jsp">
@@ -244,13 +244,13 @@
                                 <b class="arrow"></b>
                             </li>
                             <%
-                                }    
+                                }
                             %>
                         </ul>
                     </li>
                     <%
                         }
-                        if(opciones.contains(11)){
+                        if (opciones.contains(11)) {
                     %>                
                     <li class="">
                         <a href="#" class="dropdown-toggle">
@@ -264,7 +264,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(12)){
+                                if (opciones.contains(12)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionCliente.jsp">
@@ -276,7 +276,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(13)){
+                                if (opciones.contains(13)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionContacto.jsp">
@@ -287,8 +287,8 @@
                                 <b class="arrow"></b>
                             </li>
                             <%
-                                }    
-                                if(opciones.contains(14)){
+                                }
+                                if (opciones.contains(14)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionCuentaCobrar.jsp">
@@ -299,13 +299,13 @@
                                 <b class="arrow"></b>
                             </li>                                                    
                             <%
-                                }    
+                                }
                             %>
                         </ul>
                     </li>    
                     <%
                         }
-                        if(opciones.contains(21)){
+                        if (opciones.contains(21)) {
                     %> 
                     <li class="">
                         <a href="#" class="dropdown-toggle">
@@ -319,7 +319,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(22)){
+                                if (opciones.contains(22)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-RegistrarCompra.jsp">
@@ -330,8 +330,8 @@
                                 <b class="arrow"></b>
                             </li>
                             <%
-                                }    
-                                if(opciones.contains(23)){
+                                }
+                                if (opciones.contains(23)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionOrdenCompra.jsp">
@@ -354,13 +354,13 @@
                                 <b class="arrow"></b>
                             </li>
                             <%
-                                }    
+                                }
                             %>
                         </ul>
                     </li>
                     <%
                         }
-                        if(opciones.contains(31)){
+                        if (opciones.contains(31)) {
                     %>                                       
                     <li class="">
                         <a href="#" class="dropdown-toggle">
@@ -374,7 +374,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(32)){
+                                if (opciones.contains(32)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionProveedor.jsp">
@@ -385,8 +385,8 @@
                                 <b class="arrow"></b>
                             </li>
                             <%
-                                }    
-                                if(opciones.contains(33)){
+                                }
+                                if (opciones.contains(33)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionCuentaPagar.jsp">
@@ -397,27 +397,27 @@
                                 <b class="arrow"></b>
                             </li>
                             <%
-                                }    
+                                }
                             %>
                         </ul>
                     </li>
                     <%
                         }
-                        if(opciones.contains(41)){
+                        if (opciones.contains(41)) {
                     %>                                    
                     <li class="">
                         <a href="#" class="dropdown-toggle">
                             <i class="menu-icon fa fa-industry"></i>
                             <span class="menu-text"> Inventario </span>
-                            
+
                             <b class="arrow fa fa-angle-down"></b>
                         </a>
 
                         <b class="arrow"></b>
-                        
+
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(42)){
+                                if (opciones.contains(42)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionIngresoSalida.jsp">
@@ -428,8 +428,8 @@
                                 <b class="arrow"></b>
                             </li>                           
                             <%
-                                }    
-                                if(opciones.contains(43)){
+                                }
+                                if (opciones.contains(43)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-TrasladoAlmacen.jsp">
@@ -440,26 +440,26 @@
                                 <b class="arrow"></b>
                             </li>
                             <%
-                                }    
+                                }
                             %>
                         </ul>
                     </li>
                     <%
                         }
-                        if(opciones.contains(51)){
+                        if (opciones.contains(51)) {
                     %>                    
                     <li class="">
                         <a href="#" class="dropdown-toggle">
                             <i class="menu-icon fa fa-list"></i>
                             <span class="menu-text"> Productos </span>
-                            
+
                             <b class="arrow fa fa-angle-down"></b>
                         </a>
                         <b class="arrow"></b>
-                        
+
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(52)){
+                                if (opciones.contains(52)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionProducto.jsp">
@@ -471,7 +471,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(53)){
+                                if (opciones.contains(53)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionFamiliaProducto.jsp">
@@ -483,7 +483,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(54)){
+                                if (opciones.contains(54)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionClaseProducto.jsp">
@@ -495,7 +495,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(55)){
+                                if (opciones.contains(55)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionLineaProducto.jsp">
@@ -507,7 +507,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(56)){
+                                if (opciones.contains(56)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionCategoriaProducto.jsp">
@@ -519,7 +519,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(57)){
+                                if (opciones.contains(57)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionMarca.jsp">
@@ -531,7 +531,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(58)){
+                                if (opciones.contains(58)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionTarifa.jsp">
@@ -548,7 +548,7 @@
                     </li>
                     <%
                         }
-                        if(opciones.contains(61)){
+                        if (opciones.contains(61)) {
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
@@ -562,7 +562,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(62)){
+                                if (opciones.contains(62)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionEmpresa.jsp">
@@ -574,7 +574,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(63)){
+                                if (opciones.contains(63)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionSucursal.jsp">
@@ -586,7 +586,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(64)){
+                                if (opciones.contains(64)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionAlmacen.jsp">
@@ -598,7 +598,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(65)){
+                                if (opciones.contains(65)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionVendedor.jsp">
@@ -610,7 +610,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(66)){
+                                if (opciones.contains(66)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-GestionUsuario.jsp">
@@ -627,11 +627,11 @@
                     </li>
                     <%
                         }
-                        if(opciones.contains(71)){
+                        if (opciones.contains(71)) {
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-cogs"></i>
+                            <i class="menu-icon fa fa-file-text"></i>
                             <span class="menu-text"> Reportes </span>
 
                             <b class="arrow fa fa-angle-down"></b>
@@ -641,7 +641,7 @@
 
                         <ul class="submenu">
                             <%
-                                if(opciones.contains(72)){
+                                if (opciones.contains(72)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-ReporteVenta.jsp">
@@ -653,7 +653,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(73)){
+                                if (opciones.contains(73)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-ReporteCuentaCobrar.jsp">
@@ -665,7 +665,7 @@
                             </li>
                             <%
                                 }
-                                if(opciones.contains(74)){
+                                if (opciones.contains(74)) {
                             %>
                             <li class="">
                                 <a href="views/GC-Business-ReporteInventario.jsp">
@@ -677,12 +677,24 @@
                             </li>
                             <%
                                 }
+                                if (opciones.contains(75)) {
+                            %>
+                            <li class="">
+                                <a href="views/GC-Business-ReporteMovimientoInventario.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Movimientos de Inventario
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
                             %>
                         </ul>
                     </li>
                     <%
                         }
-                        if(opciones.contains(99)){
+                        if (opciones.contains(99)) {
                     %>
                     <li class="">
                         <a href="#" class="dropdown-toggle">
@@ -705,12 +717,12 @@
             <div class="main-content">
                 <div class="main-content-inner">
                     <div class="breadcrumbs ace-save-state" id="breadcrumbs">
-                        
+
 
                     </div>
 
                     <div class="page-content">
-                        
+
                         <div class="page-header">
                             <h1>
                                 Inicio
@@ -735,7 +747,7 @@
                                     sistema de gestión comercial. Todos los derechos reservados <a href="#">GILEAD CONSULTING</a>
                                 </div>
 
-                                
+
 
                                 <!-- PAGE CONTENT ENDS -->
                             </div><!-- /.col -->

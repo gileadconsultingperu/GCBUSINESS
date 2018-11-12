@@ -8,9 +8,7 @@
     Autor Creación      : Pablo Jimenez Aguado
     Uso                 : Vista para el acceso al sistema GC-Business
 --%>
-<%-- Mantenimiento de codigo fuente
-    @01 REQ_01 PJIMENEZ 22-08-2018:   Validacion...
---%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -130,16 +128,6 @@
                                             </form>
 
                                         </div><!-- /.widget-main -->
-                                        <!--    
-                                        <div class="toolbar clearfix">
-                                            <div>
-                                                <a href="#" data-target="#forgot-box" class="forgot-password-link">
-                                                        <i class="ace-icon fa fa-arrow-left"></i>
-                                                        Olvidé mi contraseña
-                                                </a>
-                                            </div>
-                                        </div>
-                                        -->
                                     </div><!-- /.widget-body -->
                                 </div><!-- /.login-box -->
 
@@ -264,7 +252,9 @@
 
                         $.get('SucursalAlmacen', {
                             "idSucursal": sucursalActual,
-                            "accion": "almacen"
+                            "accion": "almacenusuario",
+                            "user": user,
+                            "pass": pass
                         }, function (response) {
                             $('#almacen').html(response);
                         });
@@ -275,9 +265,13 @@
 
             $('#sucursal').change(function () {
                 var idSucursal = $('#sucursal').val();
+                var user = $('#username').val(); //tomamos el valor seleccionado
+                var pass = $('#passwordlogin').val();
                 $.get('SucursalAlmacen', {
                     "idSucursal": idSucursal,
-                    "accion": "almacen"
+                    "accion": "almacenusuario",
+                    "user": user,
+                    "pass": pass
                 }, function (response) {
                     $('#almacen').html(response);
                 });
@@ -308,9 +302,7 @@
                 var almacen = $('#almacen').val();
                 var descripcionalmacen = $('#almacen option:selected').text();
                 var pagina = "GC-Business/../Login?user=" + user + "&pass=" + pass + "&sucursal=" + sucursal + "&almacen=" + almacen + "&descripcionalmacen=" + descripcionalmacen;
-                //alertify.error("pagina2: "+pagina);
                 $("#login-form").attr("action", pagina);
-                //alertify.error("accion: "+$("#login-form").attr("action"));
                 $("#login-form").submit();
                 $("#login-form").reset();
             });

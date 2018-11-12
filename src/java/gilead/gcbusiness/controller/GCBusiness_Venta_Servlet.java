@@ -245,26 +245,16 @@ public class GCBusiness_Venta_Servlet extends HttpServlet {
 
                     idProducto = Integer.parseInt((String) fila1.get("IdProducto"));
 
-                    stock_actual = Double.parseDouble((String) fila1.get("Stock Actual"));
-
+                    //stock_actual = Double.parseDouble((String) fila1.get("Stock Actual"));
                     cantidad = Double.parseDouble((String) fila1.get("Cantidad"));
 
                     valor_unitario_venta = Double.parseDouble((String) fila1.get("Valor Unitario"));
-                    valor_venta = Double.parseDouble((String) fila1.get("Valor Total"));
-                    //valor_venta = valor_unitario_venta * cantidad;
-                    //valor_venta = Math.round(valor_venta * Math.pow(10, 2)) / Math.pow(10, 2);
 
-                    //idTarifa = Integer.parseInt((String) fila1.get("Precio Unitario"));
-                    //query = "SELECT valor FROM gcbusiness.tarifaproducto WHERE id_producto =" + idProducto + " AND id_tarifa = " + idTarifa;
-                    //ResultSet rs3 = st.executeQuery(query);
-                    //if (rs3.next()) {
-                    //    precio_unitario_venta = rs3.getDouble(1);
-                    //}
+                    valor_venta = Double.parseDouble((String) fila1.get("Valor Total"));
+
                     precio_unitario_venta = Double.parseDouble((String) fila1.get("Precio Unitario"));
 
                     precio_venta = Double.parseDouble((String) fila1.get("Precio Total sDscto"));
-                    //precio_venta = precio_unitario_venta * cantidad;
-                    //precio_venta = Math.round(precio_venta * Math.pow(10, 2)) / Math.pow(10, 2);
 
                     monto_igv = Double.parseDouble((String) fila1.get("IGV sDscto"));
 
@@ -276,33 +266,21 @@ public class GCBusiness_Venta_Servlet extends HttpServlet {
 
                     //TIPO IGV Y PCTO IGV
                     if (flag_bonificacion.equals("S")) {
-//                        if (afectoIGV.trim().equals("G")) {
-//                            tipoIGV = "15"; //Gravado – Bonificaciones
-//                            pctoIGV = (precio_venta - valor_venta) / valor_venta;
-//                            pctoIGV *= 100;
-//                            pctoIGV = Math.round(pctoIGV * Math.pow(10, 2)) / Math.pow(10, 2);
-//                        }
-//                        if (afectoIGV.trim().equals("E")) {
-//                            tipoIGV = "21"; //Exonerado – Transferencia Gratuita
-//                        }
-//                        if (afectoIGV.trim().equals("I")) {
-//                            tipoIGV = "31"; //Inafecto – Retiro por Bonificación
-//                        }
-                        tipoIGV = "21"; //Exonerado – Transferencia Gratuita
-                        afectoIGV = "E";
+                        //tipoIGV = "21"; //Exonerado – Transferencia Gratuita
+                        tipoIGV = "E";
                     } else {
                         if (afectoIGV.trim().equals("G")) {
-                            tipoIGV = "10"; //Gravado – Operación Onerosa
-                            //pctoIGV = (precio_venta - valor_venta) / valor_venta;
-                            //pctoIGV *= 100;                            
-                            //pctoIGV = Math.round(pctoIGV * Math.pow(10, 2)) / Math.pow(10, 2);
+                            //tipoIGV = "10"; //Gravado – Operación Onerosa
+                            tipoIGV = "G";
                             pctoIGV = 18.00;
                         }
                         if (afectoIGV.trim().equals("E")) {
-                            tipoIGV = "20"; //Exonerado – Operación Onerosa
+                            //tipoIGV = "20"; //Exonerado – Operación Onerosa
+                            tipoIGV = "E";
                         }
                         if (afectoIGV.trim().equals("I")) {
-                            tipoIGV = "30"; //Inafecto – Operación Onerosa
+                            //tipoIGV = "30"; //Inafecto – Operación Onerosa
+                            tipoIGV = "I";
                         }
                     }
                     System.out.println("tipoIGV: " + tipoIGV + "  pctoIGV: " + pctoIGV);
@@ -315,31 +293,15 @@ public class GCBusiness_Venta_Servlet extends HttpServlet {
                     tipo_descuento = detalleDcto[2].trim();
                     System.out.println("tipo_descuento: " + tipo_descuento);
                     System.out.println("monto_descuento:  " + detalleDcto[0]);
-
-                    /*if (tipo_descuento.equals("P")) {
-                        if (detalleDcto[0] != null && detalleDcto[0].length() > 0 && detalleDcto[0] != "") {
-                            pcto_descuento = Double.parseDouble(detalleDcto[0]);
-                        }
-                        valor_venta_descuento = valor_venta * (1 - pcto_descuento / 100);
-                    } else {
-                        if (detalleDcto[0] != null && detalleDcto[0].length() > 0 && detalleDcto[0] != "") {
-                            monto_descuento = Double.parseDouble(detalleDcto[0]);
-                        }
-                        valor_venta_descuento = valor_venta - monto_descuento;
-                    }*/
                     monto_descuento = Double.parseDouble((String) fila1.get("Descuento Mont"));
                     pcto_descuento = Double.parseDouble((String) fila1.get("Descuento Porc"));
                     System.out.println("monto_descuento  " + monto_descuento);
                     System.out.println("pcto_descuento  " + pcto_descuento);
 
-                    //valor_venta_descuento = Math.round(valor_venta_descuento * Math.pow(10, 2)) / Math.pow(10, 2);
                     valor_venta_descuento = Double.parseDouble((String) fila1.get("Valor Total Dscto"));
 
-                    //monto_igv_descuento = valor_venta_descuento * pctoIGV / 100;
-                    //monto_igv_descuento = Math.round(monto_igv_descuento * Math.pow(10, 2)) / Math.pow(10, 2);
                     monto_igv_descuento = Double.parseDouble((String) fila1.get("IGV"));
 
-                    //precio_venta_descuento = valor_venta_descuento + monto_igv_descuento;
                     precio_venta_descuento = Double.parseDouble((String) fila1.get("Precio Total"));
 
                     Integer idlote = null;
@@ -347,6 +309,26 @@ public class GCBusiness_Venta_Servlet extends HttpServlet {
                     if (columnaLote.contains("|")) {
                         String[] detalleLote = columnaLote.split("|");
                         idlote = Integer.parseInt(detalleLote[0].trim());
+                    }
+
+                    if (idlote == null) {
+                        query = "SELECT stock_actual FROM gcbusiness.almacenproductolote "
+                                + "WHERE id_almacen = " + idalmacen + " "
+                                + "AND id_producto = " + idProducto;
+                    } else {
+                        query = "SELECT stock_actual FROM gcbusiness.almacenproductolote "
+                                + "WHERE id_almacen = " + idalmacen + " "
+                                + "AND id_producto = " + idProducto + " "
+                                + "AND id_lote = " + idlote;
+                    }
+
+                    System.out.println("query " + query);
+                    rs = st.executeQuery(query);
+                    try {
+                        if (rs.next()) {
+                            stock_actual = rs.getDouble("stock_actual");
+                        }
+                    } catch (java.sql.SQLException sqle) {
                     }
 
                     //Insertar detalle venta
