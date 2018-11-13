@@ -1250,6 +1250,14 @@
                         $(window).load(function () {
                             cargarCorrelativo();
 
+                            $('#formapago').val('E');
+                            var idalmacen = <%=idalmacen%>;
+                            if (idalmacen === 1) {
+                                $('#estadopago').val('S');
+                            } else {
+                                $('#estadopago').val('T');
+                            }
+
                             var idcotizacion = <%=idcotizacion%>;
                             if (idcotizacion !== null) {
                                 $.ajax({
@@ -1954,6 +1962,13 @@
                         });
 
                         $('.limpiar').click(function () {
+                            $('#formapago').val('E');
+                            var idalmacen = <%=idalmacen%>;
+                            if (idalmacen === 1) {
+                                $('#estadopago').val('S');
+                            } else {
+                                $('#estadopago').val('T');
+                            }
                             $('#cliente')
                                     .find('option:first-child').prop('selected', true)
                                     .end().trigger('chosen:updated');

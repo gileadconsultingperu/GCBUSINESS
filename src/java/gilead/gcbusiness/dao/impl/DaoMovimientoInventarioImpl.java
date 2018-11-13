@@ -47,7 +47,7 @@ public class DaoMovimientoInventarioImpl implements DaoAccion {
                     qry += "AND mm.tipomovimiento = '" + tipomovimiento + "' ";
                 }
 
-                qry += "AND date(mi.fecha) BETWEEN '" + fecha_desde + "' AND '" + fecha_hasta + "' "
+                qry += "AND date(mi.fecha) BETWEEN to_date('" + fecha_desde + "','dd/mm/yyyy') AND to_date('" + fecha_hasta + "','dd/mm/yyyy') "
                         + "ORDER BY mi.fecha DESC";
 
                 st = cn.prepareStatement(qry);

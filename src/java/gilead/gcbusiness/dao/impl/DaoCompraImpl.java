@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class DaoCompraImpl {
-    
+
     public List<DTOCompra> accionListarDTOCompra() {
         DTOCompra compra = null;
 
@@ -90,7 +90,7 @@ public class DaoCompraImpl {
                     compra.setReferencia_otro(rs.getString("referencia_otro"));
                     compra.setCambio_pago(rs.getDouble("cambio_pago"));
                     compra.setEstado(rs.getString("estado"));
-                    compra.setMotivo_anulacion(rs.getString("motivo_anulacion"));            
+                    compra.setMotivo_anulacion(rs.getString("motivo_anulacion"));
                     listCompra.add(compra);
                 }
 
@@ -104,7 +104,7 @@ public class DaoCompraImpl {
 
         return listCompra;
     }
-    
+
     public List<DTOCompra> accionListarDTOCompraParaAnular(String numeroComprobante, String tipoComprobante, String fecha_desde, String fecha_hasta) {
         DTOCompra compra = null;
 
@@ -124,8 +124,7 @@ public class DaoCompraImpl {
                         + "LEFT JOIN gcbusiness.proveedor p ON p.id_proveedor = c.id_proveedor "
                         + "LEFT JOIN gcbusiness.tipodocumento td ON td.id_tipodocumento = p.id_tipodocumento "
                         + "LEFT JOIN gcbusiness.moneda m ON m.id_moneda = c.id_moneda "
-                        + "WHERE date(c.fecha_emision) BETWEEN '" + fecha_desde + "' AND '" + fecha_hasta + "'\n";
-
+                        + "WHERE date(c.fecha_emision) BETWEEN to_date('" + fecha_desde + "','dd/mm/yyyy') AND to_date('" + fecha_hasta + "','dd/mm/yyyy')\n";
 
                 if (!numeroComprobante.equals("")) {
                     qry += " AND CONCAT(c.serie_comprobante,'-', c.correlativo_serie)  = '" + numeroComprobante.toUpperCase() + "'\n";
@@ -168,7 +167,7 @@ public class DaoCompraImpl {
 
         return listCompras;
     }
-    
+
     public DTOCompra accionObtener(Integer id) {
         DTOCompra compra = null;
 
@@ -188,7 +187,6 @@ public class DaoCompraImpl {
                         + "gcbusiness.almacen a, gcbusiness.vendedor e, gcbusiness.serie r, gcbusiness.moneda m "
                         + "WHERE v.id_proveedor = c.id_proveedor AND v.id_tipocomprobante = i.id_tipocomprobante AND v.id_sucursal = s.id_sucursal AND v.id_almacen = a.id_almacen AND v.id_vendedor = e.id_vendedor "
                         + "AND v.id_serie = r.id_serie AND v.id_moneda = m.id_moneda AND v.id_compra = ?;";
- 
 
                 st = cn.prepareStatement(qry);
                 st.setInt(1, id);
@@ -243,7 +241,7 @@ public class DaoCompraImpl {
                     compra.setReferencia_otro(rs.getString("referencia_otro"));
                     compra.setCambio_pago(rs.getDouble("cambio_pago"));
                     compra.setEstado(rs.getString("estado"));
-                    compra.setMotivo_anulacion(rs.getString("motivo_anulacion"));       
+                    compra.setMotivo_anulacion(rs.getString("motivo_anulacion"));
                 }
 
                 cn.close();
@@ -256,7 +254,7 @@ public class DaoCompraImpl {
 
         return compra;
     }
-    
+
     public String accionEliminar(Integer id) {
         String msg = null;
 
@@ -279,7 +277,7 @@ public class DaoCompraImpl {
                 cn.close();
 
             } catch (SQLException e1) {
-                System.out.println(e1.getMessage());                        
+                System.out.println(e1.getMessage());
                 msg = e1.getMessage();
             } finally {
                 try {

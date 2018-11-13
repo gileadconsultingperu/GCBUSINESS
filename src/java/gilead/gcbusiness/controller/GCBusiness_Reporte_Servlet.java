@@ -293,8 +293,8 @@ public class GCBusiness_Reporte_Servlet extends HttpServlet {
                         + "left join gcbusiness.motivomovimiento mm on mm.id_motivomovimiento=mi.id_motivomovimiento \n"
                         + "left join gcbusiness.almacenproductolote pa on pa.id_producto=dmi.id_producto and pa.id_almacen=mi.id_almacen \n"
                         + "left join gcbusiness.sucursal s on s.id_sucursal=a.id_sucursal "
-                        + "WHERE date(mi.fecha) between '" + fdesde + "' AND '" + fhasta
-                        + "' AND mi.estado = 'A' ";
+                        + "WHERE date(mi.fecha) between to_date('" + fdesde + "','dd/mm/yyyy') AND to_date('" + fhasta
+                        + "','dd/mm/yyyy') AND mi.estado = 'A' ";
 
                 if (!tipomovimiento.equals("T")) {
                     query += "AND mm.tipomovimiento='" + tipomovimiento + "' ";

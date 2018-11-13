@@ -39,7 +39,7 @@ public class DaoMovimientoAlmacenImpl implements DaoAccion {
                         + " INNER JOIN gcbusiness.almacen o ON ma.id_almacen_origen = o.id_almacen"
                         + " INNER JOIN gcbusiness.almacen d ON ma.id_almacen_destino = d.id_almacen";
 
-                qry += " WHERE date(ma.fecha) BETWEEN '" + fecha_desde + "' AND '" + fecha_hasta + "'"
+                qry += " WHERE date(ma.fecha) BETWEEN to_date('" + fecha_desde + "','dd/mm/yyyy') AND to_date('" + fecha_hasta + "','dd/mm/yyyy')"
                         + " ORDER BY ma.fecha DESC";
 
                 st = cn.prepareStatement(qry);

@@ -856,7 +856,7 @@
                                                 <select id="estadopago" name="estadopago" class="styled-select tipo_comprobante" style="width: 160px;" tabindex="10">
                                                     <option value="S">SIN PAGAR</option>
                                                     <option value="P">PAGADO PARCIALMENTE</option>
-                                                    <option value="T" selected="selected">PAGADO TOTALMENTE</option>
+                                                    <option value="T">PAGADO TOTALMENTE</option>
                                                 </select>
                                                 &nbsp;
                                                 <label id="lblmontopagado" class="control-label hide" style="width: 100px;">Monto Pagado:</label>
@@ -1249,6 +1249,14 @@
                     $(document).ready(function () {
                         $(window).load(function () {
                             cargarCorrelativo();
+
+                            $('#formapago').val('E');
+                            var idalmacen = <%=idalmacen%>;
+                            if (idalmacen === 1) {
+                                $('#estadopago').val('S');
+                            } else {
+                                $('#estadopago').val('T');
+                            }
 
                             var idcotizacion = <%=idcotizacion%>;
                             if (idcotizacion !== null) {
@@ -1955,6 +1963,13 @@
                         });
 
                         $('.limpiar').click(function () {
+                            $('#formapago').val('E');
+                            var idalmacen = <%=idalmacen%>;
+                            if (idalmacen === 1) {
+                                $('#estadopago').val('S');
+                            } else {
+                                $('#estadopago').val('T');
+                            }
                             $('#cliente')
                                     .find('option:first-child').prop('selected', true)
                                     .end().trigger('chosen:updated');
