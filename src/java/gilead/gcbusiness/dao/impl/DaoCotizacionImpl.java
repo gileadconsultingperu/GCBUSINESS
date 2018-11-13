@@ -28,7 +28,7 @@ public class DaoCotizacionImpl {
                         + "FROM gcbusiness.cotizacion v "
                         + "LEFT JOIN gcbusiness.moneda m ON m.id_moneda = v.id_moneda "
                         + "LEFT JOIN gcbusiness.almacen a ON a.id_almacen = v.id_almacen "
-                        + "WHERE date(v.fecha_emision) BETWEEN '" + fecha_desde + "' AND '" + fecha_hasta + "' "
+                        + "WHERE date(v.fecha_emision) BETWEEN to_date('" + fecha_desde + "','dd/mm/yyyy') AND to_date('" + fecha_hasta + "','dd/mm/yyyy') "
                         + "AND v.id_sucursal = " + idsucursal + " AND v.id_almacen = " + idalmacen + " ";
 
                 if (!estado.equals("0")) {

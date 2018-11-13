@@ -778,6 +778,7 @@
                                 <option value="07">NOTA CRÉDITO</option>
                                 <option value="08">NOTA DÉBITO</option>
                                 <option value="00">NOTA PEDIDO</option>
+                                <option value="99">DEV. NOTA PEDIDO</option>
                             </select>
                             &nbsp;
                             <label for="text-label-nroComprob" class="control-label">Nº Comprobante: </label>

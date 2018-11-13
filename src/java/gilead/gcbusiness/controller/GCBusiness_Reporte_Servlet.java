@@ -54,8 +54,8 @@ public class GCBusiness_Reporte_Servlet extends HttpServlet {
                         + "left join gcbusiness.serie s on s.id_serie=v.id_serie "
                         + "left join gcbusiness.tipocomprobante tc on tc.id_tipocomprobante=v.id_tipocomprobante "
                         + "left join gcbusiness.vendedor ve on ve.id_vendedor=c.id_vendedor "
-                        + "WHERE date(v.fecha_emision) between '" + fdesde + "' AND '" + fhasta
-                        + "' AND cc.estado = '" + estadoCC + "' ";
+                        + "WHERE date(v.fecha_emision) between to_date('" + fdesde + "','dd/mm/yyyy') AND to_date('" + fhasta
+                        + "','dd/mm/yyyy') AND cc.estado = '" + estadoCC + "' ";
 
                 if (idvendedor != 0) {
                     query += "AND ve.id_vendedor=" + idvendedor;
@@ -127,8 +127,8 @@ public class GCBusiness_Reporte_Servlet extends HttpServlet {
                             + "left join gcbusiness.tipocomprobante tc on tc.id_tipocomprobante = v.id_tipocomprobante "
                             + "left join gcbusiness.serie s on s.id_serie = v.id_serie "
                             + "left join gcbusiness.moneda m on m.id_moneda = v.id_moneda "
-                            + "WHERE date(v.fecha_emision) between '" + fdesde + "' AND '" + fhasta
-                            + "' AND v.estado = 'E' ";
+                            + "WHERE date(v.fecha_emision) between to_date('" + fdesde + "','dd/mm/yyyy') AND to_date('" + fhasta
+                            + "','dd/mm/yyyy') AND v.estado = 'E' ";
                     if (idvendedor != 0) {
                         query += "AND ve.id_vendedor=" + idvendedor;
                     }
@@ -142,8 +142,8 @@ public class GCBusiness_Reporte_Servlet extends HttpServlet {
                             + "left join gcbusiness.tipocomprobante tc on tc.id_tipocomprobante = v.id_tipocomprobante\n"
                             + "left join gcbusiness.serie s on s.id_serie = v.id_serie\n"
                             + "left join gcbusiness.moneda m on m.id_moneda = v.id_moneda "
-                            + "WHERE date(v.fecha_emision) between '" + fdesde + "' AND '" + fhasta
-                            + "' AND v.estado = 'E' ";
+                            + "WHERE date(v.fecha_emision) between to_date('" + fdesde + "','dd/mm/yyyy') AND to_date('" + fhasta
+                            + "','dd/mm/yyyy') AND v.estado = 'E' ";
                     if (idsucursal != 0) {
                         if (idalmacen != 0) {
                             query += "AND su.id_sucursal=" + idsucursal + " AND a.id_almacen=" + idalmacen;

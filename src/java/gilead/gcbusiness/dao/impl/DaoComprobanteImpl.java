@@ -48,7 +48,7 @@ public class DaoComprobanteImpl {
                 if (!tipoComprobante.equals("0")) {
                     qry += "AND tc.codigo_sunat = '" + tipoComprobante + "' ";
                 }
-                qry += "AND date(v.fecha_emision) BETWEEN '" + fecha_desde + "' AND '" + fecha_hasta + "' "
+                qry += "AND date(v.fecha_emision) BETWEEN to_date('" + fecha_desde + "','dd/mm/yyyy') AND to_date('" + fecha_hasta + "','dd/mm/yyyy') "
                         + "ORDER BY v.fecha_emision DESC";
 
                 st = cn.prepareStatement(qry);
@@ -127,8 +127,8 @@ public class DaoComprobanteImpl {
                     sqlNota += " AND tc.codigo_sunat = '" + tipoComprobante + "'";
                 }
 
-                sqlVenta += " AND date(v.fecha_emision) BETWEEN '" + fecha_desde + "' AND '" + fecha_hasta + "'\n";
-                sqlNota += " AND date(v.fecha_emision) BETWEEN '" + fecha_desde + "' AND '" + fecha_hasta + "'";
+                sqlVenta += " AND date(v.fecha_emision) BETWEEN to_date('" + fecha_desde + "','dd/mm/yyyy') AND to_date('" + fecha_hasta + "','dd/mm/yyyy')\n";
+                sqlNota += " AND date(v.fecha_emision) BETWEEN to_date('" + fecha_desde + "','dd/mm/yyyy') AND to_date('" + fecha_hasta + "','dd/mm/yyyy')";
 
                 qry = sqlVenta + "union all\n" + sqlNota;
                 System.out.println("qry: " + qry);
@@ -185,7 +185,7 @@ public class DaoComprobanteImpl {
                         + "LEFT JOIN gcbusiness.cliente c ON c.id_cliente = v.id_cliente "
                         + "LEFT JOIN gcbusiness.tipodocumento td ON td.id_tipodocumento = c.id_tipodocumento "
                         + "LEFT JOIN gcbusiness.moneda m ON m.id_moneda = v.id_moneda "
-                        + "WHERE date(v.fecha_emision) BETWEEN '" + fecha_desde + "' AND '" + fecha_hasta + "'";
+                        + "WHERE date(v.fecha_emision) BETWEEN to_date('" + fecha_desde + "','dd/mm/yyyy') AND to_date('" + fecha_hasta + "','dd/mm/yyyy')";
 
                 String sqlNota = "SELECT v.id_nota, v.fecha_emision, tc.codigo_sunat codigocomprobante, tc.abreviatura tipocomprobante, s.serie, v.correlativo_serie, c.numero_documento, c.nombre cliente, m.codigo_sunat, v.total_venta, v. estado "
                         + "FROM gcbusiness.nota v "
@@ -194,7 +194,7 @@ public class DaoComprobanteImpl {
                         + "LEFT JOIN gcbusiness.cliente c ON c.id_cliente = v.id_cliente "
                         + "LEFT JOIN gcbusiness.tipodocumento td ON td.id_tipodocumento = c.id_tipodocumento "
                         + "LEFT JOIN gcbusiness.moneda m ON m.id_moneda = v.id_moneda "
-                        + "WHERE date(v.fecha_emision) BETWEEN '" + fecha_desde + "' AND '" + fecha_hasta + "'";
+                        + "WHERE date(v.fecha_emision) BETWEEN to_date('" + fecha_desde + "','dd/mm/yyyy') AND to_date('" + fecha_hasta + "','dd/mm/yyyy')";
 
                 if (!numeroComprobante.equals("")) {
                     String[] arrayNroComprobante = null;
