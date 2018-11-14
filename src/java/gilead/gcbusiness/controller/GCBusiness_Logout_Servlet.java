@@ -11,10 +11,13 @@ public class GCBusiness_Logout_Servlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession sesion = request.getSession();
-        sesion.removeAttribute("usuario");     
+        sesion.removeAttribute("usuario");
+        sesion.removeAttribute("login_usuario");  
         sesion.removeAttribute("accesos");   
         sesion.removeAttribute("idSucursal");
-        sesion.removeAttribute("idAlmacen");   
+        sesion.removeAttribute("idAlmacen");
+        sesion.removeAttribute("descripcionAlmacen");
+        sesion.removeAttribute("rucEmpresa");
         sesion.invalidate();
         //response.sendRedirect("SGbusiness-Login.jsp");
         request.getRequestDispatcher("views/GC-Business-Login.jsp").forward(request, response);
