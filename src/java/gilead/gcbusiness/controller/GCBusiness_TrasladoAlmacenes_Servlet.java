@@ -44,7 +44,7 @@ public class GCBusiness_TrasladoAlmacenes_Servlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //response.setContentType("text/html;charset=UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
 
         // Obtengo la sesion activa
         HttpSession session = request.getSession(false);

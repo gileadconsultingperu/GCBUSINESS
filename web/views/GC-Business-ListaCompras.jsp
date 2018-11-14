@@ -928,9 +928,9 @@
                         var month = d.getMonth() + 1;
                         var day = d.getDate();
 
-                        var output = d.getFullYear() + '/' +
+                        var output = (day < 10 ? '0' : '') + day + '/' +
                                 (month < 10 ? '0' : '') + month + '/' +
-                                (day < 10 ? '0' : '') + day;
+                                d.getFullYear();
 
                         cargarComprobantes("", "0", output, output);
 

@@ -937,7 +937,7 @@
                             <div class="col-md-6 center" style="margin-top: 5px;">
                                 <button class="btn btn-xs btn-primary registrar_venta" style="font-size: 1.2em;"> <span><i class="fa fa-save"></i></span> Registrar Nota</button>
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <a href="#" id="imprimir" class="btn btn-xs btn-primary imprimir" target="_blank" style="font-size: 1.2em;">
+                                <a id="imprimir" class="btn btn-xs btn-primary imprimir" target="_blank" style="font-size: 1.2em;" disabled>
                                     <span><i class="fa fa-print"></i></span> Imprimir
                                 </a> 
                                 <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -1139,6 +1139,7 @@
                                         $('.divError').removeClass('tada animated');
                                     });
                                 } else {
+                                    $('#imprimir').attr('disabled', false);
                                     $('#imprimir').attr('href', '../ImprimirComprobante?tipo=NC&idnota=' + obj.idnota + '&total=' + $('#total_venta').val());
                                     window.open('../ImprimirComprobante?tipo=NC&idnota=' + obj.idnota + '&total=' + $('#total_venta').val(), '_blank');
                                     alertify.success(obj.mensaje);

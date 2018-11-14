@@ -355,6 +355,7 @@ public class GCBusiness_ImprimirComprobante_Servlet extends HttpServlet {
                 Map<String, Object> parametros = new HashMap<String, Object>();
                 parametros.put("P_idmovimientoinventario", Integer.parseInt(idmovimientoinventario));
                 parametros.put(JRParameter.REPORT_LOCALE, new Locale("es", "PE"));
+                parametros.put("SUBREPORT_DIR", "/factele/" + rucEmpresa + "/jasper/");
 
                 JasperReport reporte;
                 reporte = (JasperReport) JRLoader.loadObjectFromFile("/factele/" + rucEmpresa + "/jasper/ConInventario.jasper");
@@ -365,6 +366,38 @@ public class GCBusiness_ImprimirComprobante_Servlet extends HttpServlet {
                 byte[] pdfBytes = JasperExportManager.exportReportToPdf(jasperPrint);
                 response.setContentType("application/pdf");
                 response.setHeader("Content-Disposition", "inline;filename=" + "MovimientoInventario" + ".pdf");
+                response.getOutputStream().write(pdfBytes);
+                response.flushBuffer();
+
+                cn.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.out.println("GCBusiness_ImprimirComprobante_Servlet - Error: " + ex.toString());
+                try {
+                    cn.close();
+                } catch (SQLException ex1) {
+                    Logger.getLogger(GCBusiness_ImprimirComprobante_Servlet.class.getName()).log(Level.SEVERE, null, ex1);
+                }
+            }
+        } else if (tipo.equals("MA")) {
+            String idtrasladoalmacen = request.getParameter("idtrasladoalmacen");
+            ConectaDb db = new ConectaDb();
+            Connection cn = db.getConnection();
+            try {
+                Map<String, Object> parametros = new HashMap<String, Object>();
+                parametros.put("P_idmovimientoalmacen", Integer.parseInt(idtrasladoalmacen));
+                parametros.put(JRParameter.REPORT_LOCALE, new Locale("es", "PE"));
+                parametros.put("SUBREPORT_DIR", "/factele/" + rucEmpresa + "/jasper/");
+
+                JasperReport reporte;
+                reporte = (JasperReport) JRLoader.loadObjectFromFile("/factele/" + rucEmpresa + "/jasper/MovAlmacen.jasper");
+
+                JasperPrint jasperPrint;
+                jasperPrint = JasperFillManager.fillReport(reporte, parametros, cn);
+
+                byte[] pdfBytes = JasperExportManager.exportReportToPdf(jasperPrint);
+                response.setContentType("application/pdf");
+                response.setHeader("Content-Disposition", "inline;filename=" + "MovimientoAlmacen" + ".pdf");
                 response.getOutputStream().write(pdfBytes);
                 response.flushBuffer();
 

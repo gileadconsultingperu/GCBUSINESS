@@ -1185,7 +1185,7 @@
                             <div class="col-md-6 center" style="margin-top: 5px;">
                                 <button class="btn btn-xs btn-primary registrar_venta" style="font-size: 1.2em;"> <span><i class="fa fa-save"></i></span> Registrar Venta</button>
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <a href="#" id="imprimir" class="btn btn-xs btn-primary imprimir" target="_blank" style="font-size: 1.2em;">
+                                <a id="imprimir" class="btn btn-xs btn-primary imprimir" target="_blank" style="font-size: 1.2em;" disabled>
                                     <span><i class="fa fa-print"></i></span> Imprimir
                                 </a> 
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -1953,6 +1953,7 @@
                                         $('.divError').removeClass('tada animated');
                                     });
                                 } else {
+                                    $('#imprimir').attr('disabled', false);
                                     $('#imprimir').attr('href', '../ImprimirComprobante?tipo=NP&idventa=' + obj.idventa + '&total=' + $('#total_venta').val());
                                     window.open('../ImprimirComprobante?tipo=NP&idventa=' + obj.idventa + '&total=' + $('#total_venta').val(), '_blank');
                                     alertify.success(obj.mensaje);
@@ -2016,7 +2017,7 @@
                             $('#lblfechavencimientoletra').addClass('hide');
                             $('#iconfechavencimientoletra').addClass('hide');
 
-                            $('#estadopago').prop('selectedIndex', 0);
+                            //$('#estadopago').prop('selectedIndex', 0);
                             $('#lblmontopagado').addClass('hide');
                             $('#montopagado').addClass('hide');
                             $('#montopagado').val('');
@@ -2041,6 +2042,9 @@
                             }).datepicker("setDate", new Date());
                             $('#detalleVenta tbody').remove();
                             $('.registrar_venta').prop('disabled', false);
+                            $('#imprimir').attr('disabled', true);
+                            $("#imprimir").removeAttr('href');
+                            $('#serie').focus();
                         });
 
                         $('#buscarws').click(function (event) {

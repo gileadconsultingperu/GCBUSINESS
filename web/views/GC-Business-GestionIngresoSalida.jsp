@@ -1138,9 +1138,9 @@
                         var month = d.getMonth() + 1;
                         var day = d.getDate();
 
-                        var output = d.getFullYear() + '/' +
+                        var output = (day < 10 ? '0' : '') + day + '/' +
                                 (month < 10 ? '0' : '') + month + '/' +
-                                (day < 10 ? '0' : '') + day;
+                                d.getFullYear();
 
                         cargarIngresosSalidas("0", "0", output, output);
 
@@ -1347,11 +1347,6 @@
                                     $('#modalAgregarIngresoSalida').modal('hide');
                                 }
                             });
-                        });
-
-                        //Imprimir registro
-                        $(document).on('click', '.actualizar', function () {
-
                         });
 
                         $("#btnAgregarDetalle").click(function () {

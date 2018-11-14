@@ -836,7 +836,7 @@
                                                 <select id="estadopago" name="estadopago" class="styled-select tipo_comprobante" style="width: 160px;" tabindex="11">
                                                     <option value="S">SIN PAGAR</option>
                                                     <option value="P">PAGADO PARCIALMENTE</option>
-                                                    <option value="T">PAGADO TOTALMENTE</option>
+                                                    <option value="T" selected>PAGADO TOTALMENTE</option>
                                                 </select>
                                                 &nbsp;
                                                 <label id="lblmontopagado" class="control-label hide" style="width: 100px;">Monto Pagado:</label>
@@ -1090,7 +1090,9 @@
                             <div class="col-md-6" style="margin-top: 5px;">
                                 <button class="btn btn-xs btn-primary registrar_compra" style="font-size: 1.2em;"> <span><i class="fa fa-save"></i></span> Registrar Compra</button>
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <button type="button" class="btn btn-xs btn-primary imprimir" style="font-size: 1.2em;"> <span><i class="fa fa-print"></i></span> Imprimir</button>
+                                <a id="imprimir" class="btn btn-xs btn-primary imprimir" target="_blank" style="font-size: 1.2em;" disabled>
+                                    <span><i class="fa fa-print"></i></span> Imprimir
+                                </a> 
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 <button class="btn btn-xs btn-primary limpiar" style="font-size: 1.2em;"> <span><i class="fa fa-trash"></i></span> Limpiar</button>
                             </div>
@@ -1806,6 +1808,7 @@
                                         $('.divError').removeClass('tada animated');
                                     });
                                 } else {
+                                    $('#imprimir').attr('disabled', false);
                                     $('#imprimir').attr('href', '../ImprimirComprobante?tipo=CO&idcompra=' + obj.idcompra);
                                     window.open('../ImprimirComprobante?tipo=CO&idcompra=' + obj.idcompra, '_blank');
                                     alertify.success(obj.mensaje);
@@ -1829,7 +1832,7 @@
                             $('#lblfechavencimientoletra').addClass('hide');
                             $('#iconfechavencimientoletra').addClass('hide');
 
-                            $('#estadopago').prop('selectedIndex', 0);
+                            $('#estadopago').val('T');
                             $('#lblmontopagado').addClass('hide');
                             $('#montopagado').addClass('hide');
                             $('#montopagado').val('');
@@ -1880,6 +1883,8 @@
 
                             $('#detalleCompra tbody').remove();
                             $('.registrar_compra').prop('disabled', false);
+                            $('#imprimir').attr('disabled', true);
+                            $("#imprimir").removeAttr('href');
                             $('#serie').focus();
                         });
                     });

@@ -1133,9 +1133,9 @@
                         var month = d.getMonth() + 1;
                         var day = d.getDate();
 
-                        var output = d.getFullYear() + '/' +
+                        var output = (day < 10 ? '0' : '') + day + '/' +
                                 (month < 10 ? '0' : '') + month + '/' +
-                                (day < 10 ? '0' : '') + day;
+                                d.getFullYear();
 
                         cargarTrasladoAlmacenes(output, output);
 
@@ -1342,12 +1342,7 @@
                                     $('#modalAgregarTrasladoAlmacen').modal('hide');
                                 }
                             });
-                        });
-
-                        //Imprimir registro
-                        $(document).on('click', '.actualizar', function () {
-
-                        });
+                        });                    
 
                         $("#btnAgregarDetalle").click(function () {
                             if ($('#flaglote').val() === 'N') {
@@ -1620,7 +1615,13 @@
                                 });
                             }
                         });
-
+                        
+                        //Imprimir traslado almacen
+                        $(document).on('click', '.imprimir', function () {
+                            var idtrasladoalmacen = $(this).attr('id');
+                            window.open('../ImprimirComprobante?tipo=MA&idtrasladoalmacen=' + idtrasladoalmacen, '_blank');
+                        });
+                        
                         //another option is using modals
                         $('#avatar2').on('click', function () {
                             var modal =

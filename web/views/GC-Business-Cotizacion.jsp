@@ -1528,6 +1528,7 @@
 
                             $('#detalleVenta tbody').remove();
                             $('.registrar_cotizacion').prop('disabled', false);
+                            $('#moneda').focus();
                         });
                     });
         </script>
