@@ -8,6 +8,8 @@
     Autor Creación      : Pablo Jimenez Aguado
     Uso                 : Exportar Reporte de Cuentas por Cobrar
 --%>
+<%@page import="gilead.gcbusiness.model.BeanCliente"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoClienteImpl"%>
 <%@page import="gilead.gcbusiness.model.BeanVendedor"%>
 <%@page import="gilead.gcbusiness.dao.impl.DaoVendedorImpl"%>
 <%@page import="java.util.List"%>
@@ -691,6 +693,18 @@
                             </li>
                             <%
                                 }
+                                if (opciones.contains(76)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteMovimientoInventarioxProducto.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Movimientos de Inventario por Producto
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
                             %>
                         </ul>
                     </li>
@@ -744,35 +758,73 @@
                             </h1>
                         </div><!-- /.page-header -->
 
-                        <div style="margin-left: 150px;">
+                        <div style="text-align: center;">
+                            <input type="hidden" id="busqueda" value="rbcliente">
                             <label for="date-label-from" class="control-label">Desde: </label> 
                             <input type="text" name="fecha_desde" id="fecha_desde" class="datepicker" style="width: 90px;" placeholder="dd/mm/yyyy" disabled/>
                             &nbsp;
                             <label for="date-label-to" class="control-label">Hasta: </label>
                             <input type="text" name="fecha_hasta" id="fecha_hasta" class="datepicker" style="width: 90px;" placeholder="dd/mm/yyyy" disabled/>
                             &nbsp;
-                            <label for="vendedor" class="control-label">Vendedor: </label>
-                            <select id="vendedor" name="vendedor" tabindex="3" style="width: 140px;">
-                                <option value="0" selected="selected">TODOS</option>
-                                <%
-                                    DaoVendedorImpl daoVendedor = new DaoVendedorImpl();
-                                    List<BeanVendedor> vendedor = daoVendedor.accionListar();
-
-                                    for (int i = 0; i < vendedor.size(); i++) {
-                                %>
-                                <option value="<%=vendedor.get(i).getIdvendedor()%>">
-                                    <%=vendedor.get(i).getDescripcion()%> 
-                                </option>
-                                <%
-                                    }
-                                %>
-                            </select>
+                            <div class="control-group" style="margin-top: 20px;">
+                                <div class="radio">
+                                    <label>
+                                        <input id="rbcliente" name="form-field-radio" type="radio" class="ace" checked/>
+                                        <span class="lbl"> Por Cliente</span>
+                                    </label>
+                                    <label>
+                                        <input id="rbvendedor" name="form-field-radio" type="radio" class="ace" />
+                                        <span class="lbl"> Por Vendedor</span>
+                                    </label>
+                                </div>
+                            </div>
                             &nbsp;
-                            <label for="estado" class="control-label">Estado: </label>
-                            <select id="estado" name="estado" tabindex="4" style="width: 110px;">
-                                <option value="P" selected="selected">PENDIENTE</option>
-                                <option value="C">CANCELADO</option>
-                            </select>
+                            <div id="porVendedor" class="hide">
+                                <label for="vendedor" class="control-label">Vendedor: </label>
+                                <select id="vendedor" name="vendedor" tabindex="3" style="width: 140px;">
+                                    <option value="0" selected="selected">TODOS</option>
+                                    <%
+                                        DaoVendedorImpl daoVendedor = new DaoVendedorImpl();
+                                        List<BeanVendedor> vendedor = daoVendedor.accionListar();
+
+                                        for (int i = 0; i < vendedor.size(); i++) {
+                                    %>
+                                    <option value="<%=vendedor.get(i).getIdvendedor()%>">
+                                        <%=vendedor.get(i).getDescripcion()%> 
+                                    </option>
+                                    <%
+                                        }
+                                    %>
+                                </select>
+                            </div>
+                            <div id="porCliente">
+                                <label for="cliente" class="control-label">Cliente: </label>
+                                <select class="chosen-select" id="cliente" name="cliente" tabindex="3" style="width: 460px;">
+                                    <option value="0" selected="selected">TODOS</option>
+                                    <%
+                                        DaoClienteImpl daoCliente = new DaoClienteImpl();
+                                        List<BeanCliente> cliente = daoCliente.accionListar();
+
+                                        for (int i = 0; i < cliente.size(); i++) {
+                                    %>
+                                    <option value="<%=cliente.get(i).getIdcliente()%>">
+                                        <%=cliente.get(i).getNumerodocumento() + " - " + cliente.get(i).getNombre()%> 
+                                    </option>
+                                    <%
+                                        }
+                                    %>
+                                </select>
+                            </div>
+                            &nbsp;
+                            <div style="margin-top: 10px;">
+                                <label for="estado" class="control-label">Estado: </label>
+                                <select id="estado" name="estado" tabindex="4" style="width: 110px;">
+                                    <option value="0" selected="selected">TODOS</option>
+                                    <option value="P">PENDIENTE</option>
+                                    <option value="C">CANCELADO</option>
+                                    <option value="A">ANULADO</option>
+                                </select>
+                            </div>
                         </div>
                         <hr>
                         <div class="form-group" style="margin-left: 400px; margin-top: 30px">            
@@ -832,6 +884,9 @@
     <link rel="stylesheet" href="../assets/css/jquery-ui.min.css" />
     <script src="../assets/js/jquery-ui.min.js"></script>
     <!-- inline scripts related to this page -->
+
+    <script src="../assets/js/chosen.jquery.min.js"></script>
+
     <script type="text/javascript">
 
                     $(document).ready(function () {
@@ -840,9 +895,27 @@
                             var fdesde = $('#fecha_desde').val();
                             var fhasta = $('#fecha_hasta').val();
                             var idvendedor = $('#vendedor').val();
+                            var idcliente = $('#cliente').val();
+                            var busqueda = $('#busqueda').val();
                             var estadoCC = $('#estado').val();
                             var fileType = $(this).prop('name');
-                            window.open('../Reporte?opcion=CC&fileType=' + fileType + '&fdesde=' + fdesde + '&fhasta=' + fhasta + '&idvendedor=' + idvendedor + '&estadoCC=' + estadoCC, '_blank');
+                            window.open('../Reporte?opcion=CC&busqueda=' + busqueda + '&fileType=' + fileType + '&fdesde=' + fdesde + '&fhasta=' + fhasta + '&idvendedor=' + idvendedor + '&idcliente=' + idcliente + '&estadoCC=' + estadoCC, '_blank');
+                        });
+
+                        $("input[type='radio']").change(function () {
+                            var opcion = $(this).attr('id');
+                            if (opcion === "rbvendedor") {
+                                $('#vendedor').val("0");
+                                $('#porVendedor').removeClass('hide');
+                                $('#porCliente').addClass('hide');
+                            } else {
+                                $('#cliente')
+                                        .find('option:first-child').prop('selected', true)
+                                        .end().trigger('chosen:updated');
+                                $('#porCliente').removeClass('hide');
+                                $('#porVendedor').addClass('hide');
+                            }
+                            $('#busqueda').val(opcion);
                         });
 
                         $(".datepicker").datepicker({
@@ -872,6 +945,30 @@
                             yearSuffix: ''
                         };
                         $.datepicker.setDefaults($.datepicker.regional['es']);
+
+
+                        if (!ace.vars['touch']) {
+                            $('.chosen-select').chosen({allow_single_deselect: true});
+                            //resize the chosen on window resize
+
+                            $(window)
+                                    .off('resize.chosen')
+                                    .on('resize.chosen', function () {
+                                        $('.chosen-select').each(function () {
+                                            var $this = $(this);
+                                            $this.next().css({'width': 460});
+                                        });
+                                    }).trigger('resize.chosen');
+                            //resize chosen on sidebar collapse/expand
+                            $(document).on('settings.ace.chosen', function (e, event_name, event_val) {
+                                if (event_name !== 'sidebar_collapsed')
+                                    return;
+                                $('.chosen-select').each(function () {
+                                    var $this = $(this);
+                                    $this.next().css({'width': 460});
+                                });
+                            });
+                        }
                     });
     </script>
 </body>

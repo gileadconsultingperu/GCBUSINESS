@@ -6,14 +6,19 @@ import gilead.gcbusiness.dto.DTOComprobante;
 import gilead.gcbusiness.dto.DTODetalleVenta;
 import gilead.gcbusiness.dto.DTOVenta;
 import gilead.gcbusiness.sql.ConectaDb;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -23,6 +28,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 public class GCBusiness_Comprobante_Servlet extends HttpServlet {
 
@@ -104,6 +113,8 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
 
                 DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.DATE_FIELD, Locale.UK);
 
+                String ruc = (String) session.getAttribute("rucEmpresa");
+
                 for (int i = 0; i < listComprobante.size(); i++) {
                     String acciones = "";
 
@@ -113,7 +124,7 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
                                 + "</div>";
                     } else if (accion.equals("visualizar")) {
                         acciones = "<div class=\"hidden-sm hidden-xs btn-group\">"
-                                + "<button type='button' name='imprimir' id='" + listComprobante.get(i).getIdventa() + " | " + listComprobante.get(i).getCodigoSunatcomprobante() + " | " + listComprobante.get(i).getTotal_venta() + "' class='btn btn-info btn-xs imprimir' title='Imprimir'><span class='glyphicon glyphicon-print'></span></button>"
+                                + "<button type='button' name='imprimir' id='" + listComprobante.get(i).getIdventa() + " | " + listComprobante.get(i).getCodigoSunatcomprobante() + " | " + listComprobante.get(i).getTotal_venta() + " | " + "/factele/" + ruc + "/sunat/envio/" + ruc + "-" + listComprobante.get(i).getCodigoSunatcomprobante() + "-" + listComprobante.get(i).getSerie() + "-" + listComprobante.get(i).getCorrelativoserie() + ".pdf" + "' class='btn btn-info btn-xs imprimir' title='Imprimir'><span class='glyphicon glyphicon-print'></span></button>"
                                 + "</div>";
                     }
 
@@ -155,6 +166,8 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
                 java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
                 java.sql.Timestamp ts = new java.sql.Timestamp(sqlDate.getTime());
                 String login_usuario = (String) session.getAttribute("login_usuario");
+                String serieobs = "";
+                String correlativoserieobs = "";
 
                 if (codTipoCmp.equals("01") || codTipoCmp.equals("03")) {//SI ES FACTURA O BOLETA
                     //OBTENER CANTIDAD DE NOTAS EMITIDAS RELACIONADAS
@@ -177,12 +190,17 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
                         //RETORNO DE INVENTARIO SOLO AL ANULAR BOLETA O FACTURA
                         //OBTENEMOS IDALMACEN PARA SABER A QUE ALMACEN RETORNARA LOS PRODUCTOS 
                         Integer id_almacen = 0;
-                        sql = "SELECT id_almacen FROM gcbusiness.venta WHERE id_venta=" + idcomprobante;
+                        sql = "SELECT v.id_almacen, s.serie, v.correlativo_serie "
+                                + "FROM gcbusiness.venta v "
+                                + "LEFT JOIN gcbusiness.serie s ON s.id_serie=v.id_serie "
+                                + "WHERE v.id_venta=" + idcomprobante;
                         sqlEjecucion = sql;
                         rs = st.executeQuery(sql);
 
                         if (rs.next()) {
                             id_almacen = rs.getInt("id_almacen");
+                            serieobs = rs.getString("serie");
+                            correlativoserieobs = String.valueOf(rs.getInt("correlativo_serie"));
                         }
 
                         //INSERTAMOS CABECERA MOVIMIENTO INVENTARIO
@@ -197,7 +215,7 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
 
                         sql = "INSERT INTO gcbusiness.movimientoinventario(id_movimientoinventario, id_almacen, id_motivomovimiento, fecha, observacion, id_referencia, estado, "
                                 + "fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion) "
-                                + "VALUES (" + id_movimientoinventario + ", " + id_almacen + ", 4, '" + ts + "', 'ANULACION COMPROBANTE', " + idcomprobante + ", 'A', "
+                                + "VALUES (" + id_movimientoinventario + ", " + id_almacen + ", 4, '" + ts + "', 'ANULACION COMPROBANTE " + serieobs + "-" + correlativoserieobs + "', " + idcomprobante + ", 'A', "
                                 + "'" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
 
                         sqlEjecucion = sql;
@@ -297,12 +315,17 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
                         //RETORNO DE INVENTARIO SOLO AL ANULAR NOTA DE PEDIDO
                         //OBTENEMOS IDALMACEN PARA SABER A QUE ALMACEN RETORNARA LOS PRODUCTOS 
                         Integer id_almacen = 0;
-                        sql = "SELECT id_almacen FROM gcbusiness.venta WHERE id_venta=" + idcomprobante;
+                        sql = "SELECT v.id_almacen, s.serie, v.correlativo_serie "
+                                + "FROM gcbusiness.venta v "
+                                + "LEFT JOIN gcbusiness.serie s ON s.id_serie=v.id_serie "
+                                + "WHERE v.id_venta=" + idcomprobante;
                         sqlEjecucion = sql;
                         rs = st.executeQuery(sql);
 
                         if (rs.next()) {
                             id_almacen = rs.getInt("id_almacen");
+                            serieobs = rs.getString("serie");
+                            correlativoserieobs = String.valueOf(rs.getInt("correlativo_serie"));
                         }
 
                         //INSERTAMOS CABECERA MOVIMIENTO INVENTARIO
@@ -317,7 +340,7 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
 
                         sql = "INSERT INTO gcbusiness.movimientoinventario(id_movimientoinventario, id_almacen, id_motivomovimiento, fecha, observacion, id_referencia, estado, "
                                 + "fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion) "
-                                + "VALUES (" + id_movimientoinventario + ", " + id_almacen + ", 5, '" + ts + "', 'ANULACION COMPROBANTE', " + idcomprobante + ", 'A', "
+                                + "VALUES (" + id_movimientoinventario + ", " + id_almacen + ", 5, '" + ts + "', 'ANULACION COMPROBANTE " + serieobs + "-" + correlativoserieobs + "', " + idcomprobante + ", 'A', "
                                 + "'" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
 
                         sqlEjecucion = sql;
@@ -403,7 +426,10 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
                     //OBTENEMOS IDALMACEN PARA SABER A QUE ALMACEN RETORNARA LOS PRODUCTOS 
                     Integer id_almacen = 0, id_tiponota = 0, id_tipocomprobante_modifica = 0, id_serie_modifica = 0, correlativo_serie_modifica = 0;
                     Double total_venta = 0.00;
-                    String sql = "SELECT id_almacen, id_tiponota, id_tipocomprobante_modifica, id_serie_modifica, correlativo_serie_modifica, total_venta FROM gcbusiness.nota WHERE id_nota=" + idcomprobante;
+                    String sql = "SELECT n.id_almacen, n.id_tiponota, n.id_tipocomprobante_modifica, n.id_serie_modifica, n.correlativo_serie_modifica, n.total_venta, s.serie, n.correlativo_serie "
+                            + "FROM gcbusiness.nota n "
+                            + "LEFT JOIN gcbusiness.serie s ON s.id_serie=n.id_serie "
+                            + "WHERE n.id_nota=" + idcomprobante;
                     sqlEjecucion = sql;
                     ResultSet rs = st.executeQuery(sql);
 
@@ -414,6 +440,8 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
                         id_serie_modifica = rs.getInt("id_serie_modifica");
                         correlativo_serie_modifica = rs.getInt("correlativo_serie_modifica");
                         total_venta = rs.getDouble("total_venta");
+                        serieobs = rs.getString("serie");
+                        correlativoserieobs = String.valueOf(rs.getInt("correlativo_serie"));
                     }
 
                     if (id_tiponota == 1 || id_tiponota == 6 || id_tiponota == 7) {
@@ -436,7 +464,7 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
 
                         sql = "INSERT INTO gcbusiness.movimientoinventario(id_movimientoinventario, id_almacen, id_motivomovimiento, fecha, observacion, id_referencia, estado, "
                                 + "fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion) "
-                                + "VALUES (" + id_movimientoinventario + ", " + id_almacen + ", " + id_motivomovimiento + ", '" + ts + "', 'ANULACION COMPROBANTE', " + idcomprobante + ", 'A', "
+                                + "VALUES (" + id_movimientoinventario + ", " + id_almacen + ", " + id_motivomovimiento + ", '" + ts + "', 'ANULACION COMPROBANTE " + serieobs + "-" + correlativoserieobs + "', " + idcomprobante + ", 'A', "
                                 + "'" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
 
                         sqlEjecucion = sql;
@@ -628,7 +656,10 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
                     //OBTENEMOS IDALMACEN PARA SABER A QUE ALMACEN RETORNARA LOS PRODUCTOS 
                     Integer id_almacen = 0, id_tiponota = 0, id_tipocomprobante_modifica = 0, id_serie_modifica = 0, correlativo_serie_modifica = 0;
                     Double total_venta = 0.00;
-                    String sql = "SELECT id_almacen, id_tiponota, id_tipocomprobante_modifica, id_serie_modifica, correlativo_serie_modifica, total_venta FROM gcbusiness.nota WHERE id_nota=" + idcomprobante;
+                    String sql = "SELECT n.id_almacen, n.id_tiponota, n.id_tipocomprobante_modifica, n.id_serie_modifica, n.correlativo_serie_modifica, n.total_venta, s.serie, n.correlativo_serie "
+                            + "FROM gcbusiness.nota n "
+                            + "LEFT JOIN gcbusiness.serie s ON s.id_serie=n.id_serie "
+                            + "WHERE n.id_nota=" + idcomprobante;
                     sqlEjecucion = sql;
                     ResultSet rs = st.executeQuery(sql);
 
@@ -639,6 +670,8 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
                         id_serie_modifica = rs.getInt("id_serie_modifica");
                         correlativo_serie_modifica = rs.getInt("correlativo_serie_modifica");
                         total_venta = rs.getDouble("total_venta");
+                        serieobs = rs.getString("serie");
+                        correlativoserieobs = String.valueOf(rs.getInt("correlativo_serie"));
                     }
 
                     if (id_tiponota == 12) {
@@ -654,7 +687,7 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
 
                         sql = "INSERT INTO gcbusiness.movimientoinventario(id_movimientoinventario, id_almacen, id_motivomovimiento, fecha, observacion, id_referencia, estado, "
                                 + "fecha_insercion, usuario_insercion, terminal_insercion, ip_insercion) "
-                                + "VALUES (" + id_movimientoinventario + ", " + id_almacen + ", 18, '" + ts + "', 'ANULACION COMPROBANTE', " + idcomprobante + ", 'A', "
+                                + "VALUES (" + id_movimientoinventario + ", " + id_almacen + ", 18, '" + ts + "', 'ANULACION COMPROBANTE " + serieobs + "-" + correlativoserieobs + "', " + idcomprobante + ", 'A', "
                                 + "'" + ts + "', '" + login_usuario + "', '" + request.getRemoteHost() + "', '" + request.getRemoteAddr() + "')";
 
                         sqlEjecucion = sql;
@@ -783,6 +816,225 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
                 }
 
                 if (flag_anulado == 1) {
+                    String qry = null;
+                    ResultSet rs = null;
+                    String tipocomtpobante = null;
+                    String serie = null;
+                    String correlativo = null;
+                    Calendar c = Calendar.getInstance();
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                    String fechageneracion = formatter.format(c.getTime());
+                    String motivo = null;
+                    if (codTipoCmp.equals("01")) {
+                        qry = "select tc.codigo_sunat, s.serie codigo_serie, cast(v.correlativo_serie as varchar) correlativo_serie, v.motivo_anulacion "
+                                + "from gcbusiness.venta v "
+                                + "left join gcbusiness.tipocomprobante tc on tc.id_tipocomprobante = v.id_tipocomprobante "
+                                + "left join gcbusiness.serie s on s.id_serie = v.id_serie "
+                                + "where id_venta = " + idcomprobante;
+
+                        rs = st.executeQuery(qry);
+
+                        while (rs.next()) {
+                            tipocomtpobante = rs.getString("codigo_sunat");
+                            serie = rs.getString("codigo_serie");
+                            correlativo = rs.getString("correlativo_serie");
+                            motivo = rs.getString("motivo_anulacion");
+                        }
+                        //
+                        try {
+                            DefaultHttpClient httpClient = new DefaultHttpClient();
+                            HttpPost postRequest = new HttpPost(
+                                    "http://localhost:8084/WebServiceSunat21/rest/comprobante/comunicarBajaDesdeSistema");
+
+                            StringEntity input = new StringEntity(tipocomtpobante + "|" + serie + "|" + correlativo + "|" + fechageneracion + "|" + motivo, "utf-8");
+
+                            input.setContentType("application/json");
+                            postRequest.setEntity(input);
+
+                            HttpResponse httpResponse = httpClient.execute(postRequest);
+
+                            if (httpResponse.getStatusLine().getStatusCode() != 200) {
+                                throw new RuntimeException("Failed : HTTP error code : "
+                                        + httpResponse.getStatusLine().getStatusCode());
+                            }
+
+                            BufferedReader br = new BufferedReader(new InputStreamReader(
+                                    (httpResponse.getEntity().getContent())));
+
+                            String output;
+                            String[] aux = null;
+                            System.out.println("Output from Server .... \n");
+                            while ((output = br.readLine()) != null) {
+                                aux = output.split("\\|", 0);
+                            }
+
+                            httpClient.getConnectionManager().shutdown();
+
+                        } catch (MalformedURLException e) {
+
+                            e.printStackTrace();
+                        } catch (IOException e) {
+
+                            e.printStackTrace();
+
+                        }
+                        //
+                    } else if (codTipoCmp.equals("03")) {
+                        qry = "select tc.codigo_sunat, s.serie codigo_serie, cast(v.correlativo_serie as varchar) correlativo_serie, v.motivo_anulacion "
+                                + "from gcbusiness.venta v "
+                                + "left join gcbusiness.tipocomprobante tc on tc.id_tipocomprobante = v.id_tipocomprobante "
+                                + "left join gcbusiness.serie s on s.id_serie = v.id_serie "
+                                + "where id_venta = " + idcomprobante;
+
+                        rs = st.executeQuery(qry);
+
+                        while (rs.next()) {
+                            tipocomtpobante = rs.getString("codigo_sunat");
+                            serie = rs.getString("codigo_serie");
+                            correlativo = rs.getString("correlativo_serie");
+                        }
+                        //
+                        try {
+                            DefaultHttpClient httpClient = new DefaultHttpClient();
+                            HttpPost postRequest = new HttpPost(
+                                    "http://localhost:8084/WebServiceSunat21/rest/comprobante/anularComprobanteDesdeSistema");
+
+                            StringEntity input = new StringEntity(tipocomtpobante + "|" + serie + "|" + correlativo, "utf-8");
+
+                            input.setContentType("application/json");
+                            postRequest.setEntity(input);
+
+                            HttpResponse httpResponse = httpClient.execute(postRequest);
+
+                            if (httpResponse.getStatusLine().getStatusCode() != 200) {
+                                throw new RuntimeException("Failed : HTTP error code : "
+                                        + httpResponse.getStatusLine().getStatusCode());
+                            }
+
+                            BufferedReader br = new BufferedReader(new InputStreamReader(
+                                    (httpResponse.getEntity().getContent())));
+
+                            String output;
+                            String[] aux = null;
+                            System.out.println("Output from Server .... \n");
+                            while ((output = br.readLine()) != null) {
+                                aux = output.split("\\|", 0);
+                            }
+
+                            httpClient.getConnectionManager().shutdown();
+
+                        } catch (MalformedURLException e) {
+
+                            e.printStackTrace();
+                        } catch (IOException e) {
+
+                            e.printStackTrace();
+
+                        }
+                        //
+                    } else if (codTipoCmp.equals("07") || codTipoCmp.equals("08")) {
+                        String notatipocomprobante = null;
+                        //Obtener tipo comprobante referencia
+                        qry = "select tc.codigo_sunat, s.serie codigo_serie, cast(v.correlativo_serie as varchar) correlativo_serie, tcr.codigo_sunat codigo_sunat_ref, v.motivo_anulacion "
+                                + "from gcbusiness.nota v "
+                                + "left join gcbusiness.tipocomprobante tc on tc.id_tipocomprobante = v.id_tipocomprobante "
+                                + "left join gcbusiness.serie s on s.id_serie = v.id_serie "
+                                + "left join gcbusiness.tipocomprobante tcr on tcr.id_tipocomprobante = v.id_tipocomprobante_modifica "
+                                + "where id_nota = " + idcomprobante;
+
+                        rs = st.executeQuery(qry);
+
+                        while (rs.next()) {
+                            tipocomtpobante = rs.getString("codigo_sunat");
+                            serie = rs.getString("codigo_serie");
+                            correlativo = rs.getString("correlativo_serie");
+                            notatipocomprobante = rs.getString("codigo_sunat_ref");
+                            motivo = rs.getString("motivo_anulacion");
+                        }
+
+                        if (notatipocomprobante.equals("01")) {
+                            //
+                            try {
+                                DefaultHttpClient httpClient = new DefaultHttpClient();
+                                HttpPost postRequest = new HttpPost(
+                                        "http://localhost:8084/WebServiceSunat21/rest/comprobante/comunicarBajaDesdeSistema");
+
+                                StringEntity input = new StringEntity(tipocomtpobante + "|" + serie + "|" + correlativo + "|" + fechageneracion + "|" + motivo, "utf-8");
+
+                                input.setContentType("application/json");
+                                postRequest.setEntity(input);
+
+                                HttpResponse httpResponse = httpClient.execute(postRequest);
+
+                                if (httpResponse.getStatusLine().getStatusCode() != 200) {
+                                    throw new RuntimeException("Failed : HTTP error code : "
+                                            + httpResponse.getStatusLine().getStatusCode());
+                                }
+
+                                BufferedReader br = new BufferedReader(new InputStreamReader(
+                                        (httpResponse.getEntity().getContent())));
+
+                                String output;
+                                String[] aux = null;
+                                System.out.println("Output from Server .... \n");
+                                while ((output = br.readLine()) != null) {
+                                    aux = output.split("\\|", 0);
+                                }
+
+                                httpClient.getConnectionManager().shutdown();
+
+                            } catch (MalformedURLException e) {
+
+                                e.printStackTrace();
+                            } catch (IOException e) {
+
+                                e.printStackTrace();
+
+                            }
+                            //
+                        } else if (notatipocomprobante.equals("03")) {
+                            //
+                            try {
+                                DefaultHttpClient httpClient = new DefaultHttpClient();
+                                HttpPost postRequest = new HttpPost(
+                                        "http://localhost:8084/WebServiceSunat21/rest/comprobante/anularComprobanteDesdeSistema");
+
+                                StringEntity input = new StringEntity(tipocomtpobante + "|" + serie + "|" + correlativo, "utf-8");
+
+                                input.setContentType("application/json");
+                                postRequest.setEntity(input);
+
+                                HttpResponse httpResponse = httpClient.execute(postRequest);
+
+                                if (httpResponse.getStatusLine().getStatusCode() != 200) {
+                                    throw new RuntimeException("Failed : HTTP error code : "
+                                            + httpResponse.getStatusLine().getStatusCode());
+                                }
+
+                                BufferedReader br = new BufferedReader(new InputStreamReader(
+                                        (httpResponse.getEntity().getContent())));
+
+                                String output;
+                                String[] aux = null;
+                                System.out.println("Output from Server .... \n");
+                                while ((output = br.readLine()) != null) {
+                                    aux = output.split("\\|", 0);
+                                }
+
+                                httpClient.getConnectionManager().shutdown();
+
+                            } catch (MalformedURLException e) {
+
+                                e.printStackTrace();
+                            } catch (IOException e) {
+
+                                e.printStackTrace();
+
+                            }
+                            //
+                        }
+                    }
+
                     json += " \"mensaje\":\"<em>SE ANULÓ CORRECTAMENTE EL COMRPOBANTE</em>\" ";
 
                     cn.commit();

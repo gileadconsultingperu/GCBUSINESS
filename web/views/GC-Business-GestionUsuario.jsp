@@ -696,6 +696,18 @@
                             </li>
                             <%
                                 }
+                                if (opciones.contains(76)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteMovimientoInventarioxProducto.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Movimientos de Inventario por Producto
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
                             %>
                         </ul>
                     </li>

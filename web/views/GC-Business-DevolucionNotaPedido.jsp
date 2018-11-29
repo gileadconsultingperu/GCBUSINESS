@@ -717,6 +717,18 @@
                             </li>
                             <%
                                 }
+                                if (opciones.contains(76)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteMovimientoInventarioxProducto.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Movimientos de Inventario por Producto
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
                             %>
                         </ul>
                     </li>
@@ -1650,9 +1662,9 @@
                                         $('.divError').removeClass('tada animated');
                                     });
                                 } else {
+                                    alertify.success(obj.mensaje);
                                     $('#imprimir').attr('href', '../ImprimirComprobante?tipo=DE&idnota=' + obj.idnota + '&total=' + $('#total_venta').val());
                                     window.open('../ImprimirComprobante?tipo=DE&idnota=' + obj.idnota + '&total=' + $('#total_venta').val(), '_blank');
-                                    alertify.success(obj.mensaje);
                                 }
                             });
 

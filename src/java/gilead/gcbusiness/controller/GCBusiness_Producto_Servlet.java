@@ -64,7 +64,7 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                     String afecto_igv = rsProducto.getString("afecto_igv");
 
                     //INICIO TARIFAS
-                    query = "SELECT id_tarifa, valor from gcbusiness.tarifaproducto WHERE id_producto = " + idproducto + " AND valor>0";
+                    query = "SELECT id_tarifa, valor from gcbusiness.tarifaproducto WHERE id_producto = " + idproducto + " AND valor>0 ORDER BY valor DESC";
 
                     rsTarifas = st.executeQuery(query);
                     String comboTarifas = "<td> <select class='select_tarifa' id='tarifa_" + orden + "'>";
@@ -238,7 +238,7 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                             + "<td style='display: none'>" + orden + "</td>" //COLUMNA 01:  #
                             + "<td id='codigoproducto_" + orden + "'>" + rsProducto.getString("codigo_interno") + "</td>" //COLUMNA 02:  Código
                             + "<td id='descriproducto_" + orden + "'>" + rsProducto.getString("descripcion") + "</td>" //COLUMNA 03:  Descripción
-                            + "<td> <input class='input_cantidad' id='cantidad_" + orden + "' type='number' value='1' min='1' max='100' style='font-size:10px'></td>" //COLUMNA 04:  Cantidad
+                            + "<td> <input class='input_cantidad' id='cantidad_" + orden + "' type='number' value='1' min='1' style='font-size:10px'></td>" //COLUMNA 04:  Cantidad
                             + "<td>" + rsProducto.getString("medida") + "</td>";     //COLUMNA 05:  Medida
 
                     String flag_lote = rsProducto.getString("flag_lote");
@@ -250,19 +250,21 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                             + "<option value='I' >INAFECTA</option>"
                             + "</select>";
 
-                    //COLUMNA 07:  Precio Unitario
-                    respuesta += "<td style='display: none' class='precio_unitario' id='precio_uni_" + orden + "'>0</td>";
+                    //COLUMNA 07:  Valor Unitario sin Dcto
+                    //respuesta += "<td class='valor_unitario' id='valor_uni_" + orden + "'>" + 0.00 + "</td>";
+                    respuesta += "<td> <input class='input_valorunitario' id='valor_uni_" + orden + "' type='text' style='font-size:10px; width:65px;'> </td>";
 
-                    //COLUMNA 08:  Valor Unitario
-                    respuesta += "<td class='valor_unitario' id='valor_uni_" + orden + "'>0</td>";
+                    //COLUMNA 08:  Precio Unitario sin Dcto
+                    respuesta += "<td class='precio_unitario' id='precio_uni_" + orden + "'>" + 0.00 + "</td>";
+                    //respuesta += "<td> <input class='input_preciounitario' id='precio_uni_" + orden + "' type='text' style='font-size:10px; width:65px;'> </td>";
 
-                    //COLUMNA 09:  Precio Unitario Dcto
-                    respuesta += "<td style='display: none' class='precio_unitario_dcto' id='precio_uni_dcto_" + orden + "'>0</td>";
+                    //COLUMNA 09:  Precio Total sin Dcto
+                    respuesta += "<td style='display: none' class='precio_total' id='precio_tot_" + orden + "'>" + 0.00 + "</td>";
 
-                    //COLUMNA 10:  Valor Unitario Dcto
-                    respuesta += "<td style='display: none' class='valor_unitario_dcto' id='valor_uni_dcto_" + orden + "'>0</td>";
+                    //COLUMNA 10:  Valor Total sin Dcto
+                    respuesta += "<td style='display: none' class='valor_total' id='valor_tot_" + orden + "'>" + 0.00 + "</td>";
 
-                    //COLUMNA 11: IGV
+                    //COLUMNA 11: IGV sin Dcto
                     respuesta += "<td id='igv_" + orden + "' style='display: none'>" + 0.00 + "</td>";
 
                     //COLUMNA 12:  ISC 
@@ -272,18 +274,29 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                     respuesta += "<td> <input class='monto_descuento' id='descuento_" + orden + "' placeholder='0.00' size='5' type='text' style='font-size:10px'>"
                             + "<select class='select_tipo_dcto' id='dcto_prod_" + orden + "'>"
                             + "<option value='P'>%</option>"
-                            + "<option value='M'>MONTO</option>"
+                            //+ "<option value='M'>MONTO</option>"
                             + "</select>\n"
                             + "</td>";
 
                     //COLUMNA 14:  Descuento Monto
                     respuesta += "<td style='display: none' id='dscto_mont_" + orden + "'>" + 0.00 + "</td>";
 
-                    //COLUMNA 15:  Precio Compra
-                    respuesta += "<td> <input class='input_preciocompra' id='precio_compra_" + orden + "' type='text' style='font-size:10px; width:65px;'> </td>";
+                    //COLUMNA 15:  Precio Unitario Dcto
+                    respuesta += "<td style='display: none' class='precio_unitario_dcto' id='precio_uni_dcto_" + orden + "'>" + 0.00 + "</td>";
 
-                    //COLUMNA 16:  Valor Compra
-                    respuesta += "<td> <input class='input_valorcompra' id='valor_compra_" + orden + "' type='text' style='font-size:10px; width:65px;'> </td>";
+                    //COLUMNA 16:  Valor Unitario Dcto
+                    respuesta += "<td style='display: none' class='valor_unitario_dcto' id='valor_uni_dcto_" + orden + "'>" + 0.00 + "</td>";
+
+                    //COLUMNA 17:  Precio Compra
+                    //respuesta += "<td> <input class='input_preciocompra' id='precio_compra_" + orden + "' type='text' style='font-size:10px; width:65px;'> </td>";
+                    respuesta += "<td style='display: none' class='precio_compra' id='precio_compra_" + orden + "'>" + 0.00 + "</td>";
+
+                    //COLUMNA 18:  Valor Compra
+                    //respuesta += "<td> <input class='input_valorcompra' id='valor_compra_" + orden + "' type='text' style='font-size:10px; width:65px;'> </td>";
+                    respuesta += "<td class='valor_compra' id='valor_compra_" + orden + "'>" + 0.00 + "</td>";
+
+                    //COLUMNA 19: IGV
+                    respuesta += "<td id='igv_compra_" + orden + "' style='display: none'>" + 0.00 + "</td>";
 
                     if (flag_lote.equals("S")) {
                         query = "SELECT l.id_lote, l.numero_lote, l.fecha_vencimiento from gcbusiness.lote l, gcbusiness.almacenproductolote a "
@@ -298,20 +311,20 @@ public class GCBusiness_Producto_Servlet extends HttpServlet {
                         comboLotes += "</select>"
                                 + "<button type='button' name='adminLote' id='boton_lote_" + orden + "' class='btn btn-primary btn-xs adminLote' title='Lote'  ><span class='glyphicon glyphicon-book'></span></button>"
                                 + "</td>";
-                        //COLUMNA 17:  Lote|F.V.
+                        //COLUMNA 20:  Lote|F.V.
                         respuesta += comboLotes;
                     } else {
-                        //COLUMNA 17:  Lote|F.V.
+                        //COLUMNA 20:  Lote|F.V.
                         respuesta += "<td>No aplica</td>";
                     }
 
-                    //COLUMNA 18:  Bonificación
+                    //COLUMNA 21:  Bonificación
                     respuesta += "<td> "
                             + "<input id='bonificacion_" + orden + "' class='ace ace-switch bonificacion' type='checkbox'/>"
                             + "<span class='lbl' data-lbl=\"SI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NO\"></span>"
                             + "</td>";
 
-                    //COLUMNA 19:  Acciones
+                    //COLUMNA 22:  Acciones
                     respuesta += "<td> "
                             + "<button type='button' name='eliminarDetalleCompra' id='" + orden + "' class='btn btn-danger btn-xs eliminarDetalleCompra' title='Eliminar'  ><span class='glyphicon glyphicon-trash'></span></button>"
                             + "</td>";

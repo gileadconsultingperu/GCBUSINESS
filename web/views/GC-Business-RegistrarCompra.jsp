@@ -712,6 +712,18 @@
                             </li>
                             <%
                                 }
+                                if (opciones.contains(76)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteMovimientoInventarioxProducto.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Movimientos de Inventario por Producto
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
                             %>
                         </ul>
                     </li>
@@ -834,9 +846,9 @@
                                             <div class="form-group">
                                                 <label for="estadopago" class="control-label" style="width: 110px;">Estatus Pago:</label>
                                                 <select id="estadopago" name="estadopago" class="styled-select tipo_comprobante" style="width: 160px;" tabindex="11">
-                                                    <option value="S">SIN PAGAR</option>
+                                                    <option value="S" selected>SIN PAGAR</option>
                                                     <option value="P">PAGADO PARCIALMENTE</option>
-                                                    <option value="T" selected>PAGADO TOTALMENTE</option>
+                                                    <option value="T">PAGADO TOTALMENTE</option>
                                                 </select>
                                                 &nbsp;
                                                 <label id="lblmontopagado" class="control-label hide" style="width: 100px;">Monto Pagado:</label>
@@ -925,16 +937,19 @@
                                                             <th>Cantidad</th>
                                                             <th>Medida</th>
                                                             <th>Tipo Afectación</th>
-                                                            <th style="display: none">Precio Unitario</th>
                                                             <th>Valor Unitario</th>
-                                                            <th style="display: none">Precio Unitario Dcto</th>
-                                                            <th style="display: none">Valor Unitario Dcto</th>
-                                                            <th style="display: none">IGV</th>
+                                                            <th>Precio Unitario</th>                                                            
+                                                            <th style="display: none">Precio Total sDcto</th>
+                                                            <th style="display: none">Valor Total sDcto</th>
+                                                            <th style="display: none">IGV sDcto</th>
                                                             <th style="display: none">ISC</th>
                                                             <th>Descuento</th>
-                                                            <th style="display: none">Monto Descuento</th>
-                                                            <th>Precio Compra</th>
+                                                            <th style="display: none">Monto Descuento</th>  
+                                                            <th style="display: none">Precio Unitario cDcto</th>
+                                                            <th style="display: none">Valor Unitario cDcto</th>                                         
+                                                            <th style="display: none">Precio Compra</th>                                                            
                                                             <th>Valor Compra</th>
+                                                            <th style="display: none">IGV</th>
                                                             <th>Lote|F.V.</th>
                                                             <th>Bonificación</th>
                                                             <th>Acciones</th>
@@ -1292,6 +1307,9 @@
                         });
 
                         $('#proveedor').change(function () {
+                            $('#idproveedor').val('0');
+                            $('#ruc').val('');
+                            $('#direccion').val('');
                             var idproveedor = $(this).val();
                             if (idproveedor !== null || idproveedor !== "") {
                                 $.ajax({
@@ -1325,13 +1343,14 @@
                                     $('#producto')
                                             .find('option:first-child').prop('selected', true)
                                             .end().trigger('chosen:updated');
+                                    calcular(rowCount);
                                     calcularTotales();
                                 });
                             }
                         });
 
                         $("#detalleCompra").on('click', '.adminLote', function () {
-                            var orden = $(this).parents('tr').find('td:eq(19)').find('button.eliminarDetalleCompra').attr('id');
+                            var orden = $(this).parents('tr').find('td:eq(22)').find('button.eliminarDetalleCompra').attr('id');
                             var idproductolote = $('#idproducto_' + orden).html();
                             var codigoproductolote = $('#codigoproducto_' + orden).html();
                             var descriproductolote = $('#descriproducto_' + orden).html();
@@ -1395,181 +1414,234 @@
                             calcularTotales();
                         });
 
-                        function calculo_sin_bonificacion(orden, band) {
+                        function calcular(orden) {
                             var cantidad = $('#cantidad_' + orden).val();
-                            var precioCompra = $('#precio_compra_' + orden).val();
-                            var valorCompra = $('#valor_compra_' + orden).val();
-                            var igv_total;
-                            if (precioCompra !== "" || valorCompra !== "") {
-                                //alertify.error("ANTES: "+precioCompra + " -  valorCompra:" + valorCompra);
-                                var tipoAfectacion = $('#afectacion_' + orden).val();
-                                if (tipoAfectacion === "G") {
-                                    if (band === "precio") {
-                                        valorCompra = precioCompra / 1.18;
-                                        $('#valor_compra_' + orden).val(parseFloat(valorCompra).toFixed(2));
-                                    } else {
-                                        precioCompra = valorCompra * 1.18;
-                                        $('#precio_compra_' + orden).val(parseFloat(precioCompra).toFixed(2));
-                                    }
-                                    igv_total = valorCompra * 0.18;
-                                } else {
-                                    if (band === "precio") {
-                                        valorCompra = precioCompra;
-                                        $('#valor_compra_' + orden).val(parseFloat(valorCompra).toFixed(2));
-                                    } else {
-                                        precioCompra = valorCompra;
-                                        $('#precio_compra_' + orden).val(parseFloat(precioCompra).toFixed(2));
-                                    }
-                                    igv_total = valorCompra * 0;
-                                }
-                                $('#igv_' + orden).html(parseFloat(igv_total).toFixed(2));
-                                var valor_unitario_dcto = valorCompra / cantidad;
-                                var precio_unitario_dcto = precioCompra / cantidad;
-                                $('#valor_uni_dcto_' + orden).html(parseFloat(valor_unitario_dcto).toFixed(2));
-                                $('#precio_uni_dcto_' + orden).html(parseFloat(precio_unitario_dcto).toFixed(2));
-                                var tipoDcto = $('#dcto_prod_' + orden).val();
-                                var dcto = $('#descuento_' + orden).val();
-                                var valor_unitario;
-                                var precio_unitario;
-                                if (tipoDcto === 'P') {
-                                    valor_unitario = valor_unitario_dcto / (1 - dcto / 100);
-                                    precio_unitario = precio_unitario_dcto / (1 - dcto / 100);
-                                    var valorTot = cantidad * parseFloat(valor_unitario).toFixed(2);
-                                    var montDscto = valorTot * (dcto / 100);
-                                    $('#dscto_mont_' + orden).html(parseFloat(montDscto).toFixed(2));
-                                } else {
-                                    valor_unitario = valor_unitario_dcto + (dcto / cantidad);
-                                    precio_unitario = precio_unitario_dcto + (dcto / cantidad);
-                                    $('#dscto_mont_' + orden).html(parseFloat(dcto).toFixed(2));
-                                }
-                                $('#valor_uni_' + orden).html(parseFloat(valor_unitario).toFixed(2));
-                                $('#precio_uni_' + orden).html(parseFloat(precio_unitario).toFixed(2));
+                            //var precioUni = Number($('#precio_uni_' + orden).val());
+                            var valorUni = Number($('#valor_uni_' + orden).val());
+                            var tipoAfectacion = $('#afectacion_' + orden).val();
+                            //var valorUni = 0;
+                            var precioUni = 0;
+                            var valorIGV = 0;
+                            if (tipoAfectacion === "G") {
+                                //valorUni = precioUni / 1.18;
+                                precioUni = valorUni * 1.18;
+                                valorIGV = valorUni * cantidad * 0.18;
+                            } else {
+                                //valorUni = precioUni;
+                                precioUni = valorUni;
                             }
-                        }
-                        ;
 
-                        function calculo_con_bonificacion(orden, band) {
-                            var cantidad = $('#cantidad_' + orden).val();
-                            var precioCompra = $('#precio_compra_' + orden).val();
-                            var valorCompra = $('#valor_compra_' + orden).val();
-                            var igv_total;
-                            if (precioCompra !== "" || valorCompra !== "") {
-                                if (band === "precio") {
-                                    valorCompra = precioCompra;
-                                    $('#valor_compra_' + orden).val(parseFloat(valorCompra).toFixed(2));
-                                } else {
-                                    precioCompra = valorCompra;
-                                    $('#precio_compra_' + orden).val(parseFloat(precioCompra).toFixed(2));
-                                }
-                                igv_total = valorCompra * 0;
-                                $('#igv_' + orden).html(parseFloat(igv_total).toFixed(2));
-                                var valor_unitario_dcto = valorCompra / cantidad;
-                                var precio_unitario_dcto = precioCompra / cantidad;
-                                $('#valor_uni_dcto_' + orden).html(parseFloat(valor_unitario_dcto).toFixed(2));
-                                $('#precio_uni_dcto_' + orden).html(parseFloat(precio_unitario_dcto).toFixed(2));
-                                var valor_unitario = valor_unitario_dcto;
-                                var precio_unitario = precio_unitario_dcto;
-                                $('#valor_uni_' + orden).html(parseFloat(valor_unitario).toFixed(2));
-                                $('#precio_uni_' + orden).html(parseFloat(precio_unitario).toFixed(2));
-                                $('#dscto_mont_' + orden).html(parseFloat(0).toFixed(2));
+                            var precioTot = precioUni * cantidad;
+                            var valorTot = valorUni * cantidad;
+
+                            //$('#valor_uni_' + orden).html(parseFloat(valorUni).toFixed(2));
+                            $('#precio_uni_' + orden).html(parseFloat(precioUni).toFixed(3));
+                            $('#precio_tot_' + orden).html(parseFloat(precioTot).toFixed(2));
+                            $('#valor_tot_' + orden).html(parseFloat(valorTot).toFixed(2));
+                            $('#igv_' + orden).html(parseFloat(valorIGV).toFixed(2));
+
+                            var descuento = Number($('#descuento_' + orden).val());
+                            var tipoDcto = $('#dcto_prod_' + orden).val();
+                            var valorTotDscto = 0, precioTotDscto = 0, valorUniDscto = 0, precioUniDscto = 0, valorIGVDscto = 0;
+                            if (tipoDcto === 'P') {
+                                var montDscto = valorTot * (descuento / 100);
+                                $('#dscto_mont_' + orden).html(parseFloat(montDscto).toFixed(2));
+                                valorTotDscto = valorTot - montDscto;
+                                precioTotDscto = precioTot * (100 - descuento) / 100;
+                                valorUniDscto = valorUni * (100 - descuento) / 100;
+                                precioUniDscto = precioUni * (100 - descuento) / 100;
+                                valorIGVDscto = valorIGV * (100 - descuento) / 100;
                             }
+
+                            $('#valor_compra_' + orden).html(parseFloat(valorTotDscto).toFixed(2));
+                            $('#precio_compra_' + orden).html(parseFloat(precioTotDscto).toFixed(2));
+                            $('#valor_uni_dcto_' + orden).html(parseFloat(valorUniDscto).toFixed(3));
+                            $('#precio_uni_dcto_' + orden).html(parseFloat(precioUniDscto).toFixed(3));
+                            $('#igv_compra_' + orden).html(parseFloat(valorIGVDscto).toFixed(2));
                         }
-                        ;
 
+                        $('#detalleCompra').on('focusout', '.input_valorunitario', function () {
+                            var orden = $(this).parents('tr').find('td:eq(22)').find('button.eliminarDetalleCompra').attr('id');
+                            var valorUni = $("#valor_uni_" + orden).val();
+                            $('#valor_uni_' + orden).val(parseFloat(Number($("#valor_uni_" + orden).val())).toFixed(3).toString());
+                            if (valorUni <= 0) {
+                                $('#valor_uni_' + orden).focus();
+                                alertify.error("EL VALOR UNITARIO DEBE SER MAYOR A CERO");
+                            }
+                            calcular(orden);
+                            calcularTotales();
+                        });
 
-                        $('#detalleCompra').on('keyup', '.input_preciocompra', function () {
-                            var orden = $(this).parents('tr').find('td:eq(19)').find('button.eliminarDetalleCompra').attr('id');
+                        $('#detalleCompra').on('keyup', '.input_valorunitario', function () {
+                            var orden = $(this).parents('tr').find('td:eq(22)').find('button.eliminarDetalleCompra').attr('id');
                             var bonificacion = $('#bonificacion_' + orden).is(':checked');
                             if (bonificacion) {
-                                calculo_con_bonificacion(orden, "precio");
+                                //calculo_con_bonificacion(orden, "precio");
+                                var cantidad = $('#cantidad_' + orden).val();
+                                var precioUni = Number($('#valor_uni_' + orden).val());
+                                $('#valor_uni_' + orden).html(parseFloat(precioUni).toFixed(2));
+                                $('#precio_tot_' + orden).html(parseFloat(precioUni * cantidad).toFixed(2));
+                                $('#valor_tot_' + orden).html(parseFloat(precioUni * cantidad).toFixed(2));
+                                $('#igv_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#precio_uni_dcto_' + orden).html(parseFloat(precioUni).toFixed(2));
+                                $('#valor_uni_dcto_' + orden).html(parseFloat(precioUni).toFixed(2));
+                                $('#precio_compra_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#valor_compra_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#igv_compra_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#descuento_' + orden).val('');
+                                $('#descuento_' + orden).prop('disabled', true);
+                                $('#dscto_mont_' + orden).html(parseFloat(0).toFixed(2));
                             } else {
-                                calculo_sin_bonificacion(orden, "precio");
+                                //calculo_sin_bonificacion(orden, "precio");
+                                calcular(orden);
                             }
                             calcularTotales();
                         });
 
-                        $('#detalleCompra').on('keyup', '.input_valorcompra', function () {
-                            var orden = $(this).parents('tr').find('td:eq(19)').find('button.eliminarDetalleCompra').attr('id');
-                            var bonificacion = $('#bonificacion_' + orden).is(':checked');
-                            if (bonificacion) {
-                                calculo_con_bonificacion(orden, "valor");
-                            } else {
-                                calculo_sin_bonificacion(orden, "valor");
+                        $('#detalleCompra').on('focusout', '.input_cantidad', function () {
+                            var orden = $(this).parents('tr').find('td:eq(22)').find('button.eliminarDetalleCompra').attr('id');
+                            var cantidad = $("#cantidad_" + orden).val();
+                            $('#cantidad_' + orden).val(parseFloat(Number($("#cantidad_" + orden).val())).toFixed(3).toString());
+                            if (cantidad <= 0) {
+                                $('#cantidad_' + orden).focus();
+                                alertify.error("EL VALOR DE CANTIDAD DEBE SER MAYOR A CERO");
                             }
+                            calcular(orden);
                             calcularTotales();
                         });
 
                         $('#detalleCompra').on('change', '.input_cantidad', function () {
-                            var orden = $(this).parents('tr').find('td:eq(19)').find('button.eliminarDetalleCompra').attr('id');
+                            var orden = $(this).parents('tr').find('td:eq(22)').find('button.eliminarDetalleCompra').attr('id');
                             var bonificacion = $('#bonificacion_' + orden).is(':checked');
                             if (bonificacion) {
-                                calculo_con_bonificacion(orden);
+                                //calculo_con_bonificacion(orden);
+                                var cantidad = $('#cantidad_' + orden).val();
+                                var precioUni = Number($('#valor_uni_' + orden).val());
+                                $('#valor_uni_' + orden).html(parseFloat(precioUni).toFixed(2));
+                                $('#precio_tot_' + orden).html(parseFloat(precioUni * cantidad).toFixed(2));
+                                $('#valor_tot_' + orden).html(parseFloat(precioUni * cantidad).toFixed(2));
+                                $('#igv_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#precio_uni_dcto_' + orden).html(parseFloat(precioUni).toFixed(2));
+                                $('#valor_uni_dcto_' + orden).html(parseFloat(precioUni).toFixed(2));
+                                $('#precio_compra_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#valor_compra_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#igv_compra_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#descuento_' + orden).val('');
+                                $('#descuento_' + orden).prop('disabled', true);
+                                $('#dscto_mont_' + orden).html(parseFloat(0).toFixed(2));
                             } else {
-                                calculo_sin_bonificacion(orden);
+                                //calculo_sin_bonificacion(orden);
+                                calcular(orden);
                             }
                             calcularTotales();
                         });
 
                         $('#detalleCompra').on('keyup', '.input_cantidad', function () {
-                            var orden = $(this).parents('tr').find('td:eq(19)').find('button.eliminarDetalleCompra').attr('id');
+                            var orden = $(this).parents('tr').find('td:eq(22)').find('button.eliminarDetalleCompra').attr('id');
                             var bonificacion = $('#bonificacion_' + orden).is(':checked');
                             if (bonificacion) {
-                                calculo_con_bonificacion(orden);
+                                //calculo_con_bonificacion(orden);
+                                var cantidad = $('#cantidad_' + orden).val();
+                                var precioUni = Number($('#valor_uni_' + orden).val());
+                                $('#valor_uni_' + orden).html(parseFloat(precioUni).toFixed(2));
+                                $('#precio_tot_' + orden).html(parseFloat(precioUni * cantidad).toFixed(2));
+                                $('#valor_tot_' + orden).html(parseFloat(precioUni * cantidad).toFixed(2));
+                                $('#igv_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#precio_uni_dcto_' + orden).html(parseFloat(precioUni).toFixed(2));
+                                $('#valor_uni_dcto_' + orden).html(parseFloat(precioUni).toFixed(2));
+                                $('#precio_compra_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#valor_compra_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#igv_compra_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#descuento_' + orden).val('');
+                                $('#descuento_' + orden).prop('disabled', true);
+                                $('#dscto_mont_' + orden).html(parseFloat(0).toFixed(2));
                             } else {
-                                calculo_sin_bonificacion(orden);
+                                //calculo_sin_bonificacion(orden);
+                                calcular(orden);
                             }
                             calcularTotales();
                         });
 
                         $('#detalleCompra').on('click', '.bonificacion', function () {
-                            var orden = $(this).parents('tr').find('td:eq(19)').find('button.eliminarDetalleCompra').attr('id');
+                            var orden = $(this).parents('tr').find('td:eq(22)').find('button.eliminarDetalleCompra').attr('id');
                             if ($(this).is(':checked')) {
-                                calculo_con_bonificacion(orden);
+                                //calculo_con_bonificacion(orden);
+                                var cantidad = $('#cantidad_' + orden).val();
+                                var precioUni = Number($('#valor_uni_' + orden).val());
+                                $('#precio_uni_' + orden).html(parseFloat(precioUni).toFixed(2));
+                                $('#precio_tot_' + orden).html(parseFloat(precioUni * cantidad).toFixed(2));
+                                $('#valor_tot_' + orden).html(parseFloat(precioUni * cantidad).toFixed(2));
+                                $('#igv_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#precio_uni_dcto_' + orden).html(parseFloat(precioUni).toFixed(2));
+                                $('#valor_uni_dcto_' + orden).html(parseFloat(precioUni).toFixed(2));
+                                $('#precio_compra_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#valor_compra_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#igv_compra_' + orden).html(parseFloat(0).toFixed(2));
                                 $('#descuento_' + orden).val('');
                                 $('#descuento_' + orden).prop('disabled', true);
+                                $('#dscto_mont_' + orden).html(parseFloat(0).toFixed(2));
                             } else {
-                                calculo_sin_bonificacion(orden);
+                                //calculo_sin_bonificacion(orden);                                
                                 $('#descuento_' + orden).val('');
                                 $('#descuento_' + orden).prop('disabled', false);
+                                calcular(orden);
                             }
                             calcularTotales();
                         });
 
                         $('#detalleCompra').on('change', '.select_afectacion', function () {
-                            var orden = $(this).parents('tr').find('td:eq(19)').find('button.eliminarDetalleCompra').attr('id');
+                            var orden = $(this).parents('tr').find('td:eq(22)').find('button.eliminarDetalleCompra').attr('id');
                             var bonificacion = $('#bonificacion_' + orden).is(':checked');
                             if (bonificacion) {
-                                calculo_con_bonificacion(orden);
+                                //calculo_con_bonificacion(orden);
+                                var cantidad = $('#cantidad_' + orden).val();
+                                var precioUni = Number($('#valor_uni_' + orden).val());
+                                $('#valor_uni_' + orden).html(parseFloat(precioUni).toFixed(2));
+                                $('#precio_tot_' + orden).html(parseFloat(precioUni * cantidad).toFixed(2));
+                                $('#valor_tot_' + orden).html(parseFloat(precioUni * cantidad).toFixed(2));
+                                $('#igv_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#precio_uni_dcto_' + orden).html(parseFloat(precioUni).toFixed(2));
+                                $('#valor_uni_dcto_' + orden).html(parseFloat(precioUni).toFixed(2));
+                                $('#precio_compra_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#valor_compra_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#igv_compra_' + orden).html(parseFloat(0).toFixed(2));
+                                $('#descuento_' + orden).val('');
+                                $('#descuento_' + orden).prop('disabled', true);
+                                $('#dscto_mont_' + orden).html(parseFloat(0).toFixed(2));
                             } else {
-                                calculo_sin_bonificacion(orden);
+                                //calculo_sin_bonificacion(orden);
+                                calcular(orden);
                             }
                             calcularTotales();
                         });
 
 
                         $('#detalleCompra').on('keyup', '.monto_descuento', function () {
-                            var orden = $(this).parents('tr').find('td:eq(19)').find('button.eliminarDetalleCompra').attr('id');
+                            var orden = $(this).parents('tr').find('td:eq(22)').find('button.eliminarDetalleCompra').attr('id');
                             var bonificacion = $('#bonificacion_' + orden).is(':checked');
                             if (!bonificacion) {
-                                calculo_sin_bonificacion(orden);
+                                //calculo_sin_bonificacion(orden);
+                                calcular(orden);
                             }
                             calcularTotales();
                         });
 
                         $('#detalleCompra').on('blur', '.monto_descuento', function () {
-                            var orden = $(this).parents('tr').find('td:eq(19)').find('button.eliminarDetalleCompra').attr('id');
+                            var orden = $(this).parents('tr').find('td:eq(22)').find('button.eliminarDetalleCompra').attr('id');
                             var bonificacion = $('#bonificacion_' + orden).is(':checked');
                             if (!bonificacion) {
-                                calculo_sin_bonificacion(orden);
+                                //calculo_sin_bonificacion(orden);
+                                calcular(orden);
                             }
                             calcularTotales();
                         });
 
                         $('#detalleCompra').on('change', '.select_tipo_dcto', function () {
-                            var orden = $(this).parents('tr').find('td:eq(19)').find('button.eliminarDetalleCompra').attr('id');
+                            var orden = $(this).parents('tr').find('td:eq(22)').find('button.eliminarDetalleCompra').attr('id');
                             var bonificacion = $('#bonificacion_' + orden).is(':checked');
                             if (!bonificacion) {
-                                calculo_sin_bonificacion(orden);
+                                //calculo_sin_bonificacion(orden);
+                                calcular(orden);
                             }
                             calcularTotales();
                         });
@@ -1588,31 +1660,31 @@
                             var total_inafectas_sdscto = 0;
                             var total_exoneradas_sdscto = 0;
                             var total_compra = 0;
-                            $(".valor_unitario").each(function () {
-                                var orden = $(this).parents('tr').find('td:eq(19)').find('button.eliminarDetalleCompra').attr('id');
+                            $(".input_valorunitario").each(function () {
+                                var orden = $(this).parents('tr').find('td:eq(22)').find('button.eliminarDetalleCompra').attr('id');
                                 var bonificacion = $('#bonificacion_' + orden).is(':checked');
                                 var cantidad = parseFloat($('#cantidad_' + orden).val());
                                 if (bonificacion) {
-                                    total_gratuitas += parseFloat($('#valor_compra_' + orden).val()) || 0;
+                                    total_gratuitas += parseFloat($('#precio_tot_' + orden).html()) || 0;
                                 } else {
                                     afecto_igv = $('#afectacion_' + orden).val();
                                     if (afecto_igv === 'G') {
-                                        total_gravadas += parseFloat($('#valor_compra_' + orden).val()) || 0;
+                                        total_gravadas += parseFloat($('#valor_compra_' + orden).html()) || 0;
                                         total_gravadas_sdscto += Number($('#valor_uni_' + orden).html()) * cantidad;
                                     }
                                     if (afecto_igv === 'E') {
-                                        total_exoneradas += parseFloat($('#valor_compra_' + orden).val()) || 0;
+                                        total_exoneradas += parseFloat($('#valor_compra_' + orden).html()) || 0;
                                         total_exoneradas_sdscto += Number($('#valor_uni_' + orden).html()) * cantidad;
                                     }
                                     if (afecto_igv === 'I') {
-                                        total_inafectas += parseFloat($('#valor_compra_' + orden).val()) || 0;
+                                        total_inafectas += parseFloat($('#valor_compra_' + orden).html()) || 0;
                                         total_inafectas_sdscto += Number($('#valor_uni_' + orden).html()) * cantidad;
                                     }
-                                    total_valorcompra += parseFloat($('#valor_compra_' + orden).val()) || 0;
-                                    total_compra += parseFloat($('#precio_compra_' + orden).val()) || 0;
+                                    total_valorcompra += parseFloat($('#valor_compra_' + orden).html()) || 0;
+                                    total_compra += parseFloat($('#precio_compra_' + orden).html()) || 0;
                                 }
 
-                                total_igv += parseFloat($('#igv_' + orden).html());
+                                total_igv += parseFloat($('#igv_compra_' + orden).html());
 
                                 total_descuentos += Number($('#dscto_mont_' + orden).html());
                             });

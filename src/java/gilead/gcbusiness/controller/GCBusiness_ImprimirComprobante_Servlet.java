@@ -120,7 +120,6 @@ public class GCBusiness_ImprimirComprobante_Servlet extends HttpServlet {
                 parametros.put(JRParameter.REPORT_LOCALE, new Locale("es", "PE"));
                 parametros.put("SUBREPORT_DIR", "/factele/" + rucEmpresa + "/jasper/");
                 parametros.put("P_logo", "/factele/" + rucEmpresa + "/sunat/logo/logo.png");
-                parametros.put("P_qr", "/factele/" + rucEmpresa + "/jasper/QR.png");
                 parametros.put("P_importeletras", numeroenletra);
 
                 JasperReport reporte;

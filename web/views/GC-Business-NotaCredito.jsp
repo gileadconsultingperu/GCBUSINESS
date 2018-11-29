@@ -718,6 +718,18 @@
                             </li>
                             <%
                                 }
+                                if (opciones.contains(76)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteMovimientoInventarioxProducto.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Movimientos de Inventario por Producto
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
                             %>
                         </ul>
                     </li>
@@ -1680,10 +1692,12 @@
                                         $('.divError').removeClass('tada animated');
                                     });
                                 } else {
-                                    $('#imprimir').attr('disabled', false);
-                                    $('#imprimir').attr('href', '../ImprimirComprobante?tipo=NC&idnota=' + obj.idnota + '&total=' + $('#total_venta').val());
-                                    window.open('../ImprimirComprobante?tipo=NC&idnota=' + obj.idnota + '&total=' + $('#total_venta').val(), '_blank');
                                     alertify.success(obj.mensaje);
+                                    $('#imprimir').attr('disabled', false);
+                                    $('#imprimir').attr('href', '../Print?linkpdf=' + obj.linkpdf);
+                                    window.open('../Print?linkpdf=' + obj.linkpdf, '_blank');
+                                    //$('#imprimir').attr('href', '../ImprimirComprobante?tipo=NC&idnota=' + obj.idnota + '&total=' + $('#total_venta').val());
+                                    //window.open('../ImprimirComprobante?tipo=NC&idnota=' + obj.idnota + '&total=' + $('#total_venta').val(), '_blank');   
                                 }
                             });
 

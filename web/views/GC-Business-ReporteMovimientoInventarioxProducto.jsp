@@ -1,38 +1,37 @@
 <%-- 
     Compañia            : Gilead Consulting S.A.C.
     Sistema             : GC-Business
-    Módulo              : Administracion
-    Nombre              : GC-Business-Comprobante.jsp
+    Módulo              : Reportes
+    Nombre              : GC-Business-ReporteMovimientoInventario.jsp
     Versión             : 1.0
-    Fecha Creación      : 21-08-2018
+    Fecha Creación      : 01-11-2018
     Autor Creación      : Pablo Jimenez Aguado
-    Uso                 : Buscar y Anular comprobantes
+    Uso                 : Exportar Reporte de Movimientos de Inventario
 --%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="gilead.gcbusiness.model.BeanTipoDocumento"%>
-<%@page import="gilead.gcbusiness.dao.impl.DaoTipoDocumentoImpl"%>
-<%@page import="gilead.gcbusiness.model.BeanTipoPersona"%>
-<%@page import="gilead.gcbusiness.dao.impl.DaoTipoPersonaImpl"%>
+<%@page import="gilead.gcbusiness.model.BeanProducto"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoProductoImpl"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoSucursalImpl"%>
+<%@page import="gilead.gcbusiness.model.BeanSucursal"%>
+<%@page import="gilead.gcbusiness.model.BeanAlmacen"%>
+<%@page import="gilead.gcbusiness.dao.impl.DaoAlmacenImpl"%>
 <%@page import="gilead.gcbusiness.model.BeanVendedor"%>
 <%@page import="gilead.gcbusiness.dao.impl.DaoVendedorImpl"%>
-<%@page import="gilead.gcbusiness.model.BeanUbigeo"%>
-<%@page import="gilead.gcbusiness.dao.impl.DaoUbigeoImpl"%>
 <%@page import="java.util.List"%>
 <%@page import="gilead.gcbusiness.model.BeanUsuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%
+    //String ID = (String) session.getAttribute("ID");
     List opciones = (List) session.getAttribute("accesos");
     BeanUsuario usuario = (BeanUsuario) session.getAttribute("usuario");
-    String accion = request.getParameter("accion") != null ? (String) request.getParameter("accion") : "visualizar";
 %>
 <html>
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <meta charset="utf-8" />
-        <title>GC BUSINESS - Comprobantes</title>
+        <title>GC BUSINESS - Reporte de Movimientos de Inventario</title>
 
-        <meta name="description" content="Dynamic tables and grids using jqGrid plugin" />
+        <meta name="description" content="Common form elements and layouts" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
         <!-- bootstrap & fontawesome -->
@@ -47,7 +46,6 @@
         <link rel="stylesheet" href="../assets/css/daterangepicker.min.css" />
         <link rel="stylesheet" href="../assets/css/bootstrap-datetimepicker.min.css" />
         <link rel="stylesheet" href="../assets/css/bootstrap-colorpicker.min.css" />
-        <link rel="stylesheet" href="../assets/css/ui.jqgrid.min.css" />
 
         <!-- text fonts -->
         <link rel="stylesheet" href="../assets/css/fonts.googleapis.com.css" />
@@ -55,18 +53,18 @@
         <!-- ace styles -->
         <link rel="stylesheet" href="../assets/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style" />
 
-        <!--[if lte IE 9]>
-                <link rel="stylesheet" href="assets/css/ace-part2.min.css" class="ace-main-stylesheet" />
-        <![endif]-->
 
         <!-- Alertify Version Nueva-->
         <link rel="stylesheet" href="../assets/css/alertify/alertify.css">  
 
+        <!--[if lte IE 9]>
+                <link rel="stylesheet" href="../assets/css/ace-part2.min.css" class="ace-main-stylesheet" />
+        <![endif]-->
         <link rel="stylesheet" href="../assets/css/ace-skins.min.css" />
         <link rel="stylesheet" href="../assets/css/ace-rtl.min.css" />
 
         <!--[if lte IE 9]>
-          <link rel="stylesheet" href="assets/css/ace-ie.min.css" />
+          <link rel="stylesheet" href="../assets/css/ace-ie.min.css" />
         <![endif]-->
 
         <!-- inline styles related to this page -->
@@ -77,8 +75,8 @@
         <!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
 
         <!--[if lte IE 8]>
-        <script src="assets/js/html5shiv.min.js"></script>
-        <script src="assets/js/respond.min.js"></script>
+        <script src="../assets/js/html5shiv.min.js"></script>
+        <script src="../assets/js/respond.min.js"></script>
         <![endif]-->
 
         <!-- Alertas Version Nueva -->
@@ -117,7 +115,7 @@
                                 <img class="nav-user-photo" src="../assets/images/avatars/avatar2.png" alt="Jason's Photo" />
                                 <span class="user-info">
                                     <small>Bienvenido,</small>
-                                    <%= usuario.getUsuario()%>
+                                    <%= usuario.getUsuario()%>                                    
                                 </span>
 
                                 <i class="ace-icon fa fa-caret-down"></i>
@@ -149,7 +147,7 @@
         <div class="main-container ace-save-state" id="main-container">
             <script type="text/javascript">
                 try {
-                    ace.settings.loadState('main-container');
+                    ace.settings.loadState('main-container')
                 } catch (e) {
                 }
             </script>
@@ -752,9 +750,9 @@
                                 <a href="#">Inicio</a>
                             </li>
                             <li>
-                                <a href="#">Ventas</a>
+                                <a href="#">Reportes</a>
                             </li>
-                            <li class="active">Comprobantes</li>
+                            <li class="active">Reporte de Movimientos de Inventario por Producto</li>
                         </ul><!-- /.breadcrumb -->
 
                     </div>
@@ -763,289 +761,152 @@
 
                         <div class="page-header">
                             <h1>
-                                Ventas
+                                Reporte de Movimientos de Inventario por Producto
                                 <small>
                                     <i class="ace-icon fa fa-angle-double-right"></i>
-                                    <%if (accion.equals("anular")) {%>
-                                    Anular comprobantes
-                                    <%} else {%>
-                                    Ver comprobantes
-                                    <% }%> 
+                                    Exportar reporte de movimientos de inventario por producto
                                 </small>
                             </h1>
-                        </div><!-- /.page-header -->  
+                        </div><!-- /.page-header -->
 
-                        <div>
-                            <label for="date-label-from" class="control-label">Desde: </label> 
-                            <input type="text" name="fecha_desde" id="fecha_desde" class="datepicker" style="width: 90px;" placeholder="dd/mm/yyyy" disabled/>
+                        <div style="text-align: center;">
+                            <div>
+                                <label for="date-label-from" class="control-label">Desde: </label> 
+                                <input type="text" name="fecha_desde" id="fecha_desde" class="datepicker" style="width: 90px;" placeholder="dd/mm/yyyy" disabled/>
+                                &nbsp;
+                                <label for="date-label-to" class="control-label">Hasta: </label>
+                                <input type="text" name="fecha_hasta" id="fecha_hasta" class="datepicker" style="width: 90px;" placeholder="dd/mm/yyyy" disabled/>
+                            </div>
                             &nbsp;
-                            <label for="date-label-to" class="control-label">Hasta: </label>
-                            <input type="text" name="fecha_hasta" id="fecha_hasta" class="datepicker" style="width: 90px;" placeholder="dd/mm/yyyy" disabled/>
+                            <div>
+                                <label for="sucursal" class="control-label">Sucursal: </label>
+                                <select id="sucursal" name="sucursal" tabindex="4" style="width: 130px;">
+                                    <%
+                                        DaoSucursalImpl daoSucursal = new DaoSucursalImpl();
+                                        List<BeanSucursal> sucursal = daoSucursal.accionListar();
+
+                                        for (int i = 0; i < sucursal.size(); i++) {
+                                    %>
+                                    <option value="<%=sucursal.get(i).getIdsucursal()%>">
+                                        <%=sucursal.get(i).getDescripcion()%> 
+                                    </option>
+                                    <%
+                                        }
+                                    %>
+                                </select>
+                                &nbsp;
+                                <label for="almacen" class="control-label">Almacén: </label>
+                                <select id="almacen" name="almacen" tabindex="4" style="width: 130px;">
+                                </select>
+                            </div>
                             &nbsp;
-                            <label for="text-label-voucher" class="control-label">Tipo Comprobrobante: </label>
-                            <select id="tipoCmp" name="tipoCmp" tabindex="3" style="width: 140px;">
-                                <option value="0" selected="selected">Todos</option>
-                                <option value="01">FACTURA</option>
-                                <option value="03">BOLETA</option>
-                                <option value="07">NOTA CRÉDITO</option>
-                                <option value="08">NOTA DÉBITO</option>
-                                <option value="00">NOTA PEDIDO</option>
-                                <option value="99">DEV. NOTA PEDIDO</option>
-                            </select>
-                            &nbsp;
-                            <label for="text-label-nroComprob" class="control-label">Nº Comprobante: </label>
-                            <input type="text" name="nroComprob" id="nroComprob" style="width: 120px; text-transform: none;" placeholder="serie-correlativo"/>
-                            &nbsp;&nbsp;&nbsp;
-                            <input type="button" name="buscar" id="buscar" value="Buscar" class="btn btn-info"/>
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <!-- PAGE CONTENT BEGINS -->
-                                <div class="clearfix">
-                                    <div class="pull-right tableTools-container"></div>
-                                </div>                               
-                                <div>
-                                    <table id="tablaComprobantes" class="table table-striped table-bordered table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Fecha</th>
-                                                <th>Tipo Comprobante</th>
-                                                <th>Serie</th>   
-                                                <th>Correlativo</th>
-                                                <th>Nro. Documento</th>
-                                                <th>Cliente</th>
-                                                <th>Moneda</th>   
-                                                <th>Total</th>
-                                                <th>Estado</th>
-                                                <th>Acciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="employee_data">
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <!-- PAGE CONTENT ENDS -->
-                            </div><!-- /.col -->
-                        </div><!-- /.row -->
-                    </div><!-- /.page-content -->
-                </div>
-            </div><!-- /.main-content -->
-
-            <!-- Modales -->
-            <div class="modal" id="modalMotivoAnulacion" tabindex="-1">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="blue bigger">Motivo Anulación</h4>
-                        </div>
-
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-12">
-                                    <input type="hidden" id="idcomprobante" value="">
-                                    <input type="hidden" id="codigoSunatComprobante" value="">
-
-                                    <div class="form-group">
-                                        <div>
-                                            <label for="motivo" class="col-sm-4 control-label">Ingrese motivo de anulación</label>
-                                        </div>
-
-                                        <div class="col-sm-8">
-                                            <input type="text" id="motivo" class="form-control"  style="text-transform:uppercase" tabindex="1"/>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div>
+                                <label for="producto" class="control-label" style="width: 80px;">Producto:</label>
+                                <select class="chosen-select" id="producto" tabindex="18" style="width: 400px;">
+                                    <option value="0" selected="selected">TODOS</option>
+                                    <%
+                                        DaoProductoImpl daoProducto = new DaoProductoImpl();
+                                        List<BeanProducto> producto = daoProducto.accionListarActivo();
+                                        for (int i = 0; i < producto.size(); i++) {%>
+                                    <option value="<%= producto.get(i).getIdproducto()%>"><%= producto.get(i).getCodigo() + " | " + producto.get(i).getDescripcion()%></option>
+                                    <%
+                                        }
+                                    %>
+                                </select>
                             </div>
                         </div>
-
-                        <div class="modal-footer">
-                            <button class="btn btn-sm" data-dismiss="modal">
-                                <i class="ace-icon fa fa-times"></i>
-                                Cancelar
-                            </button>
-
-                            <button class="btn btn-sm btn-primary" id="btnGuardar">
-                                <i class="ace-icon fa fa-"></i>
-                                Anular
-                            </button>
-
-                            <hr style="margin-top: 15px;margin-bottom: 15px;">
-                            <div class="divError"></div>
+                        <hr>
+                        <div class="form-group" style="text-align: center; margin-top: 30px">            
+                            <button type="button" id="PDF" name="PDF" class="btn btn-app btn-success btn-sm generar">
+                                <span class="glyphicon glyphicon-export"> PDF</span>
+                            </button> 
+                            &nbsp;
+                            <button type="button" id="EXCEL" name="EXCEL" class="btn btn-app btn-success btn-sm generar">
+                                <span class="glyphicon glyphicon-export"> Excel</span>
+                            </button>  
                         </div>
-
                     </div>
-                </div>
+
+                </div><!-- /.page-content -->
             </div>
+        </div><!-- /.main-content -->
 
-            <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
-                <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
-            </a>
-        </div><!-- /.main-container -->
+        <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+            <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+        </a>
+    </div><!-- /.main-container -->
 
 
-        <!-- basic scripts -->
+    <!-- basic scripts -->
 
-        <!--[if !IE]> -->
-        <script src="../assets/js/jquery-2.1.4.min.js"></script>
+    <!--[if !IE]> -->
+    <script src="../assets/js/jquery-2.1.4.min.js"></script>
 
-        <!-- <![endif]-->
+    <!-- <![endif]-->
 
-        <!--[if IE]>
-        <script src="assets/js/jquery-1.11.3.min.js"></script>
-        <![endif]-->
-        <script type="text/javascript">
+    <!--[if IE]>
+    <script src="../assets/js/jquery-1.11.3.min.js"></script>
+    <![endif]-->
+    <script src="../assets/js/chosen.jquery.min.js"></script>
+    <script type="text/javascript">
                     if ('ontouchstart' in document.documentElement)
                         document.write("<script src='../assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
-        </script>
-        <script src="../assets/js/bootstrap.min.js"></script>
+    </script>
+    <script src="../assets/js/bootstrap.min.js"></script>
 
-        <!-- page specific plugin scripts 
-        <script src="../assets/js/bootstrap-datepicker.min.js"></script>
-        <script src="../assets/js/jquery.jqGrid.min.js"></script>
-        <script src="../assets/js/grid.locale-en.js"></script>-->
+    <!-- page specific plugin scripts -->
 
-        <!-- page specific plugin scripts -->
-        <script src="../assets/js/jquery.dataTables.min.js"></script>
-        <script src="../assets/js/jquery.dataTables.bootstrap.min.js"></script>
-        <script src="../assets/js/dataTables.buttons.min.js"></script>
-        <script src="../assets/js/buttons.flash.min.js"></script>
-        <script src="../assets/js/buttons.html5.min.js"></script>
-        <script src="../assets/js/buttons.print.min.js"></script>
-        <script src="../assets/js/buttons.colVis.min.js"></script>
-        <script src="../assets/js/dataTables.select.min.js"></script>
-        <script src="../assets/js/dataTables/jszip.min.js"></script>
-        <script src="../assets/js/dataTables/pdfmake.min.js"></script>
-        <script src="../assets/js/dataTables/vfs_fonts.js"></script>
+    <!--[if lte IE 8]>
+    <script src="../assets/js/excanvas.min.js"></script>
+    <![endif]-->
+    <script src="../assets/js/jquery-ui.custom.min.js"></script>
+    <script src="../assets/js/jquery.ui.touch-punch.min.js"></script>
+    <script src="../assets/js/jquery.easypiechart.min.js"></script>
+    <script src="../assets/js/jquery.sparkline.index.min.js"></script>
+    <script src="../assets/js/jquery.flot.min.js"></script>
+    <script src="../assets/js/jquery.flot.pie.min.js"></script>
+    <script src="../assets/js/jquery.flot.resize.min.js"></script>
 
-        <!-- ace scripts -->
-        <script src="../assets/js/ace-elements.min.js"></script>
-        <script src="../assets/js/ace.min.js"></script>
+    <!-- ace scripts -->
+    <script src="../assets/js/ace-elements.min.js"></script>
+    <script src="../assets/js/ace.min.js"></script>
 
-        <!--<script type="text/javascript" src="../assets/js/jquery.dataTables.min.js"></script>
-        <!--<script type="text/javascript" src="../assets/js/dataTables/dataTables.bootstrap.min.js"></script>-->
-
-        <!--<script type="text/javascript" src="../assets/js/dataTables.buttons.min.js"></script>
-        <!--<script type="text/javascript" src="../assets/js/dataTables/buttons.bootstrap.min.js"></script>-->
-
-        <!--<script type="text/javascript" src="../assets/js/buttons.html5.min.js"></script>
-
-        <!--<script type="text/javascript" src="../assets/js/dataTables/jszip.min.js"></script>
-        <script type="text/javascript" src="../assets/js/dataTables/pdfmake.min.js"></script>
-        <script type="text/javascript" src="../assets/js/dataTables/vfs_fonts.js"></script>-->
-
-        <link rel="stylesheet" href="../assets/css/jquery-ui.min.css" />
-        <script src="../assets/js/jquery-ui.min.js"></script>
-
-        <!-- inline scripts related to this page -->
-        <script type="text/javascript">
+    <link rel="stylesheet" href="../assets/css/jquery-ui.min.css" />
+    <script src="../assets/js/jquery-ui.min.js"></script>
+    <!-- inline scripts related to this page -->
+    <script type="text/javascript">
 
                     $(document).ready(function () {
+                        $(window).load(function () {
+                            cargarAlmacenSucursal();
+                        });
 
-                        var d = new Date();
+                        var cargarAlmacenSucursal = function () {
+                            var idSucursal = $('#sucursal').val();
+                            if (idSucursal === "0") {
+                                $('#almacen').html("<option value='0' selected='selected'>TODOS</option>");
+                            } else {
+                                $.get('../SucursalAlmacen', {
+                                    accion: "almacen", idSucursal: idSucursal
+                                }, function (response) {
+                                    $('#almacen').html(response);
+                                });
+                            }
+                        };
 
-                        var month = d.getMonth() + 1;
-                        var day = d.getDate();
+                        $('#sucursal').change(function () {
+                            cargarAlmacenSucursal();
+                        });
 
-                        var output = (day < 10 ? '0' : '') + day + '/' +
-                                (month < 10 ? '0' : '') + month + '/' +
-                                d.getFullYear();
-
-                        cargarComprobantes("", "0", output, output);
-
-                        var tablaComprobantes;
-                        function cargarComprobantes(nroComp, tipoComp, desde, hasta) {
-                            tablaComprobantes = $('#tablaComprobantes').DataTable({
-                                bAutoWidth: false,
-                                "processing": true,
-                                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
-                                "iDisplayLength": -1,
-                                destroy: true,
-                                responsive: true,
-                                "searching": true,
-                                "order": [[0, 'asc']],
-                                ajax: {
-                                    method: "POST",
-                                    url: "../Comprobante",
-                                    data: {"opcion": "listarcomprobantes", "accion": "<%=accion%>", "desde": desde, "hasta": hasta, "tipoComp": tipoComp, "nroComp": nroComp},
-                                    dataSrc: "data"
-                                },
-                                columns: [
-                                    {"data": "fecha"},
-                                    {"data": "tipocomprobante"},
-                                    {"data": "serie"},
-                                    {"data": "correlativo"},
-                                    {"data": "nrodocumento"},
-                                    {"data": "cliente"},
-                                    {"data": "moneda"},
-                                    {"data": "total"},
-                                    {"data": "estado"},
-                                    {"data": "acciones"}
-                                ],
-                                dom: '<"row"<"col-xs-12 col-sm-4 col-md-4"l><"col-xs-12 col-sm-4 col-md-4"B><"col-xs-12 col-sm-4 col-md-4"f>>' +
-                                        'tr<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>> ',
-                                'columnDefs': [
-                                    {
-                                        'targets': [0, 1, 2, 3, 4, 5, 6, 7, 8],
-                                        'createdCell': function (td, cellData, rowData, row, col) {
-                                            $(td).attr('contenteditable', 'false');
-                                        }
-                                    },
-                                    {
-                                        "targets": [1, 2, 3, 6, 8],
-                                        "searchable": false
-                                    }
-                                ],
-                                buttons: [
-                                ],
-                                language: {
-                                    "url": "../assets/util/espanol.txt"
-                                }
-                            });
-
-                            $.fn.dataTable.Buttons.defaults.dom.container.className = 'dt-buttons btn-overlap btn-group btn-overlap';
-                            new $.fn.dataTable.Buttons(tablaComprobantes, {
-                                buttons: [
-                                    {
-                                        "extend": "copy",
-                                        "text": "<i class='fa fa-copy bigger-110 pink'></i>",
-                                        "titleAttr": "Copiar",
-                                        "className": "btn btn-white btn-primary btn-bold"
-                                    },
-                                    {
-                                        "extend": 'excel',
-                                        "titleAttr": "Excel",
-                                        "text": "<i class='fa fa-file-excel-o bigger-110 green'></i>",
-                                        "className": "btn btn-white btn-primary btn-bold"
-                                    },
-                                    {
-                                        "extend": "pdf",
-                                        "titleAttr": "PDF",
-                                        "text": "<i class='fa fa-file-pdf-o bigger-110 red'></i>",
-                                        "className": "btn btn-white btn-primary btn-bold"
-                                    },
-                                    {
-                                        "extend": "print",
-                                        "titleAttr": "Imprimir",
-                                        "text": "<i class='fa fa-print bigger-110 grey'></i>",
-                                        "className": "btn btn-white btn-primary btn-bold",
-                                        autoPrint: true,
-                                        message: 'This print was produced using the Print button for DataTables'
-                                    }
-                                ]
-                            });
-
-                            tablaComprobantes.buttons().container().appendTo($('.tableTools-container'));
-                        }
-
-                        $('#buscar').click(function () {
-                            var fecha_desde = $('#fecha_desde').val();
-                            var fecha_hasta = $('#fecha_hasta').val();
-                            var tipoComp = $('#tipoCmp').val();
-                            var nroComp = $('#nroComprob').val();
-                            $('#tablaComprobantes').DataTable().destroy();
-                            cargarComprobantes(nroComp, tipoComp, fecha_desde, fecha_hasta);
+                        $('.generar').click(function (event) {
+                            event.preventDefault();
+                            var fdesde = $('#fecha_desde').val();
+                            var fhasta = $('#fecha_hasta').val();
+                            var idsucursal = $('#sucursal').val();
+                            var idalmacen = $('#almacen').val();
+                            var idproducto = $('#producto').val();
+                            var fileType = $(this).prop('name');
+                            window.open('../Reporte?opcion=MOVINVPROD&idproducto=' + idproducto + '&fileType=' + fileType + '&fdesde=' + fdesde + '&fhasta=' + fhasta + '&idsucursal=' + idsucursal + '&idalmacen=' + idalmacen, '_blank');
                         });
 
                         $(".datepicker").datepicker({
@@ -1076,83 +937,34 @@
                         };
                         $.datepicker.setDefaults($.datepicker.regional['es']);
 
-                        //Anular Comprobante
-                        $(document).on('click', '.anular', function () {
-                            var datos = $(this).attr('id');
-                            var row = $(this).parent().parent();
-                            var array = [];
-                            array = datos.split(" | ");
-                            var idcomprobante = array[0];
-                            var codigoSunatComprobante = array[1];
-                            $('#idcomprobante').val(idcomprobante);
-                            $('#motivo').val('');
-                            $('#codigoSunatComprobante').val(codigoSunatComprobante);
-                            $('#modalMotivoAnulacion .blue').text('Ingresar Motivo Anulación');
-                            $('#modalMotivoAnulacion').modal({backdrop: 'static', keyboard: false});
-                            $('#modalMotivoAnulacion').modal('show');
-                            $('.divError').empty();
-                        });
+                        if (!ace.vars['touch']) {
+                            $('.chosen-select').chosen({allow_single_deselect: true});
+                            //resize the chosen on window resize
 
-                        //Imprimir Comprobante
-                        $(document).on('click', '.imprimir', function () {
-                            var datos = $(this).attr('id');
-                            var array = [];
-                            array = datos.split(" | ");
-                            var idcomprobante = array[0];
-                            var codigoSunatComprobante = array[1];
-                            var total = array[2];
-                            var linkpdf = array[3];
-                            var tipo, parametro;
-                            if (codigoSunatComprobante === '00') {
-                                tipo = 'NP';
-                                parametro = 'idventa';
-                            } else if (codigoSunatComprobante === '99') {
-                                tipo = 'DE';
-                                parametro = 'idnota';
-                            }
-
-                            if (codigoSunatComprobante === '00' || codigoSunatComprobante === '99') {
-                                window.open('../ImprimirComprobante?tipo=' + tipo + '&' + parametro + '=' + idcomprobante + '&total=' + total, '_blank');
-                            } else {
-                                window.open('../Print?linkpdf=' + linkpdf, '_blank');
-                            }
-                        });
-
-                        $('body').on('shown.bs.modal', '#modalMotivoAnulacion', function () {
-                            $('input:visible:enabled:first', this).focus();
-                        });
-
-                        $('#btnGuardar').click(function (event) {
-                            var idcomprobante = $('#idcomprobante').val();
-                            var codigoSunatComprobante = $('#codigoSunatComprobante').val();
-                            var motivo = $('#motivo').val();
-                            if (motivo === null || motivo === "") {
-                                $('#modalMotivoAnulacion .modal-footer .divError').html("<div class='alert alert-danger'><span class='glyphicon glyphicon-remove'></span> Advertencia: DEBE INGRESAR EL MOTIVO DE ANULACIÓN.</div>");
-                                $('#motivo').focus();
-                                return;
-                            }
-                            $.ajax({
-                                url: "../Comprobante",
-                                method: "POST",
-                                data: {"opcion": "anular", "idcomprobante": idcomprobante, "codTipoCmp": codigoSunatComprobante, "motivo": motivo}
-                            }).done(function (data) {
-                                var obj = jQuery.parseJSON(data);
-                                if (obj.mensaje.indexOf('ERROR') !== -1) {
-                                    alertify.error(obj.mensaje);
-                                } else {
-                                    tablaComprobantes.ajax.reload();
-                                    alertify.success(obj.mensaje);
-                                }
-                                $('#modalMotivoAnulacion').modal('hide');
+                            $(window)
+                                    .off('resize.chosen')
+                                    .on('resize.chosen', function () {
+                                        $('.chosen-select').each(function () {
+                                            var $this = $(this);
+                                            $this.next().css({'width': 540});
+                                        });
+                                    }).trigger('resize.chosen');
+                            //resize chosen on sidebar collapse/expand
+                            $(document).on('settings.ace.chosen', function (e, event_name, event_val) {
+                                if (event_name !== 'sidebar_collapsed')
+                                    return;
+                                $('.chosen-select').each(function () {
+                                    var $this = $(this);
+                                    $this.next().css({'width': 540});
+                                });
                             });
-                        });
-
+                        }
                     });
-        </script>
-    </body>
-    <%
-        } else {
-            response.sendRedirect("../");
-        }
-    %>
+    </script>
+</body>
+<%
+    } else {
+        response.sendRedirect("../");
+    }
+%>
 </html>

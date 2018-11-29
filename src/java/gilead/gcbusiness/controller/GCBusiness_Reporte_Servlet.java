@@ -3,6 +3,7 @@ package gilead.gcbusiness.controller;
 import gilead.gcbusiness.sql.ConectaDb;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -40,35 +41,69 @@ public class GCBusiness_Reporte_Servlet extends HttpServlet {
             Connection cn = null;
             String fdesde = request.getParameter("fdesde");
             String fhasta = request.getParameter("fhasta");
+            String busqueda = request.getParameter("busqueda").toUpperCase();
             Integer idvendedor = Integer.parseInt(request.getParameter("idvendedor"));
+            Integer idcliente = Integer.parseInt(request.getParameter("idcliente"));
             String estadoCC = request.getParameter("estadoCC");
             String fileType = request.getParameter("fileType");
             DateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy");
             try {
                 cn = db.getConnection();
 
-                String query = "select ve.descripcion,c.numero_documento,c.nombre,v.fecha_emision,tc.abreviatura,s.serie,v.correlativo_serie,"
-                        + "v.total_venta,cc.saldo from gcbusiness.cuentacobrar cc "
-                        + "left join gcbusiness.venta v on v.id_venta=cc.id_comprobante "
-                        + "left join gcbusiness.cliente c on c.id_cliente=v.id_cliente "
-                        + "left join gcbusiness.serie s on s.id_serie=v.id_serie "
-                        + "left join gcbusiness.tipocomprobante tc on tc.id_tipocomprobante=v.id_tipocomprobante "
-                        + "left join gcbusiness.vendedor ve on ve.id_vendedor=c.id_vendedor "
-                        + "WHERE date(v.fecha_emision) between to_date('" + fdesde + "','dd/mm/yyyy') AND to_date('" + fhasta
-                        + "','dd/mm/yyyy') AND cc.estado = '" + estadoCC + "' ";
+                String query = "";
+                String titulo = "";
+                if (busqueda.equals("RBVENDEDOR")) {
+                    query = "select 'VENDEDOR: ' || ve.descripcion criterio, 'CLIENTE: ' || c.numero_documento || '-' || c.nombre subcriterio,v.fecha_emision,tc.abreviatura,s.serie,v.correlativo_serie,"
+                            + "v.total_venta,cc.saldo, CASE WHEN cc.estado='P' THEN 'PENDIENTE' WHEN cc.estado='C' THEN 'CANCELADO' WHEN cc.estado='A' THEN 'ANULADO' END estado "
+                            + "from gcbusiness.cuentacobrar cc "
+                            + "left join gcbusiness.venta v on v.id_venta=cc.id_comprobante "
+                            + "left join gcbusiness.cliente c on c.id_cliente=v.id_cliente "
+                            + "left join gcbusiness.serie s on s.id_serie=v.id_serie "
+                            + "left join gcbusiness.tipocomprobante tc on tc.id_tipocomprobante=v.id_tipocomprobante "
+                            + "left join gcbusiness.vendedor ve on ve.id_vendedor=c.id_vendedor "
+                            + "WHERE date(v.fecha_emision) between to_date('" + fdesde + "','dd/mm/yyyy') AND to_date('" + fhasta
+                            + "','dd/mm/yyyy') ";
 
-                if (idvendedor != 0) {
-                    query += "AND ve.id_vendedor=" + idvendedor;
+                    titulo = "POR VENDEDOR - TODOS";
+
+                    if (idvendedor != 0) {
+                        query += "AND ve.id_vendedor=" + idvendedor;
+                        titulo = "POR VENDEDOR";
+                    }
+
+                } else {
+                    query = "select 'CLIENTE: ' || c.numero_documento || '-' || c.nombre criterio, 'VENDEDOR: ' || ve.descripcion subcriterio,v.fecha_emision,tc.abreviatura,s.serie,v.correlativo_serie,"
+                            + "v.total_venta,cc.saldo, CASE WHEN cc.estado='P' THEN 'PENDIENTE' WHEN cc.estado='C' THEN 'CANCELADO' WHEN cc.estado='A' THEN 'ANULADO' END estado "
+                            + "from gcbusiness.cuentacobrar cc "
+                            + "left join gcbusiness.venta v on v.id_venta=cc.id_comprobante "
+                            + "left join gcbusiness.cliente c on c.id_cliente=v.id_cliente "
+                            + "left join gcbusiness.serie s on s.id_serie=v.id_serie "
+                            + "left join gcbusiness.tipocomprobante tc on tc.id_tipocomprobante=v.id_tipocomprobante "
+                            + "left join gcbusiness.vendedor ve on ve.id_vendedor=c.id_vendedor "
+                            + "WHERE date(v.fecha_emision) between to_date('" + fdesde + "','dd/mm/yyyy') AND to_date('" + fhasta
+                            + "','dd/mm/yyyy') ";
+
+                    titulo = "POR CLIENTE - TODOS";
+
+                    if (idcliente != 0) {
+                        query += "AND c.id_cliente=" + idcliente;
+                        titulo = "POR CLIENTE";
+                    }
                 }
 
-                query += " order by ve.id_vendedor, v.id_cliente, v.fecha_emision,s.serie,v.correlativo_serie;";
+                if (!estadoCC.equals("0")) {
+                    query += " AND cc.estado = '" + estadoCC + "' ";
+                }
+
+                query += " order by criterio, subcriterio, v.fecha_emision,s.serie,v.correlativo_serie;";
 
                 System.out.println("query: " + query);
 
                 Map<String, Object> parametros = new HashMap<String, Object>();
                 parametros.put("P_finicio", sourceFormat.parse(fdesde));
                 parametros.put("P_ffin", sourceFormat.parse(fhasta));
-                parametros.put("P_estado", estadoCC.equals("P") ? "PENDIENTE" : "CANCELADO");
+                parametros.put("P_estado", estadoCC.equals("P") ? "PENDIENTE" : estadoCC.equals("C") ? "CANCELADO" : "A");
+                parametros.put("P_titulo", titulo);
                 parametros.put("P_QUERY", query);
                 parametros.put(JRParameter.REPORT_LOCALE, new Locale("es", "PE"));
                 parametros.put("P_logo", "/factele/" + rucEmpresa + "/sunat/logo/logo.png");
@@ -200,15 +235,19 @@ public class GCBusiness_Reporte_Servlet extends HttpServlet {
             Integer idsucursal = Integer.parseInt(request.getParameter("idsucursal"));
             Integer idalmacen = Integer.parseInt(request.getParameter("idalmacen"));
             Integer idfamilia = Integer.parseInt(request.getParameter("idfamilia"));
+            String stock = request.getParameter("stock");
             String fileType = request.getParameter("fileType");
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             java.util.Date utilDate = new java.util.Date(System.currentTimeMillis());
-            SimpleDateFormat simpleFormat = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat simpleFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             String fechaActual = simpleFormat.format(utilDate);
-            DateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy");
+            DateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             try {
                 cn = db.getConnection();
 
-                String query = "select s.descripcion sucursal, a.descripcion almacen, f.descripcion familia, cl.descripcion clase, l.descripcion linea, c.descripcion categoria, p.codigo_interno || ' - ' || p.descripcion producto, pa.stock_actual stock\n"
+                String query = "select s.descripcion sucursal, a.descripcion almacen, f.descripcion familia, cl.descripcion clase, "
+                        + "l.descripcion linea, c.descripcion categoria, p.codigo_interno || ' - ' || p.descripcion producto, "
+                        + "pa.stock_actual stock, p.precio_compra costo\n"
                         + "from gcbusiness.almacenproductolote pa\n"
                         + "left join gcbusiness.almacen a on a.id_almacen = pa.id_almacen\n"
                         + "left join gcbusiness.sucursal s on s.id_sucursal = a.id_sucursal\n"
@@ -218,16 +257,20 @@ public class GCBusiness_Reporte_Servlet extends HttpServlet {
                         + "left join gcbusiness.claseproducto cl on cl.id_claseproducto = l.id_claseproducto\n"
                         + "left join gcbusiness.familiaproducto f on f.id_familiaproducto = cl.id_familiaproducto\n"
                         + "where p.estado = 'A' AND s.descripcion is not null\n";
-
+                
+                if(stock.equals("S")){
+                    query += "AND pa.stock_actual>0.00\n";
+                }
+                
                 if (idfamilia != 0) {
                     query += "AND f.id_familiaproducto=" + idfamilia;
                 }
 
                 if (idsucursal != 0) {
                     if (idalmacen != 0) {
-                        query += "AND s.id_sucursal=" + idsucursal + " AND pa.id_almacen=" + idalmacen;
+                        query += " AND s.id_sucursal=" + idsucursal + " AND pa.id_almacen=" + idalmacen;
                     } else {
-                        query += "AND s.id_sucursal=" + idsucursal;
+                        query += " AND s.id_sucursal=" + idsucursal;
                     }
                 }
 
@@ -236,7 +279,7 @@ public class GCBusiness_Reporte_Servlet extends HttpServlet {
                 System.out.println("query: " + query);
 
                 Map<String, Object> parametros = new HashMap<String, Object>();
-                parametros.put("P_factual", sourceFormat.parse(fechaActual));
+                parametros.put("P_factual", timestamp);
                 parametros.put("P_QUERY", query);
                 parametros.put(JRParameter.REPORT_LOCALE, new Locale("es", "PE"));
                 parametros.put("P_logo", "/factele/" + rucEmpresa + "/sunat/logo/logo.png");
@@ -339,6 +382,83 @@ public class GCBusiness_Reporte_Servlet extends HttpServlet {
                 if (fileType.equals("EXCEL")) {
                     response.setContentType("application/vnd.ms-excel");
                     response.setHeader("Content-disposition", "attachment; filename=" + "Reporte_Movimientos_Inventario" + ".xls");
+                    ServletOutputStream out = response.getOutputStream();
+                    JRXlsExporter exporter = new JRXlsExporter();
+                    exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+                    exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(out));
+                    exporter.exportReport();
+                    out.flush();
+                }
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.out.println("GCBusiness_Reporte_Servlet - Error: " + ex.toString());
+            }
+        } else if (opcion.equals("MOVINVPROD")) {//MOVIMIENTO DE INVENTARIO
+            response.setContentType("text/html;charset=UTF-8");
+            ConectaDb db = new ConectaDb();
+            Connection cn = null;
+            String fdesde = request.getParameter("fdesde");
+            String fhasta = request.getParameter("fhasta");
+            Integer idsucursal = Integer.parseInt(request.getParameter("idsucursal"));
+            Integer idalmacen = Integer.parseInt(request.getParameter("idalmacen"));
+            Integer idproducto = Integer.parseInt(request.getParameter("idproducto"));
+            String fileType = request.getParameter("fileType");
+            DateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy");
+            try {
+                cn = db.getConnection();
+
+                String query = "select p.codigo_interno,p.descripcion producto,a.descripcion almacen,s.descripcion sucursal,CASE WHEN mm.tipomovimiento='E' THEN 'EGRESO' WHEN mm.tipomovimiento='I' THEN 'INGRESO' END tipomov,\n"
+                        + "mm.descripcion motivomov,mi.observacion,mi.fecha,dmi.cantidad,pa.stock_actual, dmi.stock_saldo \n"
+                        + "from gcbusiness.detalle_movimientoinventario dmi \n"
+                        + "left join gcbusiness.producto p on p.id_producto=dmi.id_producto \n"
+                        + "left join gcbusiness.movimientoinventario mi on mi.id_movimientoinventario=dmi.id_movimientoinventario \n"
+                        + "left join gcbusiness.almacen a on a.id_almacen=mi.id_almacen \n"
+                        + "left join gcbusiness.motivomovimiento mm on mm.id_motivomovimiento=mi.id_motivomovimiento \n"
+                        + "left join gcbusiness.almacenproductolote pa on pa.id_producto=dmi.id_producto and pa.id_almacen=mi.id_almacen \n"
+                        + "left join gcbusiness.sucursal s on s.id_sucursal=a.id_sucursal "
+                        + "WHERE date(mi.fecha) between to_date('" + fdesde + "','dd/mm/yyyy') AND to_date('" + fhasta
+                        + "','dd/mm/yyyy') AND mi.estado = 'A' ";
+
+                if (idsucursal != 0) {
+                    if (idalmacen != 0) {
+                        query += "AND s.id_sucursal=" + idsucursal + " AND pa.id_almacen=" + idalmacen;
+                    } else {
+                        query += "AND s.id_sucursal=" + idsucursal;
+                    }
+                }
+
+                if (idproducto != 0) {
+                    query += " AND p.id_producto=" + idproducto;
+                }
+
+                query += " order by p.codigo_interno, mi.fecha desc, dmi.id_detalle_movimientoinventario desc;";
+
+                System.out.println("query: " + query);
+
+                Map<String, Object> parametros = new HashMap<String, Object>();
+                parametros.put("P_finicio", sourceFormat.parse(fdesde));
+                parametros.put("P_ffin", sourceFormat.parse(fhasta));
+                parametros.put("P_QUERY", query);
+                parametros.put(JRParameter.REPORT_LOCALE, new Locale("es", "PE"));
+                parametros.put("P_logo", "/factele/" + rucEmpresa + "/sunat/logo/logo.png");
+
+                JasperReport reporte;
+                reporte = (JasperReport) JRLoader.loadObjectFromFile("/factele/" + rucEmpresa + "/jasper/reporte/R05_MovimientoInventarioPorProducto.jasper");
+                JasperPrint jasperPrint;
+                jasperPrint = JasperFillManager.fillReport(reporte, parametros, cn);
+
+                if (fileType.equals("PDF")) {
+                    byte[] pdfBytes = JasperExportManager.exportReportToPdf(jasperPrint);
+                    response.setContentType("application/pdf");
+                    response.setHeader("Content-Disposition", "inline;filename=" + "Reporte_Movimientos_Inventario_Producto" + ".pdf");
+                    response.getOutputStream().write(pdfBytes);
+                    response.flushBuffer();
+                }
+
+                if (fileType.equals("EXCEL")) {
+                    response.setContentType("application/vnd.ms-excel");
+                    response.setHeader("Content-disposition", "attachment; filename=" + "Reporte_Movimientos_Inventario_Producto" + ".xls");
                     ServletOutputStream out = response.getOutputStream();
                     JRXlsExporter exporter = new JRXlsExporter();
                     exporter.setExporterInput(new SimpleExporterInput(jasperPrint));

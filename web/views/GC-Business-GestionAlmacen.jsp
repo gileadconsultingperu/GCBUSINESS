@@ -700,6 +700,18 @@
                             </li>
                             <%
                                 }
+                                if (opciones.contains(76)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteMovimientoInventarioxProducto.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Movimientos de Inventario por Producto
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
                             %>
                         </ul>
                     </li>
@@ -810,7 +822,7 @@
                                                         //if(sucursal.get(i).getEstado().equals("I")){        @01 SUCURSAL INACTIVAS
                                                         //  sucursalesInactivas.add(sucursal.get(i).getIdsucursal());
                                                         //}    
-                                                %>
+%>
                                                 <option value="<%= sucursal.get(i).getIdsucursal()%>">
                                                     <%= sucursal.get(i).getDescripcion()%> 
                                                 </option>

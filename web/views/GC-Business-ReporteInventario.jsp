@@ -149,7 +149,7 @@
         <div class="main-container ace-save-state" id="main-container">
             <script type="text/javascript">
                 try {
-                    ace.settings.loadState('main-container')
+                    ace.settings.loadState('main-container');
                 } catch (e) {
                 }
             </script>
@@ -706,6 +706,18 @@
                             </li>
                             <%
                                 }
+                                if (opciones.contains(76)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteMovimientoInventarioxProducto.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Movimientos de Inventario por Producto
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
                             %>
                         </ul>
                     </li>
@@ -800,6 +812,9 @@
                                         }
                                     %>
                                 </select>
+                                &nbsp;&nbsp;&nbsp;
+                                <input id="stock" type="checkbox" value="S"/>
+                                <label class="lblStock">Stock mayor a 0</label>
                             </div>
                         </div>
                         <hr>
@@ -891,7 +906,8 @@
                             var idalmacen = $('#almacen').val();
                             var idfamilia = $('#familia').val();
                             var fileType = $(this).prop('name');
-                            window.open('../Reporte?opcion=INV&idfamilia=' + idfamilia + '&fileType=' + fileType + '&idsucursal=' + idsucursal + '&idalmacen=' + idalmacen, '_blank');
+                            var stock = $('#stock').is(':checked') ? "S" : "N";
+                            window.open('../Reporte?opcion=INV&idfamilia=' + idfamilia + '&fileType=' + fileType + '&idsucursal=' + idsucursal + '&idalmacen=' + idalmacen + '&stock=' + stock, '_blank');
                         });
                     });
     </script>

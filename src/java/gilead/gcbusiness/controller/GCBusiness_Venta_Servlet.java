@@ -3,8 +3,12 @@ package gilead.gcbusiness.controller;
 import gilead.gcbusiness.dao.impl.DaoVentaImpl;
 import gilead.gcbusiness.dto.DTOVenta;
 import gilead.gcbusiness.sql.ConectaDb;
+import gilead.gcbusiness.util.NumeroLetra;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,6 +23,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -82,6 +90,7 @@ public class GCBusiness_Venta_Servlet extends HttpServlet {
             Statement st = null;
             String sqlEjecucion = null;
             String json = null;
+            String linkpdf = null;
             try {
                 cn = db.getConnection();
                 cn.setAutoCommit(false);
@@ -405,9 +414,229 @@ public class GCBusiness_Venta_Servlet extends HttpServlet {
                     st.executeUpdate(query);
                 }
 
+                //ENVIAR DATOS AL SERVICIO FACTURACION ELECTRONICA
+                if (idtipoComprobante != 7) {
+                    //Obtener montos en letras
+                    NumeroLetra NumLetra = new NumeroLetra();
+                    String numeroenletra = NumLetra.Convertir(request.getParameter("total_venta"), true);
+
+                    //Obtener datos de la cabecera
+                    query = "select e.ruc emp_ruc, e.razon_social emp_denominacion, '6' emp_tipodocumento, e.codigo_ubidistrito emp_ubigeo, "
+                            + "e.direccion emp_direccion, de.descripcion emp_departamento, pr.descripcion emp_provincia, di.descripcion emp_distrito, e.codigo_pais emp_codigopais, "
+                            + "td.codigo_sunat cli_tipodocumento, c.numero_documento cli_numerodocumento, c.nombre cli_denominacion, c.direccion cli_direccion, "
+                            + "tc.codigo_sunat tipocomprobante, s.serie serie, cast(v.correlativo_serie as varchar) correlativo, cast(date(v.fecha_emision) as varchar) fechaemision, to_char(v.fecha_emision, 'HH24:MI:SS') horaemision, m.codigo_sunat moneda, "
+                            + "cast(v.total_gravada as varchar) totalgravada, cast(v.total_exonerada as varchar) totalexonerada, cast(v.total_igv as varchar) totaligv, "
+                            + "cast(v.total_descuento as varchar) totaldescuento, cast(v.total_gratuita as varchar) totalgratuita, cast(v.total_venta as varchar) total, ve.descripcion vendedor "
+                            + "from gcbusiness.venta v "
+                            + "left join gcbusiness.empresa e on 1 = 1 "
+                            + "left join gcbusiness.cliente c on c.id_cliente = v.id_cliente "
+                            + "left join gcbusiness.tipocomprobante tc on tc.id_tipocomprobante = v.id_tipocomprobante "
+                            + "left join gcbusiness.tipodocumento td on td.id_tipodocumento = c.id_tipodocumento "
+                            + "left join gcbusiness.serie s on s.id_serie = v.id_serie "
+                            + "left join gcbusiness.moneda m on m.id_moneda = v.id_moneda "
+                            + "left join gcbusiness.vendedor ve on ve.id_vendedor = c.id_vendedor "
+                            + "left join gcbusiness.ubidistrito di on di.codigo_ubidistrito = e.codigo_ubidistrito "
+                            + "left join gcbusiness.ubiprovincia pr on pr.codigo_ubiprovincia = di.codigo_ubiprovincia "
+                            + "left join gcbusiness.ubidepartamento de on de.codigo_ubidepartamento = pr.codigo_ubidepartamento "
+                            + "where v.id_venta = " + idVenta;
+
+                    rs = st.executeQuery(query);
+
+                    org.json.simple.JSONObject objetoCabecera = null;
+                    String moneda = null;
+                    while (rs.next()) {
+                        String enviarsunat = "N";
+                        moneda = rs.getString("moneda");
+                        objetoCabecera = new org.json.simple.JSONObject();
+                        objetoCabecera.put("ubl", "2.0");//ubl2.1
+                        objetoCabecera.put("emp_ruc", rs.getString("emp_ruc"));
+                        objetoCabecera.put("emp_denominacion", rs.getString("emp_denominacion"));
+                        objetoCabecera.put("emp_nombrecomercial", "-");//ubl2.1
+                        objetoCabecera.put("emp_codigofiscal", "0000");//ubl2.1
+                        objetoCabecera.put("emp_tipodocumento", rs.getString("emp_tipodocumento"));
+                        objetoCabecera.put("emp_ubigeo", rs.getString("emp_ubigeo"));
+                        objetoCabecera.put("emp_direccion", rs.getString("emp_direccion"));
+                        objetoCabecera.put("emp_departamento", rs.getString("emp_departamento"));
+                        objetoCabecera.put("emp_provincia", rs.getString("emp_provincia"));
+                        objetoCabecera.put("emp_distrito", rs.getString("emp_distrito"));
+                        objetoCabecera.put("emp_codigopais", rs.getString("emp_codigopais"));
+                        objetoCabecera.put("cli_tipodocumento", rs.getString("cli_tipodocumento"));
+                        objetoCabecera.put("cli_numerodocumento", rs.getString("cli_numerodocumento"));
+                        objetoCabecera.put("cli_denominacion", rs.getString("cli_denominacion"));
+                        objetoCabecera.put("cli_direccion", rs.getString("cli_direccion"));
+                        objetoCabecera.put("tipooperacion", "0101");//ubl2.1 
+                        objetoCabecera.put("tipocomprobante", rs.getString("tipocomprobante"));
+                        objetoCabecera.put("serie", rs.getString("serie"));
+                        objetoCabecera.put("correlativo", rs.getString("correlativo"));
+                        objetoCabecera.put("fechaemision", rs.getString("fechaemision"));
+                        objetoCabecera.put("horaemision", rs.getString("horaemision"));//ubl2.1
+                        objetoCabecera.put("fechavencimiento", rs.getString("fechaemision"));//ubl2.1
+                        objetoCabecera.put("moneda", rs.getString("moneda"));
+                        objetoCabecera.put("descuentoglobal", "0.00");//ubl2.1
+                        objetoCabecera.put("porcentajedescuentoglobal", "0.00");//ubl2.1
+                        objetoCabecera.put("basedescuentoglobal", "0.00");//ubl2.1
+                        objetoCabecera.put("totalgravada", rs.getString("totalgravada"));
+                        objetoCabecera.put("totalinafecta", "0.00");
+                        objetoCabecera.put("totalexonerada", rs.getString("totalexonerada"));
+                        objetoCabecera.put("totalgratuita", rs.getString("totalgratuita"));
+                        objetoCabecera.put("totaligvgratuita", "0.00");//ubl2.1
+                        objetoCabecera.put("totalimpuesto", rs.getString("totaligv"));//ubl2.1
+                        objetoCabecera.put("totaligv", rs.getString("totaligv"));
+                        objetoCabecera.put("totalisc", "0.00");
+                        objetoCabecera.put("baseisc", "0.00");//ubl2.1
+                        objetoCabecera.put("totalotrotributo", "0.00");
+                        objetoCabecera.put("baseotrotributo", "0.00");//ubl2.1
+                        objetoCabecera.put("totalvalorventa", rs.getString("total"));//ubl2.1
+                        objetoCabecera.put("totalprecioventa", rs.getString("total"));//ubl2.1                        
+                        objetoCabecera.put("totaldescuento", rs.getString("totaldescuento"));
+                        objetoCabecera.put("totalotrocargo", "0.00");
+                        objetoCabecera.put("totalanticipo", "0.00");//ubl2.1
+                        objetoCabecera.put("total", rs.getString("total"));
+                        objetoCabecera.put("totaldetraccion", "0.00");//ubl2.1
+                        objetoCabecera.put("porcentajedetraccion", "0.00");//ubl2.1
+                        objetoCabecera.put("codigoproductodetraccion", "-");//ubl2.1
+                        objetoCabecera.put("cuentabanco", "-");//ubl2.1
+                        objetoCabecera.put("totalpercepcion", "0.00");
+                        objetoCabecera.put("basepercepcion", "0.00");
+                        objetoCabecera.put("totalincluidopercepcion", "0.00");
+                        objetoCabecera.put("tipoproceso", "1");
+                        objetoCabecera.put("enviosunat", enviarsunat);
+                        objetoCabecera.put("enviocliente", "N");
+                        objetoCabecera.put("notatipocomprobante", "");
+                        objetoCabecera.put("notaserie", "");
+                        objetoCabecera.put("notacorrelativo", "");
+                        objetoCabecera.put("notamotivo", "");
+                        objetoCabecera.put("notasustento", "");
+                        objetoCabecera.put("vendedor", rs.getString("vendedor"));
+                    }
+                    //Fin obtener datos de la cabecera
+
+                    //Obtener datos del detalle
+                    query = "select p.codigo_interno itemcodigo, p.descripcion itemdescripcion, um.codigo_sunat itemunidadmedida, cast(dv.cantidad as varchar) itemcantidad, cast(dv.valor_venta_descuento as varchar) itemvalorventa, "
+                            + "cast(dv.valor_unitario_venta as varchar) itemvalorventaunitario, cast(dv.precio_venta_descuento as varchar) itemprecioventa, cast(dv.precio_unitario_venta as varchar) itemprecioventaunitario, "
+                            + "cast(dv.monto_igv as varchar) itemigv, case when dv.flag_bonificacion = 'S' then '21' when dv.tipo_igv = 'G' then '10' when dv.tipo_igv = 'E' then '20' when dv.tipo_igv = 'I' then '30' end itemafectacionigv, dv.flag_bonificacion flagbonificacion, "
+                            + "cast(dv.monto_descuento as varchar) itemdescuento, cast(dv.pcto_descuento as varchar) itemporcentajedescuento,case when dv.pcto_descuento>0 then cast(dv.valor_venta as varchar) else '0.00' end itembasedescuento "
+                            + "from gcbusiness.detalle_venta dv "
+                            + "left join gcbusiness.producto p on p.id_producto = dv.id_producto "
+                            + "left join gcbusiness.unidadmedida um on um.id_unidadmedida = p.id_unidadmedida "
+                            + "where dv.id_venta = " + idVenta;
+
+                    rs = st.executeQuery(query);
+
+                    org.json.simple.JSONArray lista = new org.json.simple.JSONArray();
+                    org.json.simple.JSONObject detalle_linea = null;
+                    while (rs.next()) {
+                        detalle_linea = new org.json.simple.JSONObject();
+
+                        detalle_linea.put("itemcodigo", rs.getString("itemcodigo"));
+                        detalle_linea.put("itemcodigosunat", "-");//2.1
+                        detalle_linea.put("itemdescripcion", rs.getString("itemdescripcion"));
+                        detalle_linea.put("itemunidadmedida", rs.getString("itemunidadmedida"));
+                        detalle_linea.put("itemcantidad", rs.getString("itemcantidad"));
+                        detalle_linea.put("itemmoneda", moneda);
+                        detalle_linea.put("itemvalorventa", rs.getString("itemvalorventa"));
+                        if (rs.getString("flagbonificacion").equals("S")) {
+                            detalle_linea.put("itemvalorventaunitario", "0.00");
+                            detalle_linea.put("itemprecioventaunitario", "0.00");
+                            detalle_linea.put("itemvalornoonerosaunitario", rs.getString("itemprecioventaunitario"));
+                        } else {
+                            detalle_linea.put("itemvalorventaunitario", rs.getString("itemvalorventaunitario"));
+                            detalle_linea.put("itemprecioventaunitario", rs.getString("itemprecioventaunitario"));
+                            detalle_linea.put("itemvalornoonerosaunitario", "0.00");
+                        }
+                        detalle_linea.put("itemprecioventa", rs.getString("itemprecioventa"));
+                        detalle_linea.put("itemdescuento", rs.getString("itemdescuento"));//2.1
+                        detalle_linea.put("itemporcentajedescuento", rs.getString("itemporcentajedescuento"));//2.1
+                        detalle_linea.put("itembasedescuento", rs.getString("itembasedescuento"));//2.1
+                        detalle_linea.put("itemcargo", "0.00");//2.1
+                        detalle_linea.put("itemporcentajecargo", "0.00");//2.1
+                        detalle_linea.put("itembasecargo", "0.00");//2.1
+                        detalle_linea.put("itemtotalimpuesto", rs.getString("itemigv"));//2.1                       
+                        detalle_linea.put("itemigv", rs.getString("itemigv"));
+                        if (rs.getString("itemafectacionigv").equals("10")) {
+                            detalle_linea.put("itembaseigv", rs.getString("itemvalorventa"));//2.1
+                            detalle_linea.put("itemporcentajeigv", "18.00");//2.1
+                        } else {
+                            detalle_linea.put("itembaseigv", "0.00");//2.1  
+                            detalle_linea.put("itemporcentajeigv", "0.00");//2.1
+                        }
+                        detalle_linea.put("itemafectacionigv", rs.getString("itemafectacionigv"));
+                        detalle_linea.put("itemisc", "0.00");
+                        detalle_linea.put("itembaseisc", "0.00");
+                        detalle_linea.put("itemporcentajeisc", "0.00");
+                        detalle_linea.put("itemisctipo", "");
+
+                        lista.add(detalle_linea);
+                    }
+                    objetoCabecera.put("comprobantedetalles", lista);
+                    //Fin obtener datos del detalle
+
+                    //Obtener leyendas
+                    org.json.simple.JSONArray lista_leyenda = new org.json.simple.JSONArray();
+                    org.json.simple.JSONObject leyenda_linea_1 = new org.json.simple.JSONObject();
+
+                    leyenda_linea_1.put("leyendacodigo", "1000");
+                    leyenda_linea_1.put("leyendadescripcion", numeroenletra);
+
+                    lista_leyenda.add(leyenda_linea_1);
+
+                    org.json.simple.JSONObject leyenda_linea_2 = new org.json.simple.JSONObject();
+
+                    leyenda_linea_2.put("leyendacodigo", "2001");
+                    leyenda_linea_2.put("leyendadescripcion", "BIENES TRANSFERIDOS EN LA AMAZONÍA REGIÓN SELVA PARA SER CONSUMIDOS EN LA MISMA");
+
+                    lista_leyenda.add(leyenda_linea_2);
+
+                    objetoCabecera.put("leyendas", lista_leyenda);
+
+                    //FIN CONSTRUIR OBJETO JSON PARA ENVIAR AL SERVICIO
+                    //
+                    try {
+                        DefaultHttpClient httpClient = new DefaultHttpClient();
+                        HttpPost postRequest = new HttpPost(
+                                "http://localhost:8084/WebServiceSunat21/rest/comprobante/procesarComprobante");
+
+                        StringEntity input = new StringEntity(objetoCabecera.toString(), "utf-8");
+
+                        input.setContentType("application/json");
+                        postRequest.setEntity(input);
+
+                        HttpResponse httpResponse = httpClient.execute(postRequest);
+
+                        if (httpResponse.getStatusLine().getStatusCode() != 200) {
+                            throw new RuntimeException("Failed : HTTP error code : "
+                                    + httpResponse.getStatusLine().getStatusCode());
+                        }
+
+                        BufferedReader br = new BufferedReader(new InputStreamReader(
+                                (httpResponse.getEntity().getContent())));
+
+                        String output;
+                        String[] aux = null;
+                        System.out.println("Output from Server .... \n");
+                        while ((output = br.readLine()) != null) {
+                            aux = output.split("\\|", 0);
+                        }
+
+                        linkpdf = aux[6];
+                        System.out.println("linkpdf: " + linkpdf);
+                        httpClient.getConnectionManager().shutdown();
+
+                    } catch (MalformedURLException e) {
+
+                        e.printStackTrace();
+                    } catch (IOException e) {
+
+                        e.printStackTrace();
+
+                    }
+                }
+
                 json = "{ \"mensaje\":\"<em>SE GENERÓ CORRECTAMENTE LA VENTA</em>\" ";
                 json += ",";
                 json += " \"idventa\":\"" + idVenta + "\" ";
+                json += ",";
+                json += " \"linkpdf\":\"" + linkpdf + "\"";
                 cn.commit();
 
             } catch (SQLException ex) {

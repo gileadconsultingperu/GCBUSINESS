@@ -735,6 +735,18 @@
                             </li>
                             <%
                                 }
+                                if (opciones.contains(76)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteMovimientoInventarioxProducto.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Movimientos de Inventario por Producto
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
                             %>
                         </ul>
                     </li>
@@ -1342,7 +1354,7 @@
                                     $('#modalAgregarTrasladoAlmacen').modal('hide');
                                 }
                             });
-                        });                    
+                        });
 
                         $("#btnAgregarDetalle").click(function () {
                             if ($('#flaglote').val() === 'N') {
@@ -1615,13 +1627,13 @@
                                 });
                             }
                         });
-                        
+
                         //Imprimir traslado almacen
                         $(document).on('click', '.imprimir', function () {
                             var idtrasladoalmacen = $(this).attr('id');
                             window.open('../ImprimirComprobante?tipo=MA&idtrasladoalmacen=' + idtrasladoalmacen, '_blank');
                         });
-                        
+
                         //another option is using modals
                         $('#avatar2').on('click', function () {
                             var modal =

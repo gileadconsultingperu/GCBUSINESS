@@ -716,6 +716,18 @@
                             </li>
                             <%
                                 }
+                                if (opciones.contains(76)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteMovimientoInventarioxProducto.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Movimientos de Inventario por Producto
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
                             %>
                         </ul>
                     </li>
@@ -1579,6 +1591,18 @@
                             $('#precio_uni_dscto_' + orden).html(parseFloat(precioUniDscto).toFixed(2));
                         }
 
+                        $('#detalleVenta').on('focusout', '.input_cantidad', function () {
+                            var orden = $(this).parents('tr').find('td:eq(24)').find('button.eliminarDetalleVenta').attr('id');
+                            var cantidad = $("#cantidad_" + orden).val();
+                            $('#cantidad_' + orden).val(parseFloat(Number($("#cantidad_" + orden).val())).toFixed(3).toString());
+                            if (cantidad <= 0) {
+                                $('#cantidad_' + orden).focus();
+                                alertify.error("EL VALOR DE CANTIDAD DEBE SER MAYOR A CERO");
+                            }
+                            calcular(orden);
+                            calcularTotales();
+                        });
+
                         $('#detalleVenta').on('change', '.input_cantidad', function () {
                             var orden = $(this).parents('tr').find('td:eq(24)').find('button.eliminarDetalleVenta').attr('id');
                             var bonificacion = $('#bonificacion_' + orden).is(':checked');
@@ -1946,10 +1970,12 @@
                                         $('.divError').removeClass('tada animated');
                                     });
                                 } else {
-                                    $('#imprimir').attr('disabled', false);
-                                    $('#imprimir').attr('href', '../ImprimirComprobante?tipo=FA&idventa=' + obj.idventa + '&total=' + $('#total_venta').val());
-                                    window.open('../ImprimirComprobante?tipo=FA&idventa=' + obj.idventa + '&total=' + $('#total_venta').val(), '_blank');
                                     alertify.success(obj.mensaje);
+                                    $('#imprimir').attr('disabled', false);
+                                    $('#imprimir').attr('href', '../Print?linkpdf=' + obj.linkpdf);
+                                    window.open('../Print?linkpdf=' + obj.linkpdf, '_blank');
+                                    //$('#imprimir').attr('href', '../ImprimirComprobante?tipo=FA&idventa=' + obj.idventa + '&total=' + $('#total_venta').val());
+                                    //window.open('../ImprimirComprobante?tipo=FA&idventa=' + obj.idventa + '&total=' + $('#total_venta').val(), '_blank'); 
                                 }
                             });
 

@@ -104,7 +104,7 @@ public class GCBusiness_Compra_Servlet extends HttpServlet {
 
                 Integer idproveedor = Integer.parseInt(request.getParameter("idproveedor"));
                 Integer idtipoComprobante = Integer.parseInt(request.getParameter("idtipoComprobante"));
-                String serie = request.getParameter("serie");
+                String serie = request.getParameter("serie").toUpperCase();
                 Integer correlativo = Integer.parseInt(request.getParameter("correlativo"));
                 String flag_negociable = request.getParameter("flag_negociable");
                 String fecha_vencimiento = request.getParameter("fecha_vencimiento");
@@ -215,15 +215,17 @@ public class GCBusiness_Compra_Servlet extends HttpServlet {
                     //valor_compra = Math.round(valor_compra * Math.pow(10, 2)) / Math.pow(10, 2);
 
                     precio_unitario_compra = Double.parseDouble((String) fila1.get("Precio Unitario"));
-                    precio_compra = precio_unitario_compra * cantidad;
-                    precio_compra = Math.round(precio_compra * Math.pow(10, 2)) / Math.pow(10, 2);
+                    //precio_compra = precio_unitario_compra * cantidad;
+                    //precio_compra = Math.round(precio_compra * Math.pow(10, 2)) / Math.pow(10, 2);
+                    precio_compra = Double.parseDouble((String) fila1.get("Precio Total sDcto"));
 
-                    valor_compra = precio_compra / 1.18;
-                    valor_compra = Math.round(valor_compra * Math.pow(10, 2)) / Math.pow(10, 2);
+                    //valor_compra = precio_compra / 1.18;
+                    //valor_compra = Math.round(valor_compra * Math.pow(10, 2)) / Math.pow(10, 2);
+                    valor_compra = Double.parseDouble((String) fila1.get("Valor Total sDcto"));
 
-                    //monto_igv = Double.parseDouble((String) fila1.get("IGV"));
-                    monto_igv = precio_compra - valor_compra;
-                    monto_igv = Math.round(monto_igv * Math.pow(10, 2)) / Math.pow(10, 2);
+                    monto_igv = Double.parseDouble((String) fila1.get("IGV sDcto"));
+                    //monto_igv = precio_compra - valor_compra;
+                    //monto_igv = Math.round(monto_igv * Math.pow(10, 2)) / Math.pow(10, 2);
 
                     //FALTA TIPO ISC
                     monto_isc = Double.parseDouble((String) fila1.get("ISC"));
@@ -233,21 +235,21 @@ public class GCBusiness_Compra_Servlet extends HttpServlet {
 
                     //TIPO IGV Y PCTO IGV
                     if (flag_bonificacion.equals("S")) {
-                        if (afectoIGV.trim().equals("G")) {
+                        /*if (afectoIGV.trim().equals("G")) {
                             //tipoIGV = "15"; //Gravado – Bonificaciones
                             tipoIGV = "G";
                             pctoIGV = (precio_compra - valor_compra) / valor_compra;
                             pctoIGV *= 100;
                             pctoIGV = Math.round(pctoIGV * Math.pow(10, 2)) / Math.pow(10, 2);
-                        }
+                        }*/
                         if (afectoIGV.trim().equals("E")) {
                             //tipoIGV = "21"; //Exonerado – Transferencia Gratuita
                             tipoIGV = "E";
                         }
-                        if (afectoIGV.trim().equals("I")) {
+                        /*if (afectoIGV.trim().equals("I")) {
                             //tipoIGV = "31"; //Inafecto – Retiro por Bonificación
                             tipoIGV = "I";
-                        }
+                        }*/
                     } else {
                         if (afectoIGV.trim().equals("G")) {
                             //tipoIGV = "10"; //Gravado – Operación Onerosa
@@ -287,16 +289,18 @@ public class GCBusiness_Compra_Servlet extends HttpServlet {
                     }
 
                     valor_compra_descuento = Double.parseDouble((String) fila1.get("Valor Compra"));
-                    valor_compra_descuento = Math.round(valor_compra_descuento * Math.pow(10, 2)) / Math.pow(10, 2);
+                    //valor_compra_descuento = Math.round(valor_compra_descuento * Math.pow(10, 2)) / Math.pow(10, 2);
 
                     precio_compra_descuento = Double.parseDouble((String) fila1.get("Precio Compra"));
-                    precio_compra_descuento = Math.round(precio_compra_descuento * Math.pow(10, 2)) / Math.pow(10, 2);
+                    //precio_compra_descuento = Math.round(precio_compra_descuento * Math.pow(10, 2)) / Math.pow(10, 2);
 
-                    precio_unitario_compra_descuento = precio_compra_descuento / cantidad;
-                    precio_unitario_compra_descuento = Math.round(precio_unitario_compra_descuento * Math.pow(10, 2)) / Math.pow(10, 2);
+                    //precio_unitario_compra_descuento = precio_compra_descuento / cantidad;
+                    //precio_unitario_compra_descuento = Math.round(precio_unitario_compra_descuento * Math.pow(10, 2)) / Math.pow(10, 2);
+                    precio_unitario_compra_descuento = Double.parseDouble((String) fila1.get("Precio Unitario cDcto"));
 
-                    monto_igv_descuento = precio_compra_descuento - valor_compra_descuento;
-                    monto_igv_descuento = Math.round(monto_igv_descuento * Math.pow(10, 2)) / Math.pow(10, 2);
+                    //monto_igv_descuento = precio_compra_descuento - valor_compra_descuento;
+                    //monto_igv_descuento = Math.round(monto_igv_descuento * Math.pow(10, 2)) / Math.pow(10, 2);
+                    monto_igv_descuento = Double.parseDouble((String) fila1.get("IGV"));
 
                     //Insertar detalle compra
                     query = "INSERT INTO gcbusiness.detalle_compra (id_compra, id_producto, cantidad, tipo_igv, pcto_igv, valor_unitario_compra, precio_unitario_compra, valor_compra, precio_compra, "

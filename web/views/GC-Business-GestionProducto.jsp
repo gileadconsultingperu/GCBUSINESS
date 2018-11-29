@@ -717,6 +717,18 @@
                             </li>
                             <%
                                 }
+                                if (opciones.contains(76)) {
+                            %>
+                            <li class="">
+                                <a href="GC-Business-ReporteMovimientoInventarioxProducto.jsp">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Reporte de Movimientos de Inventario por Producto
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <%
+                                }
                             %>
                         </ul>
                     </li>
@@ -855,7 +867,7 @@
                                                         //if(familiaproducto.get(i).getEstado().equals("I")){        @01 FAMILIAS INACTIVAS
                                                         //  familiaproductoesInactivas.add(familiaproducto.get(i).getIdfamiliaproducto());
                                                         //}    
-%>
+                                                %>
                                                 <option value="<%= familiaproducto.get(i).getIdfamiliaproducto()%>">
                                                     <%= familiaproducto.get(i).getDescripcion()%> 
                                                 </option>

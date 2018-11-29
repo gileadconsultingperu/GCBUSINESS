@@ -120,9 +120,13 @@
         <servlet-name>Reporte</servlet-name>
         <servlet-class>gilead.gcbusiness.controller.GCBusiness_Reporte_Servlet</servlet-class>
     </servlet>
-	<servlet>
+    <servlet>
         <servlet-name>ImprimirComprobante</servlet-name>
         <servlet-class>gilead.gcbusiness.controller.GCBusiness_ImprimirComprobante_Servlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Print</servlet-name>
+        <servlet-class>gilead.gcbusiness.util.GCBusiness_Print_Servlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>GCBusiness_Login_Servlet</servlet-name>
@@ -244,9 +248,13 @@
         <servlet-name>Reporte</servlet-name>
         <url-pattern>/Reporte</url-pattern>
     </servlet-mapping>
-	<servlet-mapping>
+    <servlet-mapping>
         <servlet-name>ImprimirComprobante</servlet-name>
         <url-pattern>/ImprimirComprobante</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Print</servlet-name>
+        <url-pattern>/Print</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
