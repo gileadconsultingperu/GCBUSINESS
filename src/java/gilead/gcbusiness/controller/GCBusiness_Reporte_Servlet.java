@@ -242,26 +242,49 @@ public class GCBusiness_Reporte_Servlet extends HttpServlet {
             SimpleDateFormat simpleFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             String fechaActual = simpleFormat.format(utilDate);
             DateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            String tipo = request.getParameter("tipo").toUpperCase();
+            Integer idproducto = Integer.parseInt(request.getParameter("idproducto"));
             try {
                 cn = db.getConnection();
 
-                String query = "select s.descripcion sucursal, a.descripcion almacen, f.descripcion familia, cl.descripcion clase, "
-                        + "l.descripcion linea, c.descripcion categoria, p.codigo_interno || ' - ' || p.descripcion producto, "
-                        + "pa.stock_actual stock, p.precio_compra costo\n"
-                        + "from gcbusiness.almacenproductolote pa\n"
-                        + "left join gcbusiness.almacen a on a.id_almacen = pa.id_almacen\n"
-                        + "left join gcbusiness.sucursal s on s.id_sucursal = a.id_sucursal\n"
-                        + "left join gcbusiness.producto p on p.id_producto = pa.id_producto\n"
-                        + "left join gcbusiness.categoriaproducto c on c.id_categoriaproducto = p.id_categoriaproducto\n"
-                        + "left join gcbusiness.lineaproducto l on l.id_lineaproducto = c.id_lineaproducto\n"
-                        + "left join gcbusiness.claseproducto cl on cl.id_claseproducto = l.id_claseproducto\n"
-                        + "left join gcbusiness.familiaproducto f on f.id_familiaproducto = cl.id_familiaproducto\n"
-                        + "where p.estado = 'A' AND s.descripcion is not null\n";
-                
-                if(stock.equals("S")){
+                String query = "";
+                if (tipo.equals("RBVALORIZADO")) {
+                    query = "select s.descripcion sucursal, a.descripcion almacen, f.descripcion familia, cl.descripcion clase, "
+                            + "l.descripcion linea, c.descripcion categoria, p.codigo_interno || ' - ' || p.descripcion producto, "
+                            + "pa.stock_actual stock, p.precio_compra costo\n"
+                            + "from gcbusiness.almacenproductolote pa\n"
+                            + "left join gcbusiness.almacen a on a.id_almacen = pa.id_almacen\n"
+                            + "left join gcbusiness.sucursal s on s.id_sucursal = a.id_sucursal\n"
+                            + "left join gcbusiness.producto p on p.id_producto = pa.id_producto\n"
+                            + "left join gcbusiness.categoriaproducto c on c.id_categoriaproducto = p.id_categoriaproducto\n"
+                            + "left join gcbusiness.lineaproducto l on l.id_lineaproducto = c.id_lineaproducto\n"
+                            + "left join gcbusiness.claseproducto cl on cl.id_claseproducto = l.id_claseproducto\n"
+                            + "left join gcbusiness.familiaproducto f on f.id_familiaproducto = cl.id_familiaproducto\n"
+                            + "where p.estado = 'A' AND s.descripcion is not null\n";
+                } else {
+                    query = "select s.descripcion sucursal, a.descripcion almacen, f.descripcion familia, cl.descripcion clase, "
+                            + "l.descripcion linea, c.descripcion categoria, p.codigo_interno || ' - ' || p.descripcion producto, "
+                            + "pa.stock_actual stock, tp1.valor tp1, tp2.valor tp2, tp3.valor tp3, tp4.valor tp4, tp5.valor tp5\n"
+                            + "from gcbusiness.almacenproductolote pa\n"
+                            + "left join gcbusiness.almacen a on a.id_almacen = pa.id_almacen\n"
+                            + "left join gcbusiness.sucursal s on s.id_sucursal = a.id_sucursal\n"
+                            + "left join gcbusiness.producto p on p.id_producto = pa.id_producto\n"
+                            + "left join gcbusiness.categoriaproducto c on c.id_categoriaproducto = p.id_categoriaproducto\n"
+                            + "left join gcbusiness.lineaproducto l on l.id_lineaproducto = c.id_lineaproducto\n"
+                            + "left join gcbusiness.claseproducto cl on cl.id_claseproducto = l.id_claseproducto\n"
+                            + "left join gcbusiness.familiaproducto f on f.id_familiaproducto = cl.id_familiaproducto\n"
+                            + "left join gcbusiness.tarifaproducto tp1 on tp1.id_producto = p.id_producto and tp1.id_tarifa=1\n"
+                            + "left join gcbusiness.tarifaproducto tp2 on tp2.id_producto = p.id_producto and tp2.id_tarifa=2\n"
+                            + "left join gcbusiness.tarifaproducto tp3 on tp3.id_producto = p.id_producto and tp3.id_tarifa=3\n"
+                            + "left join gcbusiness.tarifaproducto tp4 on tp4.id_producto = p.id_producto and tp4.id_tarifa=4\n"
+                            + "left join gcbusiness.tarifaproducto tp5 on tp5.id_producto = p.id_producto and tp5.id_tarifa=5\n"
+                            + "where p.estado = 'A' AND s.descripcion is not null\n";
+                }
+
+                if (stock.equals("S")) {
                     query += "AND pa.stock_actual>0.00\n";
                 }
-                
+
                 if (idfamilia != 0) {
                     query += "AND f.id_familiaproducto=" + idfamilia;
                 }
@@ -272,6 +295,10 @@ public class GCBusiness_Reporte_Servlet extends HttpServlet {
                     } else {
                         query += " AND s.id_sucursal=" + idsucursal;
                     }
+                }
+
+                if (idproducto != 0) {
+                    query += " AND p.id_producto=" + idproducto;
                 }
 
                 query += " order by s.descripcion, a.id_almacen, f.id_familiaproducto, cl.id_claseproducto, l.id_lineaproducto, c.id_categoriaproducto, p.id_producto;";
@@ -285,7 +312,11 @@ public class GCBusiness_Reporte_Servlet extends HttpServlet {
                 parametros.put("P_logo", "/factele/" + rucEmpresa + "/sunat/logo/logo.png");
 
                 JasperReport reporte;
-                reporte = (JasperReport) JRLoader.loadObjectFromFile("/factele/" + rucEmpresa + "/jasper/reporte/R03_Inventario.jasper");
+                if (tipo.equals("RBVALORIZADO")) {
+                    reporte = (JasperReport) JRLoader.loadObjectFromFile("/factele/" + rucEmpresa + "/jasper/reporte/R03_Inventario.jasper");
+                } else {
+                    reporte = (JasperReport) JRLoader.loadObjectFromFile("/factele/" + rucEmpresa + "/jasper/reporte/R04_InventarioPrecio.jasper");
+                }
                 JasperPrint jasperPrint;
                 jasperPrint = JasperFillManager.fillReport(reporte, parametros, cn);
 

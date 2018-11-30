@@ -885,7 +885,8 @@
     <script src="../assets/js/jquery-ui.min.js"></script>
     <!-- inline scripts related to this page -->
 
-    <script src="../assets/js/chosen.jquery.min.js"></script>
+    <!--<script src="../assets/js/chosen.jquery.min.js"></script>-->
+    <script src="../assets/js/chosen/chosen.jquery.js"></script>
 
     <script type="text/javascript">
 

@@ -772,6 +772,7 @@
                         </div><!-- /.page-header -->
 
                         <div style="text-align: center;">
+                            <input type="hidden" id="tipo" value="rbvalorizado">
                             <div>
                                 <label for="sucursal" class="control-label">Sucursal: </label>
                                 <select id="sucursal" name="sucursal" tabindex="4" style="width: 130px;">
@@ -816,6 +817,34 @@
                                 <input id="stock" type="checkbox" value="S"/>
                                 <label class="lblStock">Stock mayor a 0</label>
                             </div>
+                            &nbsp;
+                            <div>
+                                <label for="producto" class="control-label" style="width: 80px;">Producto:</label>
+                                <select class="chosen-select" id="producto" tabindex="18" style="width: 400px;">
+                                    <option value="0" selected="selected">TODOS</option>
+                                    <%
+                                        DaoProductoImpl daoProducto = new DaoProductoImpl();
+                                        List<BeanProducto> producto = daoProducto.accionListarActivo();
+                                        for (int i = 0; i < producto.size(); i++) {%>
+                                    <option value="<%= producto.get(i).getIdproducto()%>"><%= producto.get(i).getCodigo() + " | " + producto.get(i).getDescripcion()%></option>
+                                    <%
+                                        }
+                                    %>
+                                </select>
+                            </div>
+                            &nbsp;
+                            <div class="control-group" style="margin-top: 20px;">
+                                <div class="radio">
+                                    <label>
+                                        <input id="rbvalorizado" name="form-field-radio" type="radio" class="ace" checked/>
+                                        <span class="lbl"> Valorizado</span>
+                                    </label>
+                                    <label>
+                                        <input id="rbprecio" name="form-field-radio" type="radio" class="ace" />
+                                        <span class="lbl"> Por Precios</span>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                         <hr>
                         <div class="form-group" style="text-align: center; margin-top: 30px">            
@@ -849,7 +878,8 @@
     <!--[if IE]>
     <script src="../assets/js/jquery-1.11.3.min.js"></script>
     <![endif]-->
-    <script src="../assets/js/chosen.jquery.min.js"></script>
+    <!--<script src="../assets/js/chosen.jquery.min.js"></script>-->
+    <script src="../assets/js/chosen/chosen.jquery.js"></script>
     <script type="text/javascript">
                     if ('ontouchstart' in document.documentElement)
                         document.write("<script src='../assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
@@ -907,8 +937,38 @@
                             var idfamilia = $('#familia').val();
                             var fileType = $(this).prop('name');
                             var stock = $('#stock').is(':checked') ? "S" : "N";
-                            window.open('../Reporte?opcion=INV&idfamilia=' + idfamilia + '&fileType=' + fileType + '&idsucursal=' + idsucursal + '&idalmacen=' + idalmacen + '&stock=' + stock, '_blank');
+                            var tipo = $('#tipo').val();
+                            var idproducto = $('#producto').val();
+                            window.open('../Reporte?opcion=INV&idproducto=' + idproducto + '&tipo=' + tipo + '&idfamilia=' + idfamilia + '&fileType=' + fileType + '&idsucursal=' + idsucursal + '&idalmacen=' + idalmacen + '&stock=' + stock, '_blank');
                         });
+
+                        $("input[type='radio']").change(function () {
+                            var opcion = $(this).attr('id');
+                            $('#tipo').val(opcion);
+                        });
+
+                        if (!ace.vars['touch']) {
+                            $('.chosen-select').chosen({allow_single_deselect: true});
+                            //resize the chosen on window resize
+
+                            $(window)
+                                    .off('resize.chosen')
+                                    .on('resize.chosen', function () {
+                                        $('.chosen-select').each(function () {
+                                            var $this = $(this);
+                                            $this.next().css({'width': 540});
+                                        });
+                                    }).trigger('resize.chosen');
+                            //resize chosen on sidebar collapse/expand
+                            $(document).on('settings.ace.chosen', function (e, event_name, event_val) {
+                                if (event_name !== 'sidebar_collapsed')
+                                    return;
+                                $('.chosen-select').each(function () {
+                                    var $this = $(this);
+                                    $this.next().css({'width': 540});
+                                });
+                            });
+                        }
                     });
     </script>
 </body>

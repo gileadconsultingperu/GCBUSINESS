@@ -1089,7 +1089,8 @@
         <!--[if IE]>
         <script src="assets/js/jquery-1.11.3.min.js"></script>
         <![endif]-->
-        <script src="../assets/js/chosen.jquery.min.js"></script>
+        <!--<script src="../assets/js/chosen.jquery.min.js"></script>-->
+        <script src="../assets/js/chosen/chosen.jquery.js"></script>
         <script type="text/javascript">
                     if ('ontouchstart' in document.documentElement)
                         document.write("<script src='../assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
