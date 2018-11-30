@@ -3,12 +3,15 @@ package gilead.gcbusiness.controller;
 import gilead.gcbusiness.sql.ConectaDb;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
@@ -132,9 +135,15 @@ public class GCBusiness_Reporte_Servlet extends HttpServlet {
                     out.flush();
                 }
 
+                cn.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 System.out.println("GCBusiness_Reporte_Servlet - Error: " + ex.toString());
+                try {
+                    cn.close();
+                } catch (SQLException ex1) {
+                    Logger.getLogger(GCBusiness_Reporte_Servlet.class.getName()).log(Level.SEVERE, null, ex1);
+                }
             }
         } else if (opcion.equals("VE")) {//VENTAS
             response.setContentType("text/html;charset=UTF-8");
@@ -224,9 +233,15 @@ public class GCBusiness_Reporte_Servlet extends HttpServlet {
                     out.flush();
                 }
 
+                cn.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 System.out.println("GCBusiness_Reporte_Servlet - Error: " + ex.toString());
+                try {
+                    cn.close();
+                } catch (SQLException ex1) {
+                    Logger.getLogger(GCBusiness_Reporte_Servlet.class.getName()).log(Level.SEVERE, null, ex1);
+                }
             }
         } else if (opcion.equals("INV")) {//INVENTARIO
             response.setContentType("text/html;charset=UTF-8");
@@ -339,9 +354,15 @@ public class GCBusiness_Reporte_Servlet extends HttpServlet {
                     out.flush();
                 }
 
+                cn.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 System.out.println("GCBusiness_Reporte_Servlet - Error: " + ex.toString());
+                try {
+                    cn.close();
+                } catch (SQLException ex1) {
+                    Logger.getLogger(GCBusiness_Reporte_Servlet.class.getName()).log(Level.SEVERE, null, ex1);
+                }
             }
         } else if (opcion.equals("MOVINV")) {//MOVIMIENTO DE INVENTARIO
             response.setContentType("text/html;charset=UTF-8");
@@ -421,9 +442,15 @@ public class GCBusiness_Reporte_Servlet extends HttpServlet {
                     out.flush();
                 }
 
+                cn.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 System.out.println("GCBusiness_Reporte_Servlet - Error: " + ex.toString());
+                try {
+                    cn.close();
+                } catch (SQLException ex1) {
+                    Logger.getLogger(GCBusiness_Reporte_Servlet.class.getName()).log(Level.SEVERE, null, ex1);
+                }
             }
         } else if (opcion.equals("MOVINVPROD")) {//MOVIMIENTO DE INVENTARIO
             response.setContentType("text/html;charset=UTF-8");
@@ -498,9 +525,15 @@ public class GCBusiness_Reporte_Servlet extends HttpServlet {
                     out.flush();
                 }
 
+                cn.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 System.out.println("GCBusiness_Reporte_Servlet - Error: " + ex.toString());
+                try {
+                    cn.close();
+                } catch (SQLException ex1) {
+                    Logger.getLogger(GCBusiness_Reporte_Servlet.class.getName()).log(Level.SEVERE, null, ex1);
+                }
             }
         }
     }
