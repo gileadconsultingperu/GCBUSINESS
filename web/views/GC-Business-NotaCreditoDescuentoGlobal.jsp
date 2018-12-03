@@ -33,6 +33,8 @@
     Integer idalmacen = Integer.parseInt(session.getAttribute("idAlmacen").toString());
     String descripcionalmacen = (String) session.getAttribute("descripcionAlmacen");
     String idventa = request.getParameter("idventa");
+    Integer idalmacenorigen = Integer.parseInt(request.getParameter("idalmacenorigen"));
+    Integer idtipocomprobanteorigen = Integer.parseInt(request.getParameter("idtipocomprobanteorigen"));
     String idmotivonota = request.getParameter("idtiponota");
 %>
 <html>
@@ -808,7 +810,7 @@
                                                 <select id="serie" name="serie" class="styled-select tipo_comprobante" style="width: 70px;" tabindex="1" >
                                                     <%
                                                         DaoSerieImpl daoSerie = new DaoSerieImpl();
-                                                        List<BeanSerie> serie = daoSerie.listarSerieTipoComprobanteAlmacen("07", idalmacen);
+                                                        List<BeanSerie> serie = daoSerie.listarSerieNotaTipoComprobanteAlmacen("07", idalmacenorigen, idtipocomprobanteorigen);
 
                                                         for (int i = 0; i < serie.size(); i++) {
                                                     %>

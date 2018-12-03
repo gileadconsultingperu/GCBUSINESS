@@ -65,10 +65,10 @@ public class GCBusiness_Comprobante_Servlet extends HttpServlet {
                     if (!listComprobante.get(i).getCodigoSunatcomprobante().equals("00")) {
                         acciones = "<div class=\"hidden-sm hidden-xs btn-group\">"
                                 //+ "<a href=\"GC-Business-NotaCredito.jsp?idventa=" + listComprobante.get(i).getIdventa() + "\" class=\"btn btn-xs btn-info imprimir\"><i class=\"ace-icon\" title='Nota Crédito'><b>NC</b></i></a>"
-                                + "<button type='button' name='seleccionarnota' id='" + listComprobante.get(i).getIdventa() + "' class='btn btn-xs btn-info seleccionarnota' title='Nota Crédito'><i class=\"ace-icon\"><b>NC</b></i></button>";;
+                                + "<button type='button' name='seleccionarnota' id='" + listComprobante.get(i).getIdventa() + " | " + listComprobante.get(i).getIdalmacen() + " | " + listComprobante.get(i).getIdtipocomprobante() + "' class='btn btn-xs btn-info seleccionarnota' title='Nota Crédito'><i class=\"ace-icon\"><b>NC</b></i></button>";;
                     } else {
                         acciones = "<div class=\"hidden-sm hidden-xs btn-group\">"
-                                + "<a href=\"GC-Business-DevolucionNotaPedido.jsp?idventa=" + listComprobante.get(i).getIdventa() + "\" class=\"btn btn-xs btn-info imprimir\"><i class=\"ace-icon\" title='Devolución Nota Pedido'><b>DV</b></i></a>";
+                                + "<a href=\"GC-Business-DevolucionNotaPedido.jsp?idventa=" + listComprobante.get(i).getIdventa() + "&idalmacenorigen=" + listComprobante.get(i).getIdalmacen() + "\" class=\"btn btn-xs btn-info imprimir\"><i class=\"ace-icon\" title='Devolución Nota Pedido'><b>DV</b></i></a>";
                     }
 
                     if (cantidaddocumento == 0) {

@@ -32,7 +32,7 @@ public class DaoComprobanteImpl {
 
         if (cn != null) {
             try {
-                String qry = "SELECT v.id_venta, v.fecha_emision, v.id_tipocomprobante, tc.codigo_sunat codigocomprobante, tc.abreviatura tipocomprobante, v.id_serie, s.serie, v.correlativo_serie, c.numero_documento, c.nombre cliente, m.codigo_sunat, v.total_venta "
+                String qry = "SELECT v.id_venta, v.id_almacen, v.fecha_emision, v.id_tipocomprobante, tc.codigo_sunat codigocomprobante, tc.abreviatura tipocomprobante, v.id_serie, s.serie, v.correlativo_serie, c.numero_documento, c.nombre cliente, m.codigo_sunat, v.total_venta "
                         + "FROM gcbusiness.venta v "
                         + "LEFT JOIN gcbusiness.tipocomprobante tc ON tc.id_tipocomprobante = v.id_tipocomprobante "
                         + "LEFT JOIN gcbusiness.serie s ON s.id_serie = v.id_serie "
@@ -60,6 +60,7 @@ public class DaoComprobanteImpl {
                 while (rs.next()) {
                     comprobante = new DTOComprobante();
                     comprobante.setIdventa(rs.getInt("id_venta"));
+                    comprobante.setIdalmacen(rs.getInt("id_almacen"));
                     comprobante.setFecha_emision(rs.getTimestamp("fecha_emision"));
                     comprobante.setIdtipocomprobante(rs.getInt("id_tipocomprobante"));
                     comprobante.setCodigoSunatcomprobante(rs.getString("codigocomprobante"));

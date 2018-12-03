@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 public class DTOComprobante implements Serializable {
 
     private Integer idventa;
+    private Integer idalmacen;
     private Timestamp fecha_emision;
     private Integer idtipocomprobante;
     private String codigoSunatcomprobante;
@@ -31,8 +32,9 @@ public class DTOComprobante implements Serializable {
     public DTOComprobante() {
     }
 
-    public DTOComprobante(Integer idventa, Timestamp fecha_emision, Integer idtipocomprobante, String codigoSunatcomprobante, String abreviaturacomprobante, Integer idserie, String serie, Integer correlativoserie, String numerodocumentocliente, String nombrecliente, String codigoSunatMoneda, Double total_venta, String estado) {
+    public DTOComprobante(Integer idventa, Integer idalmacen, Timestamp fecha_emision, Integer idtipocomprobante, String codigoSunatcomprobante, String abreviaturacomprobante, Integer idserie, String serie, Integer correlativoserie, String numerodocumentocliente, String nombrecliente, String codigoSunatMoneda, Double total_venta, String estado) {
         this.idventa = idventa;
+        this.idalmacen = idalmacen;
         this.fecha_emision = fecha_emision;
         this.idtipocomprobante = idtipocomprobante;
         this.codigoSunatcomprobante = codigoSunatcomprobante;
@@ -59,6 +61,20 @@ public class DTOComprobante implements Serializable {
      */
     public void setIdventa(Integer idventa) {
         this.idventa = idventa;
+    }
+
+    /**
+     * @return the idalmacen
+     */
+    public Integer getIdalmacen() {
+        return idalmacen;
+    }
+
+    /**
+     * @param idalmacen the idalmacen to set
+     */
+    public void setIdalmacen(Integer idalmacen) {
+        this.idalmacen = idalmacen;
     }
 
     /**
@@ -228,5 +244,5 @@ public class DTOComprobante implements Serializable {
     public void setEstado(String estado) {
         this.estado = estado;
     }
-    
+
 }

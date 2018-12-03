@@ -1110,11 +1110,13 @@
                         //Seleccionar Tipo Nota
                         $(document).on('click', '.seleccionarnota', function () {
                             var id = $(this).attr('id');
+                            var array = [];
+                            array = id.split(" | ");
                             $('#modalSeleccionarNota').modal('show');
-                            $('#devparcial').attr('href', 'GC-Business-NotaCredito.jsp?idventa=' + id + '&idtiponota=7');
-                            $('#devtotal').attr('href', 'GC-Business-NotaCredito.jsp?idventa=' + id + '&idtiponota=6');
-                            $('#anuoperacion').attr('href', 'GC-Business-NotaCredito.jsp?idventa=' + id + '&idtiponota=1');
-                            $('#desglobal').attr('href', 'GC-Business-NotaCreditoDescuentoGlobal.jsp?idventa=' + id + '&idtiponota=4');
+                            $('#devparcial').attr('href', 'GC-Business-NotaCredito.jsp?idventa=' + array[0] + '&idalmacenorigen=' + array[1] + '&idtipocomprobanteorigen=' + array[2] + '&idtiponota=7');
+                            $('#devtotal').attr('href', 'GC-Business-NotaCredito.jsp?idventa=' + array[0] + '&idalmacenorigen=' + array[1] + '&idtipocomprobanteorigen=' + array[2] + '&idtiponota=6');
+                            $('#anuoperacion').attr('href', 'GC-Business-NotaCredito.jsp?idventa=' + array[0] + '&idalmacenorigen=' + array[1] + '&idtipocomprobanteorigen=' + array[2] + '&idtiponota=1');
+                            $('#desglobal').attr('href', 'GC-Business-NotaCreditoDescuentoGlobal.jsp?idventa=' + array[0] + '&idalmacenorigen=' + array[1] + '&idtipocomprobanteorigen=' + array[2] + '&idtiponota=4');
                         });
                     });
         </script>
